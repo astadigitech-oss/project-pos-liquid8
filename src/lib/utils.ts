@@ -16,13 +16,15 @@ export function formatRupiah(rupiah: string | number): string {
       ? parseFloat(rupiah.replace(/[^\d.-]/g, ""))
       : rupiah;
 
-  if (!value || isNaN(value)) return "Rp 0";
+  if (!value || isNaN(value)) return "Rp0";
 
   return new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
     minimumFractionDigits: 0,
-  }).format(Math.ceil(value));
+  })
+    .format(Math.ceil(value))
+    .replace(/\s/g, "");
 }
 
 export const formatPhoneNumber = (value: string) => {

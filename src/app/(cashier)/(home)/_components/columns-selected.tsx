@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { formatRupiah } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { Edit2, Trash } from "lucide-react";
+import { Plus } from "lucide-react";
 
 export const columnSelected = (): ColumnDef<{
   name: string;
@@ -40,14 +40,9 @@ export const columnSelected = (): ColumnDef<{
     enableHiding: false,
     cell: () => {
       return (
-        <div className="flex items-center gap-1">
-          <Button size={"icon-sm"}>
-            <Edit2 className="size-3.5" />
-          </Button>
-          <Button size={"icon-sm"}>
-            <Trash className="size-3.5" />
-          </Button>
-        </div>
+        <Button size={"icon-sm"}>
+          <Plus className="size-3.5" />
+        </Button>
       );
     },
   },
