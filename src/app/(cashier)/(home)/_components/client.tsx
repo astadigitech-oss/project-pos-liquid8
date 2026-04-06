@@ -326,27 +326,28 @@ export const HomeClient = () => {
               )}
             </Dialog>
           </div>
-          <div className="flex flex-col items-start h-full w-full">
-            <div className="h-fit w-full border-b flex flex-col">
-              <div className="flex flex-col p-3">
+          <div className="flex flex-col items-start h-full w-full bg-gray-50">
+            <div className="h-fit w-full border-b flex bg-white">
+              <div className="flex flex-col p-3 w-full">
                 <p>Baju Biru</p>
                 <div className="flex items-center justify-between text-sm text-gray-500 w-full">
                   <p>Brown</p>
                   <p>{formatRupiah(12000)}</p>
                 </div>
               </div>
-              <div className="flex items-center border-t">
+              <div className="border-l flex items-center">
                 <Button
                   variant={"ghost"}
-                  className={"rounded-none h-7 flex-auto w-full border-0"}
+                  className={
+                    "rounded-none flex-auto w-full border-0 h-full w-16 mr-px"
+                  }
                 >
                   <Trash className="size-3.5" />
-                  Hapus
                 </Button>
               </div>
             </div>
-            <div className="h-fit w-full border-b flex flex-col">
-              <div className="flex flex-col p-3">
+            <div className="h-fit w-full border-b flex bg-white">
+              <div className="flex flex-col p-3 w-full">
                 <p>Baju Biru</p>
                 <div className="flex items-center justify-between text-sm text-gray-500 w-full">
                   <div className="flex items-center gap-2">
@@ -357,33 +358,32 @@ export const HomeClient = () => {
                   <p>{formatRupiah(2000000)}</p>
                 </div>
               </div>
-              <div className="grid grid-cols-2 border-t">
-                <div className="grid grid-cols-2">
+              <div className="border-l flex items-center">
+                <div className="grid grid-rows-2 h-full border-r">
                   <Button
                     variant={"ghost"}
                     className={
-                      "rounded-none h-7 flex-auto w-full border-gray-300 border-0 border-r"
+                      "rounded-none flex-auto w-full border-gray-300 border-0 h-full w-8 border-b"
                     }
                   >
                     <Plus className="size-3.5" />
-                    Qty
                   </Button>
                   <Button
                     variant={"ghost"}
                     className={
-                      "rounded-none h-7 flex-auto w-full border-gray-300 border-0 border-r"
+                      "rounded-none flex-auto w-full border-gray-300 border-0 h-full w-8"
                     }
                   >
                     <Minus className="size-3.5" />
-                    Qty
                   </Button>
                 </div>
                 <Button
                   variant={"ghost"}
-                  className={"rounded-none h-7 flex-auto w-full border-0"}
+                  className={
+                    "rounded-none flex-auto w-full border-0 h-full w-8"
+                  }
                 >
                   <Trash className="size-3.5" />
-                  Hapus
                 </Button>
               </div>
             </div>
