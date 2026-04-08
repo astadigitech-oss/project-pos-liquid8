@@ -10,7 +10,6 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import {
   CalendarDays,
   LogOut,
@@ -20,6 +19,7 @@ import {
   Settings,
   ShoppingBasket,
   StoreIcon,
+  User2,
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { TooltipText } from "@/providers/tooltip-provider";
@@ -113,24 +113,24 @@ export const AppSidebar = ({
       </div>
       <SidebarFooter className="border-t gap-1 py-5 px-2">
         <div className="flex items-center p-1 gap-2 border rounded-lg">
-          <Avatar>
-            <AvatarFallback>JD</AvatarFallback>
-            <AvatarImage alt="image" src={"https://github.com/shadcn.png"} />
-          </Avatar>
+          <div className="size-7 flex items-center justify-center border rounded-md border-red-500 bg-red-500 text-white ml-1">
+            <User2 className="size-4" />
+          </div>
           <p>Jhon Doe</p>
           <TooltipText
             value="Keluar"
             side="left"
             sideOffset={10}
             render={
-              <Button
-                size={"icon"}
-                variant={"destructive"}
-                className={"ml-auto"}
-                onClick={() => setOpen(false)}
-              >
-                <LogOut className="size-3.5" />
-              </Button>
+              <Link href={"/login"} className={"ml-auto"}>
+                <Button
+                  size={"icon"}
+                  variant={"destructive"}
+                  onClick={() => setOpen(false)}
+                >
+                  <LogOut className="size-3.5" />
+                </Button>
+              </Link>
             }
           />
         </div>

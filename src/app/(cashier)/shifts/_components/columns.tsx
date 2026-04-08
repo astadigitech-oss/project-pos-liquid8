@@ -1,19 +1,19 @@
 import { Button } from "@/components/ui/button";
-import { cn, formatRupiah } from "@/lib/utils";
+import { formatRupiah } from "@/lib/utils";
 import { TooltipText } from "@/providers/tooltip-provider";
 import { tz } from "@date-fns/tz";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import { Printer, ReceiptText, TicketX } from "lucide-react";
+import { ArrowLeftRight, Printer } from "lucide-react";
 
 export const column = (): ColumnDef<{
-  order_id: string;
-  customer: string;
-  cashier: string;
-  price: number;
-  status: boolean;
   date: Date;
+  cashier: string;
+  initial_petty_cash: number;
+  final_petty_cash: number;
+  total_transaction: number;
+  total_order: number;
 }>[] => [
   {
     header: () => <div className="text-center">No</div>,
@@ -25,52 +25,42 @@ export const column = (): ColumnDef<{
     ),
   },
   {
-    accessorKey: "order_id",
-    header: "Order ID",
-  },
-  {
     accessorKey: "date",
     header: "Shift",
     cell: ({ row }) =>
-      format(row.original.date, "PP - HH:mm", {
+      format(row.original.date, "dd MMM yyyy", {
         locale: id,
         in: tz("Asia/Jakarta"),
       }),
-  },
-  {
-    accessorKey: "customer",
-    header: "Customer",
-  },
-  {
-    accessorKey: "price",
-    header: "Harga",
-    cell: ({ row }) => formatRupiah(row.original.price),
-  },
-  {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ row }) => {
-      return (
-        <div className="flex items-center gap-2 border rounded-full w-fit px-2 py-0.5 border-gray-300">
-          <span
-            className={cn(
-              "size-2 rounded-full",
-              row.original.status ? "bg-green-500" : "bg-red-500",
-            )}
-          />
-          {row.original.status ? "Selesai" : "Dibatalkan"}
-        </div>
-      );
-    },
   },
   {
     accessorKey: "cashier",
     header: "Kasir",
   },
   {
+    accessorKey: "initial_petty_cash",
+    header: "Uang Kas (Awal)",
+    cell: ({ row }) => formatRupiah(row.original.initial_petty_cash),
+  },
+  {
+    accessorKey: "final_petty_cash",
+    header: "Uang Kas (Akhir)",
+    cell: ({ row }) => formatRupiah(row.original.final_petty_cash),
+  },
+  {
+    accessorKey: "total_order",
+    header: "Total Pesanan",
+    cell: ({ row }) => row.original.total_order.toLocaleString(),
+  },
+  {
+    accessorKey: "total_transaction",
+    header: "Total Transaction",
+    cell: ({ row }) => formatRupiah(row.original.total_transaction),
+  },
+  {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
+    cell: () => {
       return (
         <div className="flex items-center gap-1">
           <TooltipText
@@ -81,7 +71,6 @@ export const column = (): ColumnDef<{
                 className={
                   "text-emerald-600 bg-emerald-100 hover:bg-emerald-200 hover:text-emerald-700"
                 }
-                disabled={!row.original.status}
                 variant={"ghost"}
               >
                 <Printer className="size-3.5" />
@@ -89,7 +78,7 @@ export const column = (): ColumnDef<{
             }
           />
           <TooltipText
-            value="Detail Transaksi"
+            value="List Transaksi"
             render={
               <Button
                 size={"icon-sm"}
@@ -98,19 +87,7 @@ export const column = (): ColumnDef<{
                 }
                 variant={"ghost"}
               >
-                <ReceiptText className="size-3.5" />
-              </Button>
-            }
-          />
-          <TooltipText
-            value={"Batalkan Transaksi"}
-            render={
-              <Button
-                disabled={!row.original.status}
-                size={"icon-sm"}
-                variant={"destructive"}
-              >
-                <TicketX className="size-3.5" />
+                <ArrowLeftRight className="size-3.5" />
               </Button>
             }
           />
