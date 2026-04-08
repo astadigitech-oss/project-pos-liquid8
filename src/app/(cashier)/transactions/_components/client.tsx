@@ -8,7 +8,6 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { tz } from "@date-fns/tz";
 import { format } from "date-fns";
@@ -21,7 +20,7 @@ import { useTime } from "@/hooks/use-time";
 export const TransactionClient = () => {
   const { formattedDate, formattedTime } = useTime();
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 h-full">
       <div className="flex items-center gap-4 justify-between py-2 px-5">
         <div className="flex items-center gap-2">
           <SidebarTrigger
@@ -39,68 +38,74 @@ export const TransactionClient = () => {
           </div>
         </div>
       </div>
-      <Separator className={"bg-gray-300"} />
-      <div className="flex items-center justify-between w-full gap-4 px-5">
-        <div className="flex items-center gap-2">
-          <Button
-            className={"text-xs bg-transparent hover:bg-white"}
-            variant={"outline"}
-          >
-            <User2 className="size-3.5" />
-            Customer
-          </Button>
-          <Button
-            className={"text-xs bg-transparent hover:bg-white"}
-            variant={"outline"}
-          >
-            <CalendarDays className="size-3.5" />
-            <p className="pr-2">
-              {format(new Date("2026-01-01"), "PP", {
-                locale: id,
-                in: tz("Asia/Jakarta"),
-              }) +
-                " - " +
-                format(new Date("2026-01-01"), "PP", {
+      <div className="bg-white p-5 flex flex-col gap-4 rounded-xl shadow">
+        <div className="flex items-center justify-between w-full gap-4">
+          <div className="flex items-center gap-2">
+            <Button
+              className={"text-xs bg-transparent hover:bg-white"}
+              variant={"outline"}
+            >
+              <User2 className="size-3.5" />
+              Customer
+            </Button>
+            <Button
+              className={"text-xs bg-transparent hover:bg-white"}
+              variant={"outline"}
+            >
+              <CalendarDays className="size-3.5" />
+              <p className="pr-2">
+                {format(new Date("2026-01-01"), "PP", {
                   locale: id,
                   in: tz("Asia/Jakarta"),
-                })}
-            </p>
-          </Button>
+                }) +
+                  " - " +
+                  format(new Date("2026-01-01"), "PP", {
+                    locale: id,
+                    in: tz("Asia/Jakarta"),
+                  })}
+              </p>
+            </Button>
+          </div>
+          <div>
+            <InputGroup>
+              <InputGroupInput
+                className="w-52"
+                placeholder="Cari transaksi..."
+              />
+              <InputGroupAddon>
+                <SearchIcon className="size-3.5" />
+              </InputGroupAddon>
+              <InputGroupAddon align={"inline-end"}>
+                <InputGroupButton className={"hover:bg-gray-200 size-6"}>
+                  <XCircle className="size-3.5" />
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
+          </div>
         </div>
         <div>
-          <InputGroup>
-            <InputGroupInput className="w-52" placeholder="Cari transaksi..." />
-            <InputGroupAddon>
-              <SearchIcon className="size-3.5" />
-            </InputGroupAddon>
-            <InputGroupAddon align={"inline-end"}>
-              <InputGroupButton className={"hover:bg-gray-200 size-6"}>
-                <XCircle className="size-3.5" />
-              </InputGroupButton>
-            </InputGroupAddon>
-          </InputGroup>
+          <DataTable
+            columns={column()}
+            data={[
+              {
+                order_id: "SKJ26100100001",
+                customer: "Jhon Doe",
+                price: 2000000,
+                status: true,
+                date: new Date("2026-01-01 08:00"),
+                cashier: "Dewi",
+              },
+              {
+                order_id: "SKJ26100100002",
+                customer: "Jhon Chesna",
+                price: 3000000,
+                status: false,
+                date: new Date("2026-01-01 07:00"),
+                cashier: "Dewi",
+              },
+            ]}
+          />
         </div>
-      </div>
-      <div className="px-5">
-        <DataTable
-          columns={column()}
-          data={[
-            {
-              order_id: "SKJ26100100001",
-              customer: "Jhon Doe",
-              price: 2000000,
-              status: true,
-              date: new Date("2026-01-01 08:00"),
-            },
-            {
-              order_id: "SKJ26100100002",
-              customer: "Jhon Chesna",
-              price: 3000000,
-              status: false,
-              date: new Date("2026-01-01 07:00"),
-            },
-          ]}
-        />
       </div>
     </div>
   );
