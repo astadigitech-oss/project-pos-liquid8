@@ -1,5 +1,3 @@
-"use client";
-
 import { tz } from "@date-fns/tz";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
