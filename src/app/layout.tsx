@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { HydrateAtoms, QueryProviders } from "@/providers/query-provider";
+import { ToastProvider } from "@/providers/toast-provider";
+import { Provider } from "jotai";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +31,17 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-gray-100">{children}</body>
+      <body className="min-h-full flex flex-col bg-gray-100">
+        <QueryProviders>
+          <Provider>
+            <HydrateAtoms>
+              <ReactQueryDevtools initialIsOpen={false} />
+              <ToastProvider />
+              {children}
+            </HydrateAtoms>
+          </Provider>
+        </QueryProviders>
+      </body>
     </html>
   );
 }

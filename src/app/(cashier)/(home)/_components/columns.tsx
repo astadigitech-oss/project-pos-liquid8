@@ -1,14 +1,22 @@
 import { Button } from "@/components/ui/button";
+import { formatPhoneNumber } from "@/lib/utils";
+import { TooltipText } from "@/providers/tooltip-provider";
+import { SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { Check, Edit2, Trash } from "lucide-react";
+import { customerId, isCustomer } from "../_api/atoms";
 
-export const column = (): ColumnDef<{ name: string; phone: string }>[] => [
+export const column = ({
+  from,
+}: {
+  from: number;
+}): ColumnDef<{ id: number; name: string; phone: string }>[] => [
   {
     header: () => <div className="text-center">No</div>,
     id: "id",
     cell: ({ row }) => (
       <div className="text-center tabular-nums">
-        {(1 + row.index).toLocaleString()}
+        {(from + row.index).toLocaleString()}
       </div>
     ),
   },
@@ -19,23 +27,65 @@ export const column = (): ColumnDef<{ name: string; phone: string }>[] => [
   {
     accessorKey: "phone",
     header: "No. Hp.",
+    cell: ({ row }) => formatPhoneNumber(row.original.phone),
   },
   {
     id: "actions",
     enableHiding: false,
-    cell: () => {
+    cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-1">
-          <Button size={"icon-sm"}>
-            <Check className="size-3.5" />
-          </Button>
-          <Button size={"icon-sm"}>
-            <Edit2 className="size-3.5" />
-          </Button>
-          <Button size={"icon-sm"}>
-            <Trash className="size-3.5" />
-          </Button>
-        </div>
+        <SetAtom atom={isCustomer}>
+          {(setIsCustomer) => (
+            <SetAtom atom={customerId}>
+              {(setCustomerId) => (
+                <div className="flex items-center gap-1">
+                  <TooltipText
+                    value={"Pilih Customer"}
+                    render={
+                      <Button
+                        size={"icon-xs"}
+                        className={"hover:bg-gray-200"}
+                        variant={"outline"}
+                      >
+                        <Check />
+                      </Button>
+                    }
+                  />
+                  <TooltipText
+                    value={"Edit Customer"}
+                    render={
+                      <Button
+                        size={"icon-xs"}
+                        variant={"outlineWarning"}
+                        onClick={() => {
+                          setCustomerId(row.original.id.toString());
+                          setIsCustomer("edit");
+                        }}
+                      >
+                        <Edit2 />
+                      </Button>
+                    }
+                  />
+                  <TooltipText
+                    value={"Hapus Customer"}
+                    render={
+                      <Button
+                        size={"icon-xs"}
+                        variant={"outlineDestructive"}
+                        onClick={() => {
+                          setCustomerId(row.original.id.toString());
+                          setIsCustomer("delete");
+                        }}
+                      >
+                        <Trash />
+                      </Button>
+                    }
+                  />
+                </div>
+              )}
+            </SetAtom>
+          )}
+        </SetAtom>
       );
     },
   },

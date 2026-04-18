@@ -1,3 +1,4 @@
+import { QueryClient } from "@tanstack/react-query";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -36,4 +37,11 @@ export const formatPhoneNumber = (value: string) => {
       .match(/.{1,4}/g)
       ?.join("-") || ""
   );
+};
+
+export const invalidate = async (
+  queryClient: QueryClient,
+  queryKey: string[],
+) => {
+  await queryClient.invalidateQueries({ queryKey });
 };

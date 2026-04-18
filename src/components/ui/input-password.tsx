@@ -9,6 +9,7 @@ import { Eye, EyeOff, Lock, LucideIcon } from "lucide-react";
 
 export const InputPassword = ({
   icon: Icon = Lock,
+  autoComplete = "off",
   ...props
 }: React.ComponentPropsWithoutRef<typeof InputGroupInput> & {
   icon?: LucideIcon;
@@ -20,6 +21,7 @@ export const InputPassword = ({
         {...props}
         placeholder="••••••••"
         type={isVisible ? "text" : "password"}
+        autoComplete={autoComplete}
       />
       <InputGroupAddon>
         <Icon className="size-3.5" />
@@ -27,6 +29,7 @@ export const InputPassword = ({
       <InputGroupAddon align={"inline-end"}>
         <InputGroupButton
           size={"icon-xs"}
+          type="button"
           onClick={() => setIsVisible(!isVisible)}
         >
           {isVisible ? (

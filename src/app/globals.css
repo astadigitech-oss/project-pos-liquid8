@@ -139,4 +139,7 @@ input[type="number"] {
     html {
         @apply font-sans;
     }
+    .required {
+        @apply after:-ml-1 after:text-red-500 after:content-['*'];
+    }
 }
