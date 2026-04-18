@@ -54,8 +54,8 @@ export const CustomerAdd = () => {
   const form = useForm<CustomerFormValues>({
     resolver: zodResolver(formSchema),
     values: {
-      name: isEditMode ? (detail?.resource.name ?? "") : "",
-      phone: isEditMode ? (detail?.resource.phone ?? "") : "",
+      name: isEditMode ? (detail?.resource?.name ?? "") : "",
+      phone: isEditMode ? (detail?.resource?.phone ?? "") : "",
     },
   });
 
