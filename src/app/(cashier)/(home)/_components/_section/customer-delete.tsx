@@ -23,7 +23,7 @@ export const CustomerDelete = () => {
       <DialogHeader>
         <AtomValue atom={detailMemberAtom}>
           {({ data: detail }) => (
-            <DialogTitle>Hapus Customer {detail?.resource.name}</DialogTitle>
+            <DialogTitle>Hapus Customer {detail?.resource?.name}</DialogTitle>
           )}
         </AtomValue>
         <DialogDescription>
