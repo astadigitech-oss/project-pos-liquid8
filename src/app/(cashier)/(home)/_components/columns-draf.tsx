@@ -1,15 +1,14 @@
 import { Button } from "@/components/ui/button";
+import { formatRupiah } from "@/lib/utils";
 import { TooltipText } from "@/providers/tooltip-provider";
-import { tz } from "@date-fns/tz";
 import { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { id } from "date-fns/locale";
 import { Play, Trash } from "lucide-react";
 
 export const columnDraf = (): ColumnDef<{
-  name: string;
-  phone: string;
-  date: Date;
+  customer_name: string;
+  keep_code: string;
+  item_count: number;
+  total: number;
 }>[] => [
   {
     header: () => <div className="text-center">No</div>,
@@ -21,21 +20,22 @@ export const columnDraf = (): ColumnDef<{
     ),
   },
   {
-    accessorKey: "name",
+    accessorKey: "keep_code",
+    header: "Kode",
+  },
+  {
+    accessorKey: "customer_name",
     header: "Nama",
   },
   {
-    accessorKey: "phone",
-    header: "No. Hp.",
+    accessorKey: "item_count",
+    header: "Item",
+    cell: ({ row }) => row.original.item_count.toLocaleString(),
   },
   {
-    accessorKey: "date",
-    header: "Tanggal Draf",
-    cell: ({ row }) =>
-      format(row.original.date, "dd/MM/yyyy - HH:mm", {
-        locale: id,
-        in: tz("Asia/Jakarta"),
-      }),
+    accessorKey: "price",
+    header: "Total Harga",
+    cell: ({ row }) => formatRupiah(row.original.total),
   },
   {
     id: "actions",

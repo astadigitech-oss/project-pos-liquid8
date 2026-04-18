@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import React from "react";
-import CurrencyInput from "react-currency-input-field";
+import { CurrencyInput } from "react-currency-input-field";
 
 export const RupiahInput = ({
   prefix = "Rp",
