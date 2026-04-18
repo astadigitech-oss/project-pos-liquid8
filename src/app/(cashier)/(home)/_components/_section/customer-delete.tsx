@@ -12,8 +12,12 @@ import { AtomValue, SetAtom } from "@suspensive/jotai";
 import { customerId, isCustomer } from "../../_api/atoms";
 import { deleteMemberAtom } from "../../_api/mutation";
 import { Spinner } from "@/components/ui/spinner";
+import { invalidate } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
 
 export const CustomerDelete = () => {
+  const queryClient = useQueryClient();
+
   return (
     <div className="flex flex-col gap-4">
       <DialogHeader>
