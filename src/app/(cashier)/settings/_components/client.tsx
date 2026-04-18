@@ -20,69 +20,9 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useTime } from "@/hooks/use-time";
 import { AtSign, LockKeyhole, Send, Shield, User2 } from "lucide-react";
 import React from "react";
-import * as qz from "qz-tray";
 
 export const SettingsClient = () => {
-  const payload = {
-    storeName: "TOKO MAJU JAYA",
-    orderId: "INV-001",
-    total: 50000,
-    items: [
-      { name: "Kopi Hitam", qty: 2, price: 15000 },
-      { name: "Roti Bakar", qty: 1, price: 20000 },
-    ],
-  };
   const { formattedDate, formattedTime } = useTime();
-  const printUSB = async () => {
-    try {
-      // 1. Hubungkan ke QZ Tray jika belum aktif
-      if (!qz.websocket.isActive()) {
-        await qz.websocket.connect();
-      }
-
-      // 2. Buat Konfigurasi Printer
-      const config = qz.configs.create("thermal");
-
-      // 3. Susun data dalam format ESC/POS (Raw)
-      // Karakter HEX seperti \x1B adalah perintah hardware
-      const data = [
-        "\x1B" + "\x40", // Initialize printer
-        "\x1B" + "\x61" + "\x01", // Rata tengah (Center)
-        "\x1B" + "\x45" + "\x01", // Bold ON
-        payload.storeName + "\n",
-        "\x1B" + "\x45" + "\x00", // Bold OFF
-        "ID: " + payload.orderId + "\n",
-        "------------------------------\n",
-        "\x1B" + "\x61" + "\x00", // Rata kiri (Left)
-      ];
-
-      // Tambahkan item belanja
-      payload.items.forEach((item: any) => {
-        data.push(item.name + "\n");
-        data.push(
-          item.qty + " x " + item.price + "\t" + item.qty * item.price + "\n",
-        );
-      });
-
-      data.push("------------------------------\n");
-      data.push("\x1B" + "\x61" + "\x02"); // Rata kanan (Right)
-      data.push("\x1B" + "\x45" + "\x01"); // Bold ON
-      data.push("TOTAL: " + payload.total + "\n");
-      data.push("\x1B" + "\x45" + "\x00"); // Bold OFF
-
-      // Spasi akhir dan potong kertas
-      data.push("\n\n\n");
-      data.push("\x1D" + "\x56" + "\x41"); // Perintah Paper Cut (jika printer mendukung)
-
-      // 4. Kirim ke printer
-      await qz.print(config, data);
-
-      console.log("Cetak Berhasil!");
-    } catch (err) {
-      console.error("Gagal cetak via QZ Tray:", err);
-      throw err;
-    }
-  };
   return (
     <div className="flex flex-col gap-4 h-full">
       <div className="flex items-center gap-4 justify-between py-2 px-5">
@@ -174,7 +114,6 @@ export const SettingsClient = () => {
             </CardFooter>
           </Card>
         </div>
-        <Button onClick={printUSB}>Click me</Button>
       </div>
     </div>
   );
