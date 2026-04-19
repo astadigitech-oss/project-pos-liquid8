@@ -1,10 +1,15 @@
 import { Button } from "@/components/ui/button";
-import { formatRupiah } from "@/lib/utils";
+import { formatRupiah, invalidate } from "@/lib/utils";
 import { TooltipText } from "@/providers/tooltip-provider";
+import { AtomValue } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { Trash } from "lucide-react";
+import { removeItemCartAtom } from "../_api/mutation";
+import { useQueryClient } from "@tanstack/react-query";
+import { Spinner } from "@/components/ui/spinner";
 
 export const columnSelected = (): ColumnDef<{
+  id: number;
   barcode: string;
   product_name: string;
   price: number;
@@ -34,19 +39,43 @@ export const columnSelected = (): ColumnDef<{
   {
     id: "actions",
     enableHiding: false,
-    cell: () => (
-      <TooltipText
-        value={"Hapus Produk"}
-        render={
-          <Button
-            size={"icon-xs"}
-            className={"text-red-500 hover:text-red-500 hover:bg-red-100"}
-            variant={"ghost"}
-          >
-            <Trash />
-          </Button>
-        }
-      />
+    cell: ({ row }) => (
+      <AtomValue atom={removeItemCartAtom}>
+        {({ mutate: deleteItem, isPending: isDeleting }) => {
+          const queryClient = useQueryClient();
+          const handleRemove = (id: string) => {
+            deleteItem(id, {
+              onSuccess: async () => {
+                await Promise.all([
+                  invalidate(queryClient, ["current-cart"]),
+                  invalidate(queryClient, ["list-product"]),
+                ]);
+              },
+            });
+          };
+          return (
+            <TooltipText
+              value={"Hapus Produk"}
+              render={
+                <Button
+                  size={"icon-xs"}
+                  className={"text-red-500 hover:text-red-500 hover:bg-red-100"}
+                  variant={"ghost"}
+                  type="button"
+                  onClick={() => handleRemove(row.original.id.toString())}
+                  disabled={isDeleting}
+                >
+                  {isDeleting ? (
+                    <Spinner className="size-3.5" />
+                  ) : (
+                    <Trash className="size-3.5" />
+                  )}
+                </Button>
+              }
+            />
+          );
+        }}
+      </AtomValue>
     ),
   },
 ];

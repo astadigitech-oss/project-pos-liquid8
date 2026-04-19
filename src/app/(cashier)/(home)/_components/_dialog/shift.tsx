@@ -58,6 +58,7 @@ export const ShiftDialog = () => {
     await Promise.all([
       invalidate(queryClient, ["current-cart"]),
       invalidate(queryClient, ["active-shift"]),
+      invalidate(queryClient, ["list-shift"]),
     ]);
   };
 

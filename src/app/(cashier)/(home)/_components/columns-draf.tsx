@@ -1,10 +1,19 @@
 import { Button } from "@/components/ui/button";
-import { formatRupiah } from "@/lib/utils";
+import { formatRupiah, invalidate } from "@/lib/utils";
 import { TooltipText } from "@/providers/tooltip-provider";
+import { AtomValue, SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { Play, Trash } from "lucide-react";
+import { deleteDraftAtom, resumeDraftAtom } from "../_api/mutation";
+import { useQueryClient } from "@tanstack/react-query";
+import { Spinner } from "@/components/ui/spinner";
+import { customerSelectedId, draftListDialog } from "../_api/atoms";
 
-export const columnDraf = (): ColumnDef<{
+export const columnDraf = ({
+  from,
+}: {
+  from: number;
+}): ColumnDef<{
   customer_name: string;
   keep_code: string;
   item_count: number;
@@ -15,7 +24,7 @@ export const columnDraf = (): ColumnDef<{
     id: "id",
     cell: ({ row }) => (
       <div className="text-center tabular-nums">
-        {(1 + row.index).toLocaleString()}
+        {(from + row.index).toLocaleString()}
       </div>
     ),
   },
@@ -40,30 +49,86 @@ export const columnDraf = (): ColumnDef<{
   {
     id: "actions",
     enableHiding: false,
-    cell: () => {
+    cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-1">
-          <TooltipText
-            value="Lanjutkan Transaksi"
-            render={
-              <Button
-                size={"icon-sm"}
-                variant={"secondary"}
-                className={"hover:bg-gray-200"}
-              >
-                <Play className="size-3.5" />
-              </Button>
-            }
-          />
-          <TooltipText
-            value="Hapus Transaksi"
-            render={
-              <Button size={"icon-sm"} variant={"destructive"}>
-                <Trash className="size-3.5" />
-              </Button>
-            }
-          />
-        </div>
+        <AtomValue atom={resumeDraftAtom}>
+          {({ mutate: resume, isPending: isResuming }) => (
+            <AtomValue atom={deleteDraftAtom}>
+              {({ mutate: deleteDraft, isPending: isDeleting }) => {
+                const queryClient = useQueryClient();
+                const isLoading = isResuming || isDeleting;
+                return (
+                  <div className="flex items-center gap-1">
+                    <SetAtom atom={draftListDialog}>
+                      {(setOpen) => (
+                        <SetAtom atom={customerSelectedId}>
+                          {(setCustomerId) => (
+                            <TooltipText
+                              value="Lanjutkan Transaksi"
+                              render={
+                                <Button
+                                  size={"icon-sm"}
+                                  variant={"secondary"}
+                                  className={"hover:bg-gray-200"}
+                                  onClick={() =>
+                                    resume(row.original.keep_code, {
+                                      onSuccess: async (data) => {
+                                        setOpen(false);
+                                        setCustomerId(
+                                          data.resource[0].member_id.toString(),
+                                        );
+                                        await invalidate(queryClient, [
+                                          "list-pending",
+                                        ]);
+                                        await invalidate(queryClient, [
+                                          "current-cart",
+                                        ]);
+                                      },
+                                    })
+                                  }
+                                  disabled={isLoading}
+                                >
+                                  {isLoading ? (
+                                    <Spinner className="size-3.5" />
+                                  ) : (
+                                    <Play className="size-3.5" />
+                                  )}
+                                </Button>
+                              }
+                            />
+                          )}
+                        </SetAtom>
+                      )}
+                    </SetAtom>
+                    <TooltipText
+                      value="Hapus Transaksi"
+                      render={
+                        <Button
+                          size={"icon-sm"}
+                          variant={"destructive"}
+                          disabled={isLoading}
+                          onClick={() =>
+                            deleteDraft(row.original.keep_code, {
+                              onSuccess: async () => {
+                                await invalidate(queryClient, ["list-pending"]);
+                              },
+                            })
+                          }
+                        >
+                          {isLoading ? (
+                            <Spinner className="size-3.5" />
+                          ) : (
+                            <Trash className="size-3.5" />
+                          )}
+                        </Button>
+                      }
+                    />
+                  </div>
+                );
+              }}
+            </AtomValue>
+          )}
+        </AtomValue>
       );
     },
   },
