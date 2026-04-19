@@ -44,10 +44,12 @@ const BarcodeSearch = ({ isRefetching }: { isRefetching: boolean }) => {
         { product_barcode: localValue },
         {
           onSuccess: async () => {
-            await invalidate(queryClient, ["current-cart"]);
-            await invalidate(queryClient, ["list-product"]);
             setLocalValue("");
             inputRef.current?.focus();
+            await Promise.all([
+              invalidate(queryClient, ["current-cart"]),
+              invalidate(queryClient, ["list-product"]),
+            ]);
           },
         },
       );

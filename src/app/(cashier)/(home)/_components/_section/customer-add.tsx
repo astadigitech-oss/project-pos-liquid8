@@ -68,8 +68,8 @@ export const CustomerAdd = () => {
   const onSubmit = (values: CustomerFormValues) => {
     const options = {
       onSuccess: async () => {
-        await invalidate(queryClient, ["list-member"]);
         handleClose();
+        await invalidate(queryClient, ["list-member"]);
       },
     };
 

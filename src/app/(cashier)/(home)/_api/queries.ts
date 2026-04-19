@@ -12,6 +12,9 @@ import {
   customerId,
   customerPage,
   customerSearch,
+  customerSelectedId,
+  draftPage,
+  draftSearch,
   productPage,
   productSearch,
 } from "./atoms";
@@ -37,8 +40,8 @@ export const listProductAtom = atomWithQuery((get) => ({
 }));
 
 export const listPendingAtom = atomWithQuery((get) => ({
-  queryKey: ["list-pending", { q: get(productSearch) }],
-  queryFn: () => listDraftQuery(get(productSearch)),
+  queryKey: ["list-pending", { q: get(draftSearch), page: get(draftPage) }],
+  queryFn: () => listDraftQuery(get(draftSearch), get(draftPage)),
   placeholderData: keepPreviousData,
   retry: 0,
 }));
@@ -56,6 +59,13 @@ export const detailMemberAtom = atomWithQuery((get) => ({
   queryKey: ["detail-member", get(customerId)],
   queryFn: () => detailMemberQuery(get(customerId)),
   enabled: !!get(customerId),
+  placeholderData: keepPreviousData,
+  retry: 0,
+}));
+export const detailSelectedMemberAtom = atomWithQuery((get) => ({
+  queryKey: ["detail-selected-member", get(customerSelectedId)],
+  queryFn: () => detailMemberQuery(get(customerSelectedId)),
+  enabled: !!get(customerSelectedId),
   placeholderData: keepPreviousData,
   retry: 0,
 }));

@@ -16,11 +16,15 @@ import { CalendarDays, SearchIcon, XCircle } from "lucide-react";
 import React from "react";
 import { column } from "./columns";
 import { useTime } from "@/hooks/use-time";
+import { AtomValue } from "@suspensive/jotai";
+import { listShiftAtom } from "../_api/queries";
+import { ShiftDetailDialog } from "./_dialog/detail";
 
 export const ShiftsClient = () => {
   const { formattedDate, formattedTime } = useTime();
   return (
     <div className="flex flex-col gap-4 h-full">
+      <ShiftDetailDialog />
       <div className="flex items-center gap-4 justify-between py-2 px-5">
         <div className="flex items-center gap-2">
           <SidebarTrigger
@@ -38,65 +42,52 @@ export const ShiftsClient = () => {
           </div>
         </div>
       </div>
-      <div className="bg-white p-5 flex flex-col gap-4 rounded-xl shadow">
-        <div className="flex items-center justify-between w-full gap-4">
-          <div className="flex items-center gap-2">
-            <Button
-              className={"text-xs bg-transparent hover:bg-white"}
-              variant={"outline"}
-            >
-              <CalendarDays className="size-3.5" />
-              <p className="pr-2">
-                {format(new Date("2026-01-01"), "PP", {
-                  locale: id,
-                  in: tz("Asia/Jakarta"),
-                }) +
-                  " - " +
-                  format(new Date("2026-01-01"), "PP", {
-                    locale: id,
-                    in: tz("Asia/Jakarta"),
-                  })}
-              </p>
-            </Button>
+      <AtomValue atom={listShiftAtom}>
+        {({ data }) => (
+          <div className="bg-white p-5 flex flex-col gap-4 rounded-xl shadow">
+            <div className="flex items-center justify-between w-full gap-4">
+              <div className="flex items-center gap-2">
+                <Button
+                  className={"text-xs bg-transparent hover:bg-white"}
+                  variant={"outline"}
+                >
+                  <CalendarDays className="size-3.5" />
+                  <p className="pr-2">
+                    {format(new Date("2026-01-01"), "PP", {
+                      locale: id,
+                      in: tz("Asia/Jakarta"),
+                    }) +
+                      " - " +
+                      format(new Date("2026-01-01"), "PP", {
+                        locale: id,
+                        in: tz("Asia/Jakarta"),
+                      })}
+                  </p>
+                </Button>
+              </div>
+              <div>
+                <InputGroup>
+                  <InputGroupInput
+                    className="w-52"
+                    placeholder="Cari shift..."
+                  />
+                  <InputGroupAddon>
+                    <SearchIcon className="size-3.5" />
+                  </InputGroupAddon>
+                  <InputGroupAddon align={"inline-end"}>
+                    <InputGroupButton className={"hover:bg-gray-200 size-6"}>
+                      <XCircle className="size-3.5" />
+                    </InputGroupButton>
+                  </InputGroupAddon>
+                </InputGroup>
+              </div>
+            </div>
+            <div>
+              <DataTable columns={column()} data={data?.resource.data ?? []} />
+            </div>
           </div>
-          <div>
-            <InputGroup>
-              <InputGroupInput className="w-52" placeholder="Cari shift..." />
-              <InputGroupAddon>
-                <SearchIcon className="size-3.5" />
-              </InputGroupAddon>
-              <InputGroupAddon align={"inline-end"}>
-                <InputGroupButton className={"hover:bg-gray-200 size-6"}>
-                  <XCircle className="size-3.5" />
-                </InputGroupButton>
-              </InputGroupAddon>
-            </InputGroup>
-          </div>
-        </div>
-        <div>
-          <DataTable
-            columns={column()}
-            data={[
-              {
-                initial_petty_cash: 200000,
-                final_petty_cash: 240000,
-                total_order: 20,
-                total_transaction: 2200000,
-                date: new Date("2026-01-01"),
-                cashier: "Dewi",
-              },
-              {
-                initial_petty_cash: 500000,
-                final_petty_cash: 540000,
-                total_order: 20,
-                total_transaction: 6200000,
-                date: new Date("2026-01-02"),
-                cashier: "Dewi",
-              },
-            ]}
-          />
-        </div>
-      </div>
+        )}
+      </AtomValue>
     </div>
   );
 };

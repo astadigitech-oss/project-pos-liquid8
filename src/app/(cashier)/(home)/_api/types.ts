@@ -31,12 +31,43 @@ export type DraftTransactionResponse = {
   status: boolean;
   message: string;
   resource: {
-    customer_name: string;
-    keep_code: string;
-    item_count: number;
-    total: number;
-  }[];
+    data: Array<{
+      customer_name: string;
+      keep_code: string;
+      item_count: number;
+      total: number;
+    }>;
+    pagination: {
+      current_page: number;
+      from: number;
+      last_page: number;
+      per_page: number;
+      to: number;
+      total: number;
+    };
+  };
 };
+
+export type ResumeDraftResponse = {
+  status: boolean;
+  message: string;
+  resource: Array<{
+    id: number;
+    store_id: number;
+    member_id: number;
+    user_id: number;
+    product_id: number;
+    keep_code: any;
+    product_name: string;
+    quantity: number;
+    price: number;
+    discount_price: number;
+    subtotal: number;
+    created_at: string;
+    updated_at: string;
+  }>;
+};
+
 export type MemberListResponse = {
   status: boolean;
   message: string;
@@ -114,8 +145,11 @@ export type AddMemberBody = {
   name: string;
   phone: string;
 };
+export type PendingTransactionBody = {
+  member_id: number;
+};
 
-export type AddUpdateMemberBody = {
+export type AddUpdateMemberResponse = {
   status: boolean;
   message: string;
   resource: {

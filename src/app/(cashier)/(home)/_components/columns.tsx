@@ -4,7 +4,12 @@ import { TooltipText } from "@/providers/tooltip-provider";
 import { SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { Check, Edit2, Trash } from "lucide-react";
-import { customerId, isCustomer } from "../_api/atoms";
+import {
+  customerDialog,
+  customerId,
+  customerSelectedId,
+  isCustomer,
+} from "../_api/atoms";
 
 export const column = ({
   from,
@@ -39,18 +44,32 @@ export const column = ({
             <SetAtom atom={customerId}>
               {(setCustomerId) => (
                 <div className="flex items-center gap-1">
-                  <TooltipText
-                    value={"Pilih Customer"}
-                    render={
-                      <Button
-                        size={"icon-xs"}
-                        className={"hover:bg-gray-200"}
-                        variant={"outline"}
-                      >
-                        <Check />
-                      </Button>
-                    }
-                  />
+                  <SetAtom atom={customerDialog}>
+                    {(setOpen) => (
+                      <SetAtom atom={customerSelectedId}>
+                        {(setSelectedCustomer) => (
+                          <TooltipText
+                            value={"Pilih Customer"}
+                            render={
+                              <Button
+                                size={"icon-xs"}
+                                className={"hover:bg-gray-200"}
+                                variant={"outline"}
+                                onClick={() => {
+                                  setSelectedCustomer(
+                                    row.original.id.toString(),
+                                  );
+                                  setOpen(false);
+                                }}
+                              >
+                                <Check />
+                              </Button>
+                            }
+                          />
+                        )}
+                      </SetAtom>
+                    )}
+                  </SetAtom>
                   <TooltipText
                     value={"Edit Customer"}
                     render={

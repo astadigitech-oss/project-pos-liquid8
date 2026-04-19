@@ -20,67 +20,67 @@ import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useTime } from "@/hooks/use-time";
 import { AtSign, LockKeyhole, Send, Shield, User2 } from "lucide-react";
 import React from "react";
-import * as qz from "qz-tray";
+import ReceiptPrinterEncoder from "@point-of-sale/receipt-printer-encoder";
 
 export const SettingsClient = () => {
-  const payload = {
-    storeName: "TOKO MAJU JAYA",
-    orderId: "INV-001",
-    total: 50000,
-    items: [
-      { name: "Kopi Hitam", qty: 2, price: 15000 },
-      { name: "Roti Bakar", qty: 1, price: 20000 },
-    ],
-  };
   const { formattedDate, formattedTime } = useTime();
-  const printUSB = async () => {
+  const handlePrint = async () => {
+    // 1. Inisialisasi Encoder (tentukan lebar kertas, misal 58mm)
+    const encoder = new ReceiptPrinterEncoder({
+      width: 32, // Jumlah karakter per baris (biasanya 32 untuk thermal 58mm)
+    });
+
+    // 2. Susun desain struk
+    const result = encoder
+      .initialize()
+      .codepage("cp437") // Standar untuk printer thermal
+      .align("center")
+      .bold(true)
+      .line("KOPI JODOH")
+      .bold(false)
+      .line("Jl. Kenangan No. 5, Jakarta")
+      .line("--------------------------------")
+      .align("left")
+      .table(
+        [
+          { width: 20, align: "left" },
+          { width: 12, align: "right" },
+        ],
+        [
+          ["Kopi Susu x1", "15.000"],
+          ["Roti Bakar x2", "20.000"],
+        ],
+      )
+      .line("--------------------------------")
+      .align("right")
+      .bold(true)
+      .line("TOTAL: 35.000")
+      .bold(false)
+      .align("center")
+      .newline()
+      .line("Terima Kasih!")
+      .newline()
+      .newline()
+      .cut()
+      .encode(); // Menghasilkan Uint8Array
+
+    // 3. Kirim ke Rust Bridge (Port 3001)
     try {
-      // 1. Hubungkan ke QZ Tray jika belum aktif
-      if (!qz.websocket.isActive()) {
-        await qz.websocket.connect();
-      }
-
-      // 2. Buat Konfigurasi Printer
-      const config = qz.configs.create("thermal");
-
-      // 3. Susun data dalam format ESC/POS (Raw)
-      // Karakter HEX seperti \x1B adalah perintah hardware
-      const data = [
-        "\x1B" + "\x40", // Initialize printer
-        "\x1B" + "\x61" + "\x01", // Rata tengah (Center)
-        "\x1B" + "\x45" + "\x01", // Bold ON
-        payload.storeName + "\n",
-        "\x1B" + "\x45" + "\x00", // Bold OFF
-        "ID: " + payload.orderId + "\n",
-        "------------------------------\n",
-        "\x1B" + "\x61" + "\x00", // Rata kiri (Left)
-      ];
-
-      // Tambahkan item belanja
-      payload.items.forEach((item: any) => {
-        data.push(item.name + "\n");
-        data.push(
-          item.qty + " x " + item.price + "\t" + item.qty * item.price + "\n",
-        );
+      const response = await fetch("http://localhost:3001/print-raw", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/octet-stream",
+        },
+        body: Buffer.from(result),
       });
 
-      data.push("------------------------------\n");
-      data.push("\x1B" + "\x61" + "\x02"); // Rata kanan (Right)
-      data.push("\x1B" + "\x45" + "\x01"); // Bold ON
-      data.push("TOTAL: " + payload.total + "\n");
-      data.push("\x1B" + "\x45" + "\x00"); // Bold OFF
-
-      // Spasi akhir dan potong kertas
-      data.push("\n\n\n");
-      data.push("\x1D" + "\x56" + "\x41"); // Perintah Paper Cut (jika printer mendukung)
-
-      // 4. Kirim ke printer
-      await qz.print(config, data);
-
-      console.log("Cetak Berhasil!");
-    } catch (err) {
-      console.error("Gagal cetak via QZ Tray:", err);
-      throw err;
+      if (response.ok) {
+        console.log("✅ Cetak berhasil");
+      } else {
+        alert("Gagal: Printer tidak siap!");
+      }
+    } catch (error) {
+      alert("Gagal: Pastikan aplikasi POS Bridge sudah aktif.");
     }
   };
   return (
@@ -174,7 +174,7 @@ export const SettingsClient = () => {
             </CardFooter>
           </Card>
         </div>
-        <Button onClick={printUSB}>Click me</Button>
+        <Button onClick={handlePrint}>Click me</Button>
       </div>
     </div>
   );

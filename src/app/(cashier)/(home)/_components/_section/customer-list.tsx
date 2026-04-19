@@ -106,7 +106,6 @@ const CustomerSearchInput = ({
   const [search, setSearch] = useAtom(customerSearch);
   const [localValue, setLocalValue] = React.useState(search);
   const inputRef = React.useRef<HTMLInputElement>(null);
-  console.log(isSuccess);
 
   React.useEffect(() => {
     const handler = setTimeout(() => setSearch(localValue), 500);

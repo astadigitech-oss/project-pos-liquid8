@@ -2,13 +2,15 @@ import { apiUrl, secretStore } from "@/config";
 import {
   AddMemberBody,
   AddToCartBody,
-  AddUpdateMemberBody,
+  AddUpdateMemberResponse,
   CurrentCartResponse,
   DetailMemberResponse,
   DraftTransactionResponse,
   EndShiftBody,
   MemberListResponse,
+  PendingTransactionBody,
   ProductListResponse,
+  ResumeDraftResponse,
   ShiftResponse,
   StartShiftBody,
 } from "./types";
@@ -72,14 +74,18 @@ export const listProductQuery = async (
 
 export const listDraftQuery = async (
   q: string = "",
+  page: number = 1,
 ): Promise<DraftTransactionResponse> => {
-  const response = await fetch(`${apiUrl}/api/carts/pending?q=${q}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+  const response = await fetch(
+    `${apiUrl}/api/carts/pending?q=${q}&page=${page}&per_page=10`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
     },
-  });
+  );
 
   const res = (await response.json()) as DraftTransactionResponse;
 
@@ -169,7 +175,7 @@ export const endShiftPost = async (
 
 export const addToCartPost = async (
   body: AddToCartBody,
-): Promise<AddUpdateMemberBody> => {
+): Promise<AddUpdateMemberResponse> => {
   const response = await fetch(`${apiUrl}/api/carts/item`, {
     method: "POST",
     headers: {
@@ -179,7 +185,25 @@ export const addToCartPost = async (
     body: JSON.stringify(body),
   });
 
-  const res = (await response.json()) as AddUpdateMemberBody;
+  const res = (await response.json()) as AddUpdateMemberResponse;
+
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
+
+export const removeItemCartPost = async (
+  id: string,
+): Promise<AddUpdateMemberResponse> => {
+  const response = await fetch(`${apiUrl}/api/carts/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const res = (await response.json()) as AddUpdateMemberResponse;
 
   if (!response.ok) throw new Error(res.message);
 
@@ -188,7 +212,7 @@ export const addToCartPost = async (
 
 export const addMemberPost = async (
   body: AddMemberBody,
-): Promise<AddUpdateMemberBody> => {
+): Promise<AddUpdateMemberResponse> => {
   const response = await fetch(`${apiUrl}/api/members`, {
     method: "POST",
     headers: {
@@ -198,7 +222,7 @@ export const addMemberPost = async (
     body: JSON.stringify(body),
   });
 
-  const res = (await response.json()) as AddUpdateMemberBody;
+  const res = (await response.json()) as AddUpdateMemberResponse;
 
   if (!response.ok) throw new Error(res.message);
 
@@ -227,6 +251,74 @@ export const updateMemberPost = async (
 
 export const deleteMemberPost = async (id: string): Promise<ShiftResponse> => {
   const response = await fetch(`${apiUrl}/api/members/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const res = (await response.json()) as ShiftResponse;
+
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
+
+export const pendingTransactionPost = async (
+  body: PendingTransactionBody,
+): Promise<ShiftResponse> => {
+  const response = await fetch(`${apiUrl}/api/carts/pending`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  const res = (await response.json()) as ShiftResponse;
+
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
+
+export const emptyTransactionPost = async (): Promise<ShiftResponse> => {
+  const response = await fetch(`${apiUrl}/api/carts/current`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const res = (await response.json()) as ShiftResponse;
+
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
+
+export const resumeDraftPut = async (
+  code: string,
+): Promise<ResumeDraftResponse> => {
+  const response = await fetch(`${apiUrl}/api/carts/${code}/resume-check`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const res = (await response.json()) as ResumeDraftResponse;
+
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
+export const draftDelete = async (code: string): Promise<ShiftResponse> => {
+  const response = await fetch(`${apiUrl}/api/carts/pending/${code}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",

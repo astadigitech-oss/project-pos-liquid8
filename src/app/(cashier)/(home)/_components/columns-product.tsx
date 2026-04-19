@@ -62,9 +62,11 @@ export const columnProduct = ({
                       { product_barcode: row.original.barcode },
                       {
                         onSuccess: async () => {
-                          await invalidate(queryClient, ["current-cart"]);
-                          await invalidate(queryClient, ["list-product"]);
                           setOpen(false);
+                          await Promise.all([
+                            invalidate(queryClient, ["current-cart"]),
+                            invalidate(queryClient, ["list-product"]),
+                          ]);
                         },
                       },
                     );
