@@ -3,6 +3,8 @@ import {
   AddMemberBody,
   AddToCartBody,
   AddUpdateMemberResponse,
+  CheckoutTransactionBody,
+  CheckoutTransactionResponse,
   CurrentCartResponse,
   DetailMemberResponse,
   DraftTransactionResponse,
@@ -327,6 +329,25 @@ export const draftDelete = async (code: string): Promise<ShiftResponse> => {
   });
 
   const res = (await response.json()) as ShiftResponse;
+
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
+
+export const checkoutTransactionPost = async (
+  body: CheckoutTransactionBody,
+): Promise<CheckoutTransactionResponse> => {
+  const response = await fetch(`${apiUrl}/api/transactions/checkout`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  const res = (await response.json()) as CheckoutTransactionResponse;
 
   if (!response.ok) throw new Error(res.message);
 

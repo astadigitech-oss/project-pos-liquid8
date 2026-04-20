@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import {
   AddMemberBody,
   AddToCartBody,
+  CheckoutTransactionBody,
   EndShiftBody,
   PendingTransactionBody,
   StartShiftBody,
@@ -9,6 +10,7 @@ import {
 import {
   addMemberPost,
   addToCartPost,
+  checkoutTransactionPost,
   deleteMemberPost,
   draftDelete,
   emptyTransactionPost,
@@ -117,6 +119,16 @@ export const resumeDraftAtom = atomWithMutation(() => ({
 }));
 export const deleteDraftAtom = atomWithMutation(() => ({
   mutationFn: (code: string) => draftDelete(code),
+  onSuccess: (data) => {
+    toast.success(data.message);
+  },
+  onError: (error) => {
+    toast.error((error as Error).message);
+  },
+}));
+
+export const checkoutTransactionAtom = atomWithMutation(() => ({
+  mutationFn: (body: CheckoutTransactionBody) => checkoutTransactionPost(body),
   onSuccess: (data) => {
     toast.success(data.message);
   },

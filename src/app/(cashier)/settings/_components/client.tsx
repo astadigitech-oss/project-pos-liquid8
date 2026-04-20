@@ -80,6 +80,7 @@ export const SettingsClient = () => {
         alert("Gagal: Printer tidak siap!");
       }
     } catch (error) {
+      console.log(error);
       alert("Gagal: Pastikan aplikasi POS Bridge sudah aktif.");
     }
   };
@@ -174,7 +175,9 @@ export const SettingsClient = () => {
             </CardFooter>
           </Card>
         </div>
-        <Button onClick={handlePrint}>Click me</Button>
+        <Button className={"hidden"} onClick={handlePrint}>
+          Click me
+        </Button>
       </div>
     </div>
   );

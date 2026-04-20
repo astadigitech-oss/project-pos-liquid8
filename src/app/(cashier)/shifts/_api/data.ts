@@ -1,6 +1,6 @@
 import { apiUrl, secretStore } from "@/config";
 import { getCookie } from "cookies-next/client";
-import { ShiftListResponse } from "./types";
+import { ShiftDetailResponse, ShiftListResponse } from "./types";
 
 const token = getCookie(secretStore);
 
@@ -22,6 +22,24 @@ export const shiftListQuery = async (
   );
 
   const res = (await response.json()) as ShiftListResponse;
+
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
+
+export const shiftDetailQuery = async (
+  id: string,
+): Promise<ShiftDetailResponse> => {
+  const response = await fetch(`${apiUrl}/api/shifts/${id}/transaction`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const res = (await response.json()) as ShiftDetailResponse;
 
   if (!response.ok) throw new Error(res.message);
 
