@@ -1,0 +1,15 @@
+{
+  "version": "v0.1.0",
+  "notes": "Perbaikan bug printer.",
+  "pub_date": "2026-04-20T10:00:00Z",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRTWFuQnh3T0hVbldHYkVnZ1RpcUtiaHdOZlBUQ1M3SzNyZkdZeGZaQ0ZZWkVqSVNVcGZaNmJFOWZ4Q3RDYXN0d0RaTGVDbjhlMjhKYU1JUWcrMThyZDdncWlRRTZNc0FnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2NzA2MDQ0CWZpbGU6cG9zLWJyaWRnZV8wLjEuMF94NjRfZW4tVVMubXNpCmxaZDRPQktESGUxVm9nYUNZQjNKOFpCZkYwbW93OWJ2ODgxZ1BNNlB1Slh2SWVTRFh0Z01Ma3dGbzczRlJiNncxanM3c3NKQkJzUDlVK2x1OU9tTUJRPT0K",
+      "url": "https://pos-liquid8.sro.my.id/update/latest/win_v0_1_0.msi"
+    },
+    "darwin-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRTWFuQnh3T0hVblRLN254ckV5bHYzZWFxNmoxNU1GVFZZUU1pamc5V0ttbFpTQ2M5NGwwNE5ZREZnMFJwNk5GdVJMd01kNytiTWZHWHY4RC93cWlxbitaU0RMR3cyamd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2NzAzNDcyCWZpbGU6cG9zLWJyaWRnZS5hcHAudGFyLmd6CkpGRU9RTzlXYWVTTlV1TzU4TXJnSWlPNUhTQXQ3cjNxNFBLRmJUa05ha2hPeXhxU2w5MDVibDYrbjQyQi9ManFPNjMvbVY5LzJkREtwYmJMbVNueEF3PT0K",
+      "url": "https://pos-liquid8.sro.my.id/update/latest/mac_v0_1_0.app.tar.gz"
+    }
+  }
+}
