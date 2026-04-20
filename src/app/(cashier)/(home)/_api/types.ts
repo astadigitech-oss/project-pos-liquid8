@@ -148,6 +148,37 @@ export type AddMemberBody = {
 export type PendingTransactionBody = {
   member_id: number;
 };
+export type CheckoutTransactionBody = {
+  member_id: number;
+  payment_method: string;
+  paid_amount: number;
+  grand_total: number;
+};
+export type CheckoutTransactionResponse = {
+  status: boolean;
+  message: string;
+  resource: {
+    id: number;
+    store_id: number;
+    user_id: number;
+    shift_id: number;
+    member_id: number;
+    invoice: string;
+    total_item: number;
+    total_quantity: number;
+    member_point: number;
+    subtotal: number;
+    tax: number;
+    discount: number;
+    total_amount: number;
+    paid_amount: number;
+    change_amount: number;
+    payment_method: string;
+    status: string;
+    created_at: string;
+    updated_at: string;
+  };
+};
 
 export type AddUpdateMemberResponse = {
   status: boolean;

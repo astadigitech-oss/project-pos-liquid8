@@ -1,10 +1,24 @@
 import { atomWithQuery } from "jotai-tanstack-query";
-import { shiftListQuery } from "./data";
+import { shiftDetailQuery, shiftListQuery } from "./data";
 import { keepPreviousData } from "@tanstack/react-query";
-import { shiftEndDate, shiftPage, shiftSearch, shiftStartDate } from "./atom";
+import {
+  detailShiftId,
+  shiftEndDate,
+  shiftPage,
+  shiftSearch,
+  shiftStartDate,
+} from "./atom";
 
 export const listShiftAtom = atomWithQuery((get) => ({
-  queryKey: ["list-shift"],
+  queryKey: [
+    "list-shift",
+    {
+      q: get(shiftSearch),
+      page: get(shiftPage),
+      startDate: get(shiftStartDate),
+      endDate: get(shiftEndDate),
+    },
+  ],
   queryFn: () =>
     shiftListQuery(
       get(shiftSearch),
@@ -13,5 +27,10 @@ export const listShiftAtom = atomWithQuery((get) => ({
       get(shiftEndDate),
     ),
   placeholderData: keepPreviousData,
+  retry: 0,
+}));
+export const detailShiftAtom = atomWithQuery((get) => ({
+  queryKey: ["detail-shift", get(detailShiftId)],
+  queryFn: () => shiftDetailQuery(get(detailShiftId)),
   retry: 0,
 }));

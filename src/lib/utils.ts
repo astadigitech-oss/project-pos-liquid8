@@ -45,3 +45,9 @@ export const invalidate = async (
 ) => {
   await queryClient.invalidateQueries({ queryKey });
 };
+
+export const paymentMethods = [
+  { value: "cash", label: "Tunai" },
+  { value: "transfer", label: "Transfer" },
+  { value: "qris", label: "QRIS" },
+];

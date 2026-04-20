@@ -26,3 +26,36 @@ export type ShiftListResponse = {
   };
   status: boolean;
 };
+export type ShiftDetailResponse = {
+  status: boolean;
+  message: string;
+  resource: {
+    items: Array<{
+      id: number;
+      status: string;
+      transaction_id: number;
+      invoice: string;
+      product_name: string;
+      quantity: number;
+      price: number;
+      discount_price: number;
+      subtotal: number;
+      created_at: string;
+    }>;
+    summary: {
+      actual_cash: number;
+      difference: number;
+      end: string;
+      expected_cash: number;
+      initial_cash: number;
+      note: string;
+      start: string;
+      total_invoice: number;
+      total_penjualan: number;
+      total_subtotal: number;
+      total_tax: number;
+      user_closed: string;
+      user_open: string;
+    };
+  };
+};

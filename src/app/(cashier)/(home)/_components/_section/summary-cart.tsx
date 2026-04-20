@@ -1,18 +1,8 @@
-import { AtomValue, SetAtom } from "@suspensive/jotai";
+import { Atom, AtomValue, SetAtom } from "@suspensive/jotai";
 import { Delay, Suspense } from "@suspensive/react";
-import React, { useState } from "react";
+import React from "react";
 import { currentCartAtom, detailSelectedMemberAtom } from "../../_api/queries";
 import { Spinner } from "@/components/ui/spinner";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { TooltipText } from "@/providers/tooltip-provider";
 import { Separator } from "@/components/ui/separator";
@@ -34,38 +24,31 @@ import {
   CreditCard,
   HandCoins,
   PowerOffIcon,
-  Printer,
   QrCode,
   RefreshCw,
   ShoppingCart,
   Trash,
   User2Icon,
-  XIcon,
 } from "lucide-react";
-import { formatPhoneNumber, formatRupiah } from "@/lib/utils";
+import { formatPhoneNumber, formatRupiah, paymentMethods } from "@/lib/utils";
 import {
+  checkoutTransactionDialog,
   customerDialog,
   customerSelectedId,
   draftAddDialog,
   draftListDialog,
   emptyTransactionDialog,
   isCustomer,
+  paymentCustomer,
+  paymentMethodSelected,
 } from "../../_api/atoms";
 import { DraftTransaction } from "../_dialog/draft-list";
 import { CustomerDialog } from "../_dialog/customer";
 import { AddToDraft } from "../_dialog/draf";
 import { EmptyTransaction } from "../_dialog/empty";
-
-const paymentMethods = [
-  { value: "cash", label: "Tunai" },
-  { value: "card", label: "Kartu" },
-  { value: "qris", label: "QRIS" },
-];
+import { CheckoutTransaction } from "../_dialog/checkout";
 
 export const SummaryCart = () => {
-  const [paymentMethod, setPaymentMethod] = useState<
-    "cash" | "card" | "qris" | null
-  >(null);
   return (
     <Suspense fallback={<Loader />}>
       <AtomValue atom={currentCartAtom}>
@@ -86,6 +69,7 @@ export const SummaryCart = () => {
                 <DraftTransaction />
                 <EmptyTransaction />
                 <AddToDraft />
+                <CheckoutTransaction />
                 <div>
                   <div className="flex items-center gap-2 px-3 h-20 justify-between border-b border-gray-300">
                     <SetAtom atom={draftListDialog}>
@@ -185,214 +169,221 @@ export const SummaryCart = () => {
                       </div>
                     </div>
                     <Separator />
-                    <div className="flex flex-col gap-4">
-                      <Field>
-                        <FieldLabel className="text-sm">
-                          Metode Pembayaran
-                        </FieldLabel>
-                        <Select
-                          items={paymentMethods}
-                          value={paymentMethod}
-                          onValueChange={(e) => setPaymentMethod(e)}
-                        >
-                          <SelectTrigger className={"relative"}>
-                            {paymentMethod === null && (
-                              <HandCoins className="size-3.5 absolute left-3 text-gray-400" />
-                            )}
-                            {paymentMethod === "cash" && (
-                              <Banknote className="size-3.5 absolute left-3" />
-                            )}
-                            {paymentMethod === "card" && (
-                              <CreditCard className="size-3.5 absolute left-3" />
-                            )}
-                            {paymentMethod === "qris" && (
-                              <QrCode className="size-3.5 absolute left-3" />
-                            )}
-                            <SelectValue
-                              className={"text-xs pl-6"}
-                              placeholder="Pilih metode pembayaran"
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectGroup>
-                              {paymentMethods.map((item) => (
-                                <SelectItem
-                                  key={item.value}
-                                  value={item.value}
-                                  className={"text-xs h-7"}
+                    <Atom atom={paymentMethodSelected}>
+                      {([paymentMethod, setPaymentMethod]) => (
+                        <Atom atom={paymentCustomer}>
+                          {([payment, setPayment]) => (
+                            <div className="flex flex-col gap-4">
+                              <Field>
+                                <FieldLabel className="text-sm">
+                                  Metode Pembayaran
+                                </FieldLabel>
+                                <Select
+                                  items={paymentMethods}
+                                  value={paymentMethod}
+                                  onValueChange={(e) => setPaymentMethod(e)}
                                 >
-                                  {item.value === "cash" && (
-                                    <Banknote className="size-3.5" />
+                                  <SelectTrigger className={"relative"}>
+                                    {paymentMethod === null && (
+                                      <HandCoins className="size-3.5 absolute left-3 text-gray-400" />
+                                    )}
+                                    {paymentMethod === "cash" && (
+                                      <Banknote className="size-3.5 absolute left-3" />
+                                    )}
+                                    {paymentMethod === "transfer" && (
+                                      <CreditCard className="size-3.5 absolute left-3" />
+                                    )}
+                                    {paymentMethod === "qris" && (
+                                      <QrCode className="size-3.5 absolute left-3" />
+                                    )}
+                                    <SelectValue
+                                      className={"text-xs pl-6"}
+                                      placeholder="Pilih metode pembayaran"
+                                    />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectGroup>
+                                      {paymentMethods.map((item) => (
+                                        <SelectItem
+                                          key={item.value}
+                                          value={item.value}
+                                          className={"text-xs h-7"}
+                                          onClick={() => {
+                                            if (item.value === "cash") {
+                                              setPayment(0);
+                                            }
+                                            if (
+                                              item.value === "transfer" ||
+                                              item.value === "qris"
+                                            ) {
+                                              setPayment(
+                                                data.resource.total_amount,
+                                              );
+                                            }
+                                          }}
+                                        >
+                                          {item.value === "cash" && (
+                                            <Banknote className="size-3.5" />
+                                          )}
+                                          {item.value === "transfer" && (
+                                            <CreditCard className="size-3.5" />
+                                          )}
+                                          {item.value === "qris" && (
+                                            <QrCode className="size-3.5" />
+                                          )}
+                                          {item.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectGroup>
+                                  </SelectContent>
+                                </Select>
+                              </Field>
+                              <RupiahInput
+                                className="h-16 sm:text-3xl disabled:opacity-100 disabled:bg-white"
+                                dir="rtl"
+                                disabled={paymentMethod !== "cash"}
+                                value={payment}
+                                onValueChange={(e) =>
+                                  setPayment(Number.parseFloat(e ?? "0"))
+                                }
+                              />
+                              <div className="flex justify-between items-center text-base font-semibold">
+                                <p>Kembalian:</p>
+                                <p className="tabular-nums">
+                                  {formatRupiah(
+                                    payment - data.resource.total_amount,
                                   )}
-                                  {item.value === "card" && (
-                                    <CreditCard className="size-3.5" />
-                                  )}
-                                  {item.value === "qris" && (
-                                    <QrCode className="size-3.5" />
-                                  )}
-                                  {item.label}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </Field>
-                      <RupiahInput
-                        className="h-16 sm:text-3xl"
-                        dir="rtl"
-                        defaultValue={3000000}
-                      />
-                      <div className="flex justify-between items-center">
-                        <p>Kembalian:</p>
-                        <p className="tabular-nums">{formatRupiah(880000)}</p>
-                      </div>
-                    </div>
+                                </p>
+                              </div>
+                            </div>
+                          )}
+                        </Atom>
+                      )}
+                    </Atom>
                   </div>
                 </div>
-                <AtomValue atom={customerSelectedId}>
-                  {(memberId) => (
-                    <AtomValue atom={currentCartAtom}>
-                      {({ data }) => (
-                        <div className="flex flex-col w-full">
-                          {(!data?.resource.items ||
-                            data?.resource.items?.length === 0) && (
-                            <div className="flex border-t items-center gap-2 h-10 px-4 bg-red-100">
-                              <AlertTriangle className="size-4" />
-                              <p className="text-xs font-semibold">
-                                Produk belum ditambahkan
-                              </p>
-                            </div>
-                          )}
-                          {!memberId && (
-                            <div className="flex border-t items-center gap-2 h-10 px-4 bg-yellow-100">
-                              <AlertTriangle className="size-4" />
-                              <p className="text-xs font-semibold">
-                                Customer belum dipilih
-                              </p>
-                            </div>
-                          )}
-                          <div className="border-t p-3 flex items-center gap-3">
-                            <SetAtom atom={emptyTransactionDialog}>
-                              {(setOpen) => (
-                                <TooltipText
-                                  value={"Batalkan transaksi"}
-                                  render={
-                                    <Button
-                                      variant={"destructive"}
-                                      size={"icon"}
-                                      className={"size-10"}
-                                      onClick={() => setOpen(true)}
-                                    >
-                                      <Trash />
-                                    </Button>
-                                  }
-                                />
-                              )}
-                            </SetAtom>
-                            <div className="w-full grid grid-cols-3 gap-3">
-                              <SetAtom atom={draftAddDialog}>
-                                {(setOpen) => (
-                                  <Button
-                                    variant={"outline"}
-                                    className={
-                                      "col-span-1 flex-auto h-10 disabled:opacity-70 disabled:cursor-not-allowed disabled:pointer-events-auto disabled:hover:bg-white"
-                                    }
-                                    onClick={() => setOpen(true)}
-                                    disabled={
-                                      !memberId ||
-                                      !data?.resource.items ||
-                                      data?.resource.items?.length === 0
-                                    }
-                                  >
-                                    <Clock />
-                                    Draf
-                                  </Button>
-                                )}
-                              </SetAtom>
-                              <Dialog>
-                                <DialogTrigger
-                                  render={
-                                    <Button
-                                      className={
-                                        "col-span-2 flex-auto h-10 disabled:opacity-70 disabled:cursor-not-allowed disabled:pointer-events-auto disabled:hover:bg-primary"
-                                      }
-                                      disabled={
-                                        !memberId ||
-                                        !data?.resource.items ||
-                                        data?.resource.items?.length === 0
-                                      }
-                                    >
-                                      <ShoppingCart />
-                                      Checkout
-                                    </Button>
-                                  }
-                                />
-                                <DialogContent
-                                  showCloseButton={false}
-                                  className={"min-w-md"}
-                                >
-                                  <DialogHeader>
-                                    <DialogTitle>
-                                      Apakah Pembayaran Berhasil?
-                                    </DialogTitle>
-                                    <DialogDescription>
-                                      Sebelum mencetak struk pastikan pembayaran
-                                      customer berhasil terlebih dahulu.
-                                    </DialogDescription>
-                                  </DialogHeader>
-                                  <div className="border rounded-md overflow-hidden">
-                                    <div className="px-3 h-10 flex items-center bg-gray-100 font-medium">
-                                      <p>Rangkuman Transaksi</p>
+                <AtomValue atom={paymentCustomer}>
+                  {(payment) => (
+                    <AtomValue atom={paymentMethodSelected}>
+                      {(paymentMethod) => (
+                        <AtomValue atom={customerSelectedId}>
+                          {(memberId) => (
+                            <AtomValue atom={currentCartAtom}>
+                              {({ data }) => (
+                                <div className="flex flex-col w-full">
+                                  {(!data?.resource.items ||
+                                    data?.resource.items?.length === 0) && (
+                                    <div className="flex border-t items-center gap-2 h-10 px-4 bg-red-100">
+                                      <AlertTriangle className="size-4" />
+                                      <p className="text-xs font-semibold">
+                                        Produk belum ditambahkan
+                                      </p>
                                     </div>
-                                    <div className="flex flex-col text-sm">
-                                      <div className="flex items-center justify-between px-3 h-10">
-                                        <p>Total barang:</p>
-                                        <p>50</p>
+                                  )}
+                                  {!memberId && (
+                                    <div className="flex border-t items-center gap-2 h-10 px-4 bg-yellow-100">
+                                      <AlertTriangle className="size-4" />
+                                      <p className="text-xs font-semibold">
+                                        Customer belum dipilih
+                                      </p>
+                                    </div>
+                                  )}
+                                  {(data?.resource.items?.length ?? 0) > 0 &&
+                                    !paymentMethod && (
+                                      <div className="flex border-t items-center gap-2 h-10 px-4 bg-yellow-100">
+                                        <AlertTriangle className="size-4" />
+                                        <p className="text-xs font-semibold">
+                                          Metode pembayaran belum dipilih
+                                        </p>
                                       </div>
-                                      <Separator />
-                                      <div className="flex items-center justify-between px-3 h-10">
-                                        <p>Total harga:</p>
-                                        <p>{formatRupiah(2200000)}</p>
+                                    )}
+                                  {paymentMethod === "cash" &&
+                                    (data?.resource.total_amount ?? 0) >
+                                      payment && (
+                                      <div className="flex border-t items-center gap-2 h-10 px-4 bg-yellow-100">
+                                        <AlertTriangle className="size-4" />
+                                        <p className="text-xs font-semibold">
+                                          Pembayaran Customer Kurang
+                                        </p>
                                       </div>
-                                      <Separator />
-                                      <div className="flex items-center justify-between px-3 h-10">
-                                        <p>Metode Pembayaran:</p>
-                                        <div className="flex items-center gap-1">
-                                          <Banknote className="size-3.5" />
-                                          <p>Tunai</p>
-                                        </div>
-                                      </div>
-                                      <Separator />
-                                      <div className="flex items-center justify-between px-3 h-10">
-                                        <p>Nominal Pembayaran:</p>
-                                        <p>{formatRupiah(3000000)}</p>
-                                      </div>
-                                      <Separator />
-                                      <div className="flex items-center justify-between px-3 h-10">
-                                        <p>Kembalian:</p>
-                                        <p>{formatRupiah(800000)}</p>
-                                      </div>
+                                    )}
+                                  <div className="border-t p-3 flex items-center gap-3">
+                                    <SetAtom atom={emptyTransactionDialog}>
+                                      {(setOpen) => (
+                                        <TooltipText
+                                          value={"Batalkan transaksi"}
+                                          render={
+                                            <Button
+                                              variant={"destructive"}
+                                              size={"icon"}
+                                              className={"size-10"}
+                                              onClick={() => setOpen(true)}
+                                            >
+                                              <Trash />
+                                            </Button>
+                                          }
+                                        />
+                                      )}
+                                    </SetAtom>
+                                    <div className="w-full grid grid-cols-3 gap-3">
+                                      <SetAtom atom={draftAddDialog}>
+                                        {(setOpen) => (
+                                          <Button
+                                            variant={"outline"}
+                                            className={
+                                              "col-span-1 flex-auto h-10 disabled:opacity-70 disabled:cursor-not-allowed disabled:pointer-events-auto disabled:hover:bg-white"
+                                            }
+                                            onClick={() => setOpen(true)}
+                                            disabled={
+                                              !memberId ||
+                                              !data?.resource.items ||
+                                              data?.resource.items?.length ===
+                                                0 ||
+                                              (paymentMethod === "cash" &&
+                                                (data?.resource.total_amount ??
+                                                  0) > payment) ||
+                                              ((data?.resource.items?.length ??
+                                                0) > 0 &&
+                                                !paymentMethod)
+                                            }
+                                          >
+                                            <Clock />
+                                            Draf
+                                          </Button>
+                                        )}
+                                      </SetAtom>
+                                      <SetAtom atom={checkoutTransactionDialog}>
+                                        {(setOpen) => (
+                                          <Button
+                                            className={
+                                              "col-span-2 flex-auto h-10 disabled:opacity-70 disabled:cursor-not-allowed disabled:pointer-events-auto disabled:hover:bg-primary"
+                                            }
+                                            disabled={
+                                              !memberId ||
+                                              !data?.resource.items ||
+                                              data?.resource.items?.length ===
+                                                0 ||
+                                              (paymentMethod === "cash" &&
+                                                (data?.resource.total_amount ??
+                                                  0) > payment) ||
+                                              ((data?.resource.items?.length ??
+                                                0) > 0 &&
+                                                !paymentMethod)
+                                            }
+                                            onClick={() => setOpen(true)}
+                                          >
+                                            <ShoppingCart />
+                                            Checkout
+                                          </Button>
+                                        )}
+                                      </SetAtom>
                                     </div>
                                   </div>
-                                  <DialogFooter>
-                                    <DialogClose
-                                      render={
-                                        <Button variant={"outline"}>
-                                          <XIcon className="size-3.5" />
-                                          Tutup
-                                        </Button>
-                                      }
-                                    />
-                                    <Button>
-                                      <Printer className="size-3.5" />
-                                      Selesaikan dan Cetak Struk
-                                    </Button>
-                                  </DialogFooter>
-                                </DialogContent>
-                              </Dialog>
-                            </div>
-                          </div>
-                        </div>
+                                </div>
+                              )}
+                            </AtomValue>
+                          )}
+                        </AtomValue>
                       )}
                     </AtomValue>
                   )}
