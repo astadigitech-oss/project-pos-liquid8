@@ -175,9 +175,7 @@ export const SettingsClient = () => {
             </CardFooter>
           </Card>
         </div>
-        <Button className={"hidden"} onClick={handlePrint}>
-          Click me
-        </Button>
+        <Button onClick={handlePrint}>Click me</Button>
       </div>
     </div>
   );
