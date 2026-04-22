@@ -1,15 +1,15 @@
 {
-  "version": "0.1.11",
+  "version": "0.1.12",
   "notes": "Perbaikan bug printer.",
-  "pub_date": "2026-04-22T03:00:00Z",
+  "pub_date": "2026-04-22T12:00:00Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRTWFuQnh3T0hVblF4L0t1ckVzMHFNT2UwMHYzZzdoMFovclZrSGRiVHBwZzhyNWM5R0FSeVpHbkFGemlaNHZWdU05cGxDaHNEVmRxOHVCR1dtNDdRUFdiYXl6bEhkNlE4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODM1Mjc3CWZpbGU6cG9zLWJyaWRnZV8wLjEuMTFfeDY0LXNldHVwLmV4ZQpkWXU5YUhZN2tlc3BVMmhwREhlRG9iY0Zpd3NCYkRBT3R4dFYzRUlzeHR2MXBqOTBNVzQ5WXZESlM5ZWJtOXRHUkJ6RFpPUnZEdHV0d1BKWGFYdlNBUT09Cg==",
-      "url": "https://pos-liquid8.sro.my.id/update/latest/win_v0_1_11.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRTWFuQnh3T0hVblJZMXIwcVA4QkRqVHBsTGR2SXUzOUhNbmY3c0xvb24rclJCTndIN3BaK1lYZjZYci9OT1lKTGJsakN6OWhkOVZXT2RxTkhkQkxROXBkYitSU1k1WHcwPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODM2NzczCWZpbGU6cG9zLWJyaWRnZV8wLjEuMTJfeDY0LXNldHVwLmV4ZQpZcWlyVTdWcURhU0x4TG1odkIrWGRPaGlTMllJNHh6R2E3N0hFdVVUREdFdmJtdHh6RUwwWXJJVHNQVXVNbWlYT25NRjM1V3pMZHdsYjBFSTdabkRCUT09Cg==",
+      "url": "https://pos-liquid8.sro.my.id/update/latest/win_v0_1_12.exe"
     },
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRTWFuQnh3T0hVblFPeGE3RFBaZzJnb2R2YnhjTFBMM2R2RnhER0xLa25jYmxUOVFNVzlWTmlWcmpOZlM2SzQ3TTVHcXk2NFhuWmE4WWRDZ0hqREZOeU9KVkFSNS93c0FNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODMxODY2CWZpbGU6cG9zLWJyaWRnZS5hcHAudGFyLmd6CnZmWnhheGRQa2Nla1RDQVJidVVaT0JMazhwM1U1emZJZEZjdWRKYk9iZ0p6elJPZzRud085WWhldUxHZ1NhcU9Nell3UVhTUEhCRE12R05wd1RWa0NBPT0K",
-      "url": "https://pos-liquid8.sro.my.id/update/latest/mac_v0.1.11.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRTWFuQnh3T0hVblhHeW8zVG9DS2JEZ3RQcXJmaFVYdk1sOUNLa0F4MzdhY3JPYUMzOHdyUjRQOHhFcjl2TzBvQVBSdU9SUzFubGxZUXhtYWNEekFxbkErejFjWUtjVmdZPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc2ODM2NzIyCWZpbGU6cG9zLWJyaWRnZS5hcHAudGFyLmd6Cjl0a2c0aFkxVmdxQVM4MGg4WEVQQ3U2dWJ2WHo0R1ZwRHJCbCt6RzVWeUhGc2pScGhncVA3bDNnVTZyRnJKeDhiUGpFWmlmaGdORHNCTWhiZDZvaERBPT0K",
+      "url": "https://pos-liquid8.sro.my.id/update/latest/mac_v0.1.12.app.tar.gz"
     }
   }
 }
