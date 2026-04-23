@@ -10,21 +10,27 @@ import {
 } from "@/components/ui/input-group";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { tz } from "@date-fns/tz";
-import { format } from "date-fns";
+import { format, isSameDay } from "date-fns";
 import { id } from "date-fns/locale";
-import { CalendarDays, RefreshCw, Search, Send, XCircle } from "lucide-react";
+import { CalendarDays, Check, RefreshCw, Search, XCircle } from "lucide-react";
 import React from "react";
 import { column } from "./columns";
 import { useTime } from "@/hooks/use-time";
-import { AtomValue } from "@suspensive/jotai";
+import { Atom, AtomValue } from "@suspensive/jotai";
 import { listShiftAtom } from "../_api/queries";
 import { ShiftDetailDialog } from "./_dialog/detail";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipText } from "@/providers/tooltip-provider";
 import { useAtom } from "jotai";
-import { shiftSearch } from "../_api/atom";
+import {
+  shiftEndDate,
+  shiftPage,
+  shiftSearch,
+  shiftStartDate,
+} from "../_api/atom";
 import {
   Popover,
+  PopoverClose,
   PopoverContent,
   PopoverDescription,
   PopoverHeader,
@@ -32,6 +38,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
+import { Pagination } from "@/components/pagination";
 
 export const ShiftsClient = () => {
   const { formattedDate, formattedTime } = useTime();
@@ -56,68 +64,112 @@ export const ShiftsClient = () => {
         </div>
       </div>
       <AtomValue atom={listShiftAtom}>
-        {({ data, isSuccess, isPending, isRefetching }) => (
+        {({ data, isSuccess, isPending, isRefetching, isError, refetch }) => (
           <div className="bg-white p-5 flex flex-col gap-4 rounded-xl shadow">
             <div className="flex items-center justify-between w-full gap-4">
               <div className="flex items-center gap-2">
-                <Popover>
-                  <PopoverTrigger
-                    render={
-                      <Button
-                        className={"text-xs bg-transparent hover:bg-white"}
-                        variant={"outline"}
-                      >
-                        <CalendarDays className="size-3.5" />
-                        <p className="pr-2">
-                          {format(new Date("2026-01-01"), "PP", {
-                            locale: id,
-                            in: tz("Asia/Jakarta"),
-                          }) +
-                            " - " +
-                            format(new Date("2026-01-01"), "PP", {
-                              locale: id,
-                              in: tz("Asia/Jakarta"),
-                            })}
-                        </p>
-                      </Button>
-                    }
-                  />
-                  <PopoverContent
-                    className={"w-auto"}
-                    align="start"
-                    sideOffset={10}
-                  >
-                    <PopoverHeader>
-                      <PopoverTitle>Pilih Rentang Tanggal</PopoverTitle>
-                      <PopoverDescription>
-                        Pilih rentang tanggal yang ingin Anda lihat.
-                      </PopoverDescription>
-                    </PopoverHeader>
-                    <div className="flex-none border rounded-md">
-                      <Calendar mode="range" numberOfMonths={2} />
-                    </div>
-                    <div className="border-t pt-2 w-full flex items-center justify-end gap-2">
-                      <Button variant={"outline"} className={""}>
-                        <RefreshCw className="size-3.5" />
-                        Reset
-                      </Button>
-                      <Button className={""}>
-                        <Send className="size-3.5" />
-                        Kirim
-                      </Button>
-                    </div>
-                  </PopoverContent>
-                </Popover>
+                <Atom atom={shiftStartDate}>
+                  {([startDate, setStartDate]) => (
+                    <Atom atom={shiftEndDate}>
+                      {([endDate, setEndDate]) => (
+                        <Popover>
+                          <PopoverTrigger
+                            render={
+                              <Button
+                                className={
+                                  "text-xs bg-transparent hover:bg-white"
+                                }
+                                variant={"outline"}
+                              >
+                                <CalendarDays className="size-3.5" />
+                                <p className="pr-2">
+                                  {!startDate
+                                    ? "Pilih Tanggal"
+                                    : !endDate || isSameDay(startDate, endDate)
+                                      ? format(startDate, "PP", {
+                                          locale: id,
+                                          in: tz("Asia/Jakarta"),
+                                        })
+                                      : `${format(startDate, "PP", { locale: id, in: tz("Asia/Jakarta") })} - ${format(endDate, "PP", { locale: id, in: tz("Asia/Jakarta") })}`}
+                                </p>
+                              </Button>
+                            }
+                          />
+                          <PopoverContent
+                            className={"w-auto"}
+                            align="start"
+                            sideOffset={10}
+                          >
+                            <PopoverHeader>
+                              <PopoverTitle>Pilih Rentang Tanggal</PopoverTitle>
+                              <PopoverDescription>
+                                Pilih rentang tanggal yang ingin Anda lihat.
+                              </PopoverDescription>
+                            </PopoverHeader>
+                            <div className="flex-none border rounded-md">
+                              <Calendar
+                                mode="range"
+                                numberOfMonths={2}
+                                defaultMonth={
+                                  startDate ? new Date(startDate) : undefined
+                                }
+                                selected={{
+                                  from: startDate
+                                    ? new Date(startDate)
+                                    : undefined,
+                                  to: endDate ? new Date(endDate) : undefined,
+                                }}
+                                onSelect={(e) => {
+                                  setStartDate(e?.from?.toString());
+                                  setEndDate(e?.to?.toString());
+                                }}
+                              />
+                            </div>
+                            <div className="border-t pt-2 w-full flex items-center justify-end gap-2">
+                              <Button
+                                size={"sm"}
+                                variant={"outline"}
+                                className={""}
+                              >
+                                <RefreshCw className="size-3.5" />
+                                Reset
+                              </Button>
+                              <PopoverClose
+                                render={
+                                  <Button size={"sm"} className={""}>
+                                    <Check className="size-3.5" />
+                                    Konfirmasi
+                                  </Button>
+                                }
+                              />
+                            </div>
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                    </Atom>
+                  )}
+                </Atom>
               </div>
-              <div>
+              <div className="flex items-center gap-2">
                 <ShiftSearchInput
                   disabled={isPending || isRefetching}
                   isSuccess={isSuccess}
+                  isError={isError}
                 />
+                <Button size={"icon"} onClick={() => refetch()}>
+                  <RefreshCw
+                    className={cn("size-3.5", isRefetching && "animate-spin")}
+                  />
+                </Button>
               </div>
             </div>
-            <div>
+            <div className="flex flex-col gap-4">
               <DataTable columns={column()} data={data?.resource.data ?? []} />
+              <Pagination
+                atomPage={shiftPage}
+                pagination={data?.resource.pagination}
+                isPending={isPending || isRefetching}
+              />
             </div>
           </div>
         )}
@@ -129,9 +181,11 @@ export const ShiftsClient = () => {
 const ShiftSearchInput = ({
   disabled,
   isSuccess,
+  isError,
 }: {
   disabled: boolean;
   isSuccess: boolean;
+  isError: boolean;
 }) => {
   const [search, setSearch] = useAtom(shiftSearch);
   const [localValue, setLocalValue] = React.useState(search);
@@ -147,10 +201,10 @@ const ShiftSearchInput = ({
   }, [search]);
 
   React.useEffect(() => {
-    if (!disabled && isSuccess) {
+    if ((!disabled && isSuccess) || (!disabled && isError)) {
       inputRef.current?.focus();
     }
-  }, [disabled, isSuccess]);
+  }, [disabled, isSuccess, isError]);
 
   return (
     <InputGroup className="has-disabled:opacity-100 has-disabled:bg-transparent w-64">

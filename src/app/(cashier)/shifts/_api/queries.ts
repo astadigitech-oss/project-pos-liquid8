@@ -29,8 +29,10 @@ export const listShiftAtom = atomWithQuery((get) => ({
   placeholderData: keepPreviousData,
   retry: 0,
 }));
+
 export const detailShiftAtom = atomWithQuery((get) => ({
   queryKey: ["detail-shift", get(detailShiftId)],
   queryFn: () => shiftDetailQuery(get(detailShiftId)),
+  enabled: !!get(detailShiftId),
   retry: 0,
 }));

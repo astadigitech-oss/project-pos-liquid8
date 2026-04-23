@@ -2,18 +2,30 @@ import { Button } from "@/components/ui/button";
 import { cn, formatRupiah } from "@/lib/utils";
 import { TooltipText } from "@/providers/tooltip-provider";
 import { tz } from "@date-fns/tz";
+import { SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import { Printer, ReceiptText, TicketX } from "lucide-react";
+import { ReceiptText, TicketX } from "lucide-react";
+import {
+  cancelTransactionDialog,
+  detailTransactionDialog,
+  selectedTransactionId,
+} from "../_api/atom";
 
 export const column = (): ColumnDef<{
-  order_id: string;
-  customer: string;
-  cashier: string;
-  price: number;
-  status: boolean;
-  date: Date;
+  id: number;
+  invoice: string;
+  total_item: number;
+  total_quantity: number;
+  kasir: string;
+  store_name: string;
+  subtotal: number;
+  tax: number;
+  total_amount: number;
+  status: string;
+  payment_method: string;
+  created_at: string;
 }>[] => [
   {
     header: () => <div className="text-center">No</div>,
@@ -25,26 +37,31 @@ export const column = (): ColumnDef<{
     ),
   },
   {
-    accessorKey: "order_id",
-    header: "Order ID",
+    accessorKey: "invoice",
+    header: "Invoice",
+  },
+  {
+    accessorKey: "kasir",
+    header: "Kasir",
   },
   {
     accessorKey: "date",
-    header: "Shift",
+    header: "Tanggal",
     cell: ({ row }) =>
-      format(row.original.date, "PP - HH:mm", {
+      format(row.original.created_at, "PP - HH:mm", {
         locale: id,
         in: tz("Asia/Jakarta"),
       }),
   },
   {
-    accessorKey: "customer",
-    header: "Customer",
+    accessorKey: "total_item",
+    header: "Total Item",
+    cell: ({ row }) => row.original.total_item.toLocaleString(),
   },
   {
     accessorKey: "price",
     header: "Harga",
-    cell: ({ row }) => formatRupiah(row.original.price),
+    cell: ({ row }) => formatRupiah(row.original.total_amount),
   },
   {
     accessorKey: "status",
@@ -55,66 +72,67 @@ export const column = (): ColumnDef<{
           <span
             className={cn(
               "size-2 rounded-full",
-              row.original.status ? "bg-green-500" : "bg-red-500",
+              row.original.status === "done" ? "bg-green-500" : "bg-red-500",
             )}
           />
-          {row.original.status ? "Selesai" : "Dibatalkan"}
+          {row.original.status === "done" ? "Selesai" : "Dibatalkan"}
         </div>
       );
     },
-  },
-  {
-    accessorKey: "cashier",
-    header: "Kasir",
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-1">
-          <TooltipText
-            value="Print Struk"
-            render={
-              <Button
-                size={"icon-sm"}
-                className={
-                  "text-emerald-600 bg-emerald-100 hover:bg-emerald-200 hover:text-emerald-700"
-                }
-                disabled={!row.original.status}
-                variant={"ghost"}
-              >
-                <Printer className="size-3.5" />
-              </Button>
-            }
-          />
-          <TooltipText
-            value="Detail Transaksi"
-            render={
-              <Button
-                size={"icon-sm"}
-                className={
-                  "text-blue-500 bg-blue-100 hover:bg-blue-200 hover:text-blue-600"
-                }
-                variant={"ghost"}
-              >
-                <ReceiptText className="size-3.5" />
-              </Button>
-            }
-          />
-          <TooltipText
-            value={"Batalkan Transaksi"}
-            render={
-              <Button
-                disabled={!row.original.status}
-                size={"icon-sm"}
-                variant={"destructive"}
-              >
-                <TicketX className="size-3.5" />
-              </Button>
-            }
-          />
-        </div>
+        <SetAtom atom={selectedTransactionId}>
+          {(setTransactionId) => (
+            <div className="flex items-center gap-1">
+              <SetAtom atom={detailTransactionDialog}>
+                {(setOpen) => (
+                  <TooltipText
+                    value="Detail Transaksi"
+                    render={
+                      <Button
+                        size={"icon-sm"}
+                        className={
+                          "text-blue-500 bg-blue-100 hover:bg-blue-200 hover:text-blue-600"
+                        }
+                        variant={"ghost"}
+                        onClick={() => {
+                          setOpen(true);
+                          setTransactionId(row.original.id.toString());
+                        }}
+                      >
+                        <ReceiptText className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                )}
+              </SetAtom>
+              <SetAtom atom={cancelTransactionDialog}>
+                {(setOpen) => (
+                  <TooltipText
+                    value={"Batalkan Transaksi"}
+                    render={
+                      <Button
+                        disabled={row.original.status === "cancelled"}
+                        size={"icon-sm"}
+                        variant={"destructive"}
+                        onClick={() => {
+                          setOpen(true);
+                          setTransactionId(row.original.id.toString());
+                        }}
+                      >
+                        <TicketX className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                )}
+              </SetAtom>
+            </div>
+          )}
+        </SetAtom>
       );
     },
   },

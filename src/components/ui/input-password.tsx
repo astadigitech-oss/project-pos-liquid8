@@ -28,6 +28,7 @@ export const InputPassword = ({
       </InputGroupAddon>
       <InputGroupAddon align={"inline-end"}>
         <InputGroupButton
+          tabIndex={-1}
           size={"icon-xs"}
           type="button"
           onClick={() => setIsVisible(!isVisible)}

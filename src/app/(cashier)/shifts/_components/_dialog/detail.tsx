@@ -9,14 +9,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Printer, TrendingDown, TrendingUp, XIcon } from "lucide-react";
+import {
+  Printer,
+  RefreshCw,
+  TrendingDown,
+  TrendingUp,
+  XIcon,
+} from "lucide-react";
 import { Atom, AtomValue } from "@suspensive/jotai";
 import { detailShiftDialog } from "../../_api/atom";
 import { detailShiftAtom } from "../../_api/queries";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { tz } from "@date-fns/tz";
-import { formatRupiah } from "@/lib/utils";
+import { cn, formatRupiah } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/data-table";
 import { columnDetail } from "../columns-detail";
@@ -27,15 +33,28 @@ export const ShiftDetailDialog = () => {
       {([open, setOpen]) => (
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogContent showCloseButton={false} className={"min-w-5xl"}>
-            <div className="flex flex-col h-[90svh] w-full justify-between gap-4">
-              <DialogHeader>
-                <DialogTitle>Detail Shift</DialogTitle>
-                <DialogDescription>
-                  Seluruh detail shift dari item sampai rangkuman
-                </DialogDescription>
-              </DialogHeader>
-              <AtomValue atom={detailShiftAtom}>
-                {({ data }) => (
+            <AtomValue atom={detailShiftAtom}>
+              {({ data, refetch, isRefetching }) => (
+                <div className="flex flex-col max-h-[90svh] w-full justify-between gap-4">
+                  <DialogHeader className="flex-row items-center justify-between">
+                    <div className="flex flex-col gap-0.5">
+                      <DialogTitle>Detail Shift</DialogTitle>
+                      <DialogDescription>
+                        Seluruh detail shift dari item sampai rangkuman
+                      </DialogDescription>
+                    </div>
+                    <Button
+                      size={"sm"}
+                      variant={"secondary"}
+                      disabled={isRefetching}
+                      onClick={() => refetch()}
+                    >
+                      <RefreshCw
+                        className={cn(isRefetching && "animate-spin")}
+                      />
+                      Muat Ulang
+                    </Button>
+                  </DialogHeader>
                   <div className="flex flex-col h-full gap-6 custom-scrollbar overflow-y-auto overflow-x-hidden pr-2">
                     <div className="flex flex-col gap-2">
                       <p className="font-semibold">- Rangkuman Shift</p>
@@ -176,33 +195,43 @@ export const ShiftDetailDialog = () => {
                             </p>
                           </div>
                         </div>
+                        <Separator className={"bg-gray-300"} />
+                        <div className="grid px-4">
+                          <div className="flex flex-col">
+                            <p className="text-xs font-semibold">Catatan:</p>
+                            <p className="text-sm text-gray-600">
+                              {data?.resource.summary.note ?? "-"}
+                            </p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div className="flex flex-col gap-2">
                       <p className="font-semibold">- List Product Terjual</p>
                       <DataTable
+                        isLoading={isRefetching}
                         columns={columnDetail}
                         data={data?.resource.items ?? []}
                       />
                     </div>
                   </div>
-                )}
-              </AtomValue>
-              <DialogFooter>
-                <DialogClose
-                  render={
-                    <Button variant={"outline"}>
-                      <XIcon className="size-3.5" />
-                      Tutup
+                  <DialogFooter>
+                    <DialogClose
+                      render={
+                        <Button variant={"outline"}>
+                          <XIcon className="size-3.5" />
+                          Tutup
+                        </Button>
+                      }
+                    />
+                    <Button disabled={isRefetching}>
+                      <Printer className="size-3.5" />
+                      Cetak
                     </Button>
-                  }
-                />
-                <Button>
-                  <Printer className="size-3.5" />
-                  Cetak
-                </Button>
-              </DialogFooter>
-            </div>
+                  </DialogFooter>
+                </div>
+              )}
+            </AtomValue>
           </DialogContent>
         </Dialog>
       )}

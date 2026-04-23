@@ -6,7 +6,7 @@ import { SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import { ArrowLeftRight, Printer } from "lucide-react";
+import { ReceiptText } from "lucide-react";
 import { detailShiftDialog, detailShiftId } from "../_api/atom";
 
 export const column = (): ColumnDef<{
@@ -136,12 +136,12 @@ export const column = (): ColumnDef<{
               <SetAtom atom={detailShiftDialog}>
                 {(setOpen) => (
                   <TooltipText
-                    value="Print Struk"
+                    value="Detail Shift"
                     render={
                       <Button
                         size={"icon-sm"}
                         className={
-                          "text-emerald-600 bg-emerald-100 hover:bg-emerald-200 hover:text-emerald-700"
+                          "text-blue-600 bg-blue-100 hover:bg-blue-200 hover:text-blue-700"
                         }
                         variant={"ghost"}
                         onClick={() => {
@@ -149,26 +149,12 @@ export const column = (): ColumnDef<{
                           setShiftId(row.original.id.toString());
                         }}
                       >
-                        <Printer className="size-3.5" />
+                        <ReceiptText className="size-3.5" />
                       </Button>
                     }
                   />
                 )}
               </SetAtom>
-              <TooltipText
-                value="List Transaksi"
-                render={
-                  <Button
-                    size={"icon-sm"}
-                    className={
-                      "text-blue-500 bg-blue-100 hover:bg-blue-200 hover:text-blue-600"
-                    }
-                    variant={"ghost"}
-                  >
-                    <ArrowLeftRight className="size-3.5" />
-                  </Button>
-                }
-              />
             </div>
           )}
         </SetAtom>
