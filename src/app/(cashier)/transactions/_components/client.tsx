@@ -18,10 +18,11 @@ import { DialogCancelTransaction } from "./_dialog/cancel";
 import { DetailTransaction } from "./_dialog/detail";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipText } from "@/providers/tooltip-provider";
-import { transactionSearch } from "../_api/atom";
+import { transactionPage, transactionSearch } from "../_api/atom";
 import { useAtom } from "jotai";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Pagination } from "@/components/pagination";
 
 export const TransactionClient = () => {
   const { formattedDate, formattedTime } = useTime();
@@ -47,7 +48,7 @@ export const TransactionClient = () => {
         </div>
       </div>
       <AtomValue atom={listtransactionAtom}>
-        {({ data, isSuccess, isRefetching, isError, refetch }) => (
+        {({ data, isSuccess, isRefetching, isError, refetch, isPending }) => (
           <div className="bg-white p-5 flex flex-col gap-4 rounded-xl shadow">
             <div className="flex items-center w-full gap-2">
               <ShiftSearchInput
@@ -61,8 +62,13 @@ export const TransactionClient = () => {
                 />
               </Button>
             </div>
-            <div>
+            <div className="flex flex-col gap-4">
               <DataTable columns={column()} data={data?.resource.data ?? []} />
+              <Pagination
+                atomPage={transactionPage}
+                pagination={data?.resource.pagination}
+                isPending={isPending || isRefetching}
+              />
             </div>
           </div>
         )}
