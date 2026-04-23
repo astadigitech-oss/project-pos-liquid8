@@ -46,6 +46,27 @@
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+    /* Mendaftarkan animasi ke theme */
+    --animate-gooey: l7 2s infinite;
+    --animate-gooey-delayed: l7 2s infinite -1s;
+
+    @keyframes l7 {
+        0% {
+            transform: translate(0, 0);
+        }
+        25% {
+            transform: translate(100%, 0);
+        } /* Bergerak sejauh lebar kotak sendiri */
+        50% {
+            transform: translate(100%, 100%);
+        }
+        75% {
+            transform: translate(0, 100%);
+        }
+        100% {
+            transform: translate(0, 0);
+        }
+    }
 }
 
 :root {
@@ -115,6 +136,15 @@
     --sidebar-accent-foreground: oklch(0.985 0 0);
     --sidebar-border: oklch(1 0 0 / 10%);
     --sidebar-ring: oklch(0.556 0 0);
+}
+
+@utility loader-filter {
+    background-color: white;
+    /* Blur diturunkan ke 3px agar kotak kecil tidak hilang */
+    /* Contrast dinaikkan ke 30 untuk menjaga ketajaman di ukuran kecil */
+    filter: blur(3px) contrast(30);
+    padding: 0;
+    overflow: hidden;
 }
 
 /* Chrome, Safari, Edge, Opera */

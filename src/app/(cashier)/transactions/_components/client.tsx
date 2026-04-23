@@ -1,7 +1,6 @@
 "use client";
 
 import { DataTable } from "@/components/data-table";
-import { Button } from "@/components/ui/button";
 import {
   InputGroup,
   InputGroupAddon,
@@ -9,18 +8,27 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { SidebarTrigger } from "@/components/ui/sidebar";
-import { tz } from "@date-fns/tz";
-import { format } from "date-fns";
-import { id } from "date-fns/locale";
-import { CalendarDays, SearchIcon, User2, XCircle } from "lucide-react";
+import { RefreshCw, Search, XCircle } from "lucide-react";
 import React from "react";
 import { column } from "./columns";
 import { useTime } from "@/hooks/use-time";
+import { AtomValue } from "@suspensive/jotai";
+import { listtransactionAtom } from "../_api/queries";
+import { DialogCancelTransaction } from "./_dialog/cancel";
+import { DetailTransaction } from "./_dialog/detail";
+import { Spinner } from "@/components/ui/spinner";
+import { TooltipText } from "@/providers/tooltip-provider";
+import { transactionSearch } from "../_api/atom";
+import { useAtom } from "jotai";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export const TransactionClient = () => {
   const { formattedDate, formattedTime } = useTime();
   return (
     <div className="flex flex-col gap-4 h-full">
+      <DialogCancelTransaction />
+      <DetailTransaction />
       <div className="flex items-center gap-4 justify-between py-2 px-5">
         <div className="flex items-center gap-2">
           <SidebarTrigger
@@ -38,75 +46,89 @@ export const TransactionClient = () => {
           </div>
         </div>
       </div>
-      <div className="bg-white p-5 flex flex-col gap-4 rounded-xl shadow">
-        <div className="flex items-center justify-between w-full gap-4">
-          <div className="flex items-center gap-2">
-            <Button
-              className={"text-xs bg-transparent hover:bg-white"}
-              variant={"outline"}
-            >
-              <User2 className="size-3.5" />
-              Customer
-            </Button>
-            <Button
-              className={"text-xs bg-transparent hover:bg-white"}
-              variant={"outline"}
-            >
-              <CalendarDays className="size-3.5" />
-              <p className="pr-2">
-                {format(new Date("2026-01-01"), "PP", {
-                  locale: id,
-                  in: tz("Asia/Jakarta"),
-                }) +
-                  " - " +
-                  format(new Date("2026-01-01"), "PP", {
-                    locale: id,
-                    in: tz("Asia/Jakarta"),
-                  })}
-              </p>
-            </Button>
-          </div>
-          <div>
-            <InputGroup>
-              <InputGroupInput
-                className="w-52"
-                placeholder="Cari transaksi..."
+      <AtomValue atom={listtransactionAtom}>
+        {({ data, isSuccess, isRefetching, isError, refetch }) => (
+          <div className="bg-white p-5 flex flex-col gap-4 rounded-xl shadow">
+            <div className="flex items-center w-full gap-2">
+              <ShiftSearchInput
+                isSuccess={isSuccess}
+                disabled={isRefetching}
+                isError={isError}
               />
-              <InputGroupAddon>
-                <SearchIcon className="size-3.5" />
-              </InputGroupAddon>
-              <InputGroupAddon align={"inline-end"}>
-                <InputGroupButton className={"hover:bg-gray-200 size-6"}>
-                  <XCircle className="size-3.5" />
-                </InputGroupButton>
-              </InputGroupAddon>
-            </InputGroup>
+              <Button size={"icon"} onClick={() => refetch()}>
+                <RefreshCw
+                  className={cn("size-3.5", isRefetching && "animate-spin")}
+                />
+              </Button>
+            </div>
+            <div>
+              <DataTable columns={column()} data={data?.resource.data ?? []} />
+            </div>
           </div>
-        </div>
-        <div>
-          <DataTable
-            columns={column()}
-            data={[
-              {
-                order_id: "SKJ26100100001",
-                customer: "Jhon Doe",
-                price: 2000000,
-                status: true,
-                date: new Date("2026-01-01 08:00"),
-                cashier: "Dewi",
-              },
-              {
-                order_id: "SKJ26100100002",
-                customer: "Jhon Chesna",
-                price: 3000000,
-                status: false,
-                date: new Date("2026-01-01 07:00"),
-                cashier: "Dewi",
-              },
-            ]}
-          />
-        </div>
-      </div>
+        )}
+      </AtomValue>
     </div>
+  );
+};
+
+const ShiftSearchInput = ({
+  disabled,
+  isSuccess,
+  isError,
+}: {
+  disabled: boolean;
+  isSuccess: boolean;
+  isError: boolean;
+}) => {
+  const [search, setSearch] = useAtom(transactionSearch);
+  const [localValue, setLocalValue] = React.useState(search);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    const handler = setTimeout(() => setSearch(localValue), 500);
+    return () => clearTimeout(handler);
+  }, [localValue, setSearch]);
+
+  React.useEffect(() => {
+    setLocalValue(search);
+  }, [search]);
+
+  React.useEffect(() => {
+    if ((!disabled && isSuccess) || (!disabled && isError)) {
+      inputRef.current?.focus();
+    }
+  }, [disabled, isSuccess, isError]);
+
+  return (
+    <InputGroup className="has-disabled:opacity-100 has-disabled:bg-transparent w-64">
+      <InputGroupInput
+        placeholder="Cari transaksi..."
+        ref={inputRef}
+        value={localValue}
+        onChange={(e) => setLocalValue(e.target.value)}
+        className="disabled:opacity-100"
+        disabled={disabled}
+      />
+      <InputGroupAddon>
+        <Search className="size-3.5" />
+      </InputGroupAddon>
+      {disabled && (
+        <InputGroupAddon align="inline-end">
+          <Spinner className="size-3.5" />
+        </InputGroupAddon>
+      )}
+      {!disabled && search.length > 0 && (
+        <InputGroupAddon align="inline-end">
+          <TooltipText
+            value="Bersihkan pencarian"
+            render={
+              <InputGroupButton size="icon-xs" onClick={() => setSearch("")}>
+                <XCircle className="size-3.5" />
+              </InputGroupButton>
+            }
+          />
+        </InputGroupAddon>
+      )}
+    </InputGroup>
   );
 };
