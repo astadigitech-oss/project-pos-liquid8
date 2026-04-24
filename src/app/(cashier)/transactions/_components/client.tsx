@@ -56,7 +56,11 @@ export const TransactionClient = () => {
                 disabled={isRefetching}
                 isError={isError}
               />
-              <Button size={"icon"} onClick={() => refetch()}>
+              <Button
+                size={"icon"}
+                onClick={() => refetch()}
+                variant={"diskonter"}
+              >
                 <RefreshCw
                   className={cn("size-3.5", isRefetching && "animate-spin")}
                 />

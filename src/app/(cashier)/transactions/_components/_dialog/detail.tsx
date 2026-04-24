@@ -34,6 +34,8 @@ import { printAction } from "@/lib/print-action";
 import ReceiptPrinterEncoder from "@/lib/receipt-encoder";
 
 export const DetailTransaction = () => {
+  const [isPrinting, setIsPrinting] = React.useState(false);
+
   return (
     <Atom atom={detailTransactionDialog}>
       {([open, setOpen]) => (
@@ -55,16 +57,15 @@ export const DetailTransaction = () => {
                   )?.label;
 
                   const handlePrint = () => {
+                    setIsPrinting(true);
                     const rawEncoder = new ReceiptPrinterEncoder({ width: 32 });
                     const bytes = rawEncoder
                       .initialize()
                       .codepage("cp437")
                       .newline(2)
                       .align("center")
-                      .bold(true)
                       .font("A")
                       .line("Diskonter - Proklamasi")
-                      .bold(false)
                       .font("B")
                       .line(
                         "Jl. Proklamasi, Abadijaya, Kec. Sukmajaya, Kota Depok, Jawa Barat",
@@ -158,11 +159,12 @@ export const DetailTransaction = () => {
                       .font("A")
                       .align("center")
                       .line("- Terima Kasih -")
-                      .newline(3)
+                      .newline(5)
                       .cut()
                       .encode();
 
-                    return printAction(bytes);
+                    printAction(bytes);
+                    setIsPrinting(false);
                   };
 
                   if (isError && isRefetching) return <Loader />;
@@ -395,11 +397,16 @@ export const DetailTransaction = () => {
                               }
                             />
                             <Button
-                              disabled={isRefetching}
+                              disabled={isRefetching || isPrinting}
                               onClick={handlePrint}
+                              variant={"diskonter"}
                             >
-                              <Printer className="size-3.5" />
-                              Cetak
+                              {isPrinting ? (
+                                <Spinner className="size-3.5" />
+                              ) : (
+                                <Printer className="size-3.5" />
+                              )}
+                              {isPrinting ? "Mencetak..." : "Cetak"}
                             </Button>
                           </DialogFooter>
                         </div>
@@ -428,7 +435,7 @@ const Loader = () => {
         </DialogDescription>
       </DialogHeader>
       <div className="size-full flex items-center justify-center flex-col border rounded-lg gap-3 text-sm font-semibold">
-        <div className="size-12 bg-gray-200 flex items-center justify-center rounded-full">
+        <div className="size-12 bg-red-100 text-red-600 flex items-center justify-center rounded-full">
           <Spinner className="size-6 stroke-[1.5]" />
         </div>
         Memuat data transaksi...

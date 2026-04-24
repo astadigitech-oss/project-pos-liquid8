@@ -30,6 +30,24 @@ export type ShiftDetailResponse = {
   status: boolean;
   message: string;
   resource: {
+    start: string;
+    end: any;
+    user_open: string;
+    user_closed: string;
+    initial_cash: number;
+    expected_cash: number;
+    actual_cash: number;
+    difference: number;
+    note: any;
+    total_invoice: number;
+    total_subtotal: number;
+    total_tax: number;
+    total_penjualan: number;
+    store: {
+      name: string;
+      phone: string;
+      address: string;
+    };
     items: Array<{
       id: number;
       status: string;
@@ -42,20 +60,5 @@ export type ShiftDetailResponse = {
       subtotal: number;
       created_at: string;
     }>;
-    summary: {
-      actual_cash: number;
-      difference: number;
-      end: string;
-      expected_cash: number;
-      initial_cash: number;
-      note: string;
-      start: string;
-      total_invoice: number;
-      total_penjualan: number;
-      total_subtotal: number;
-      total_tax: number;
-      user_closed: string;
-      user_open: string;
-    };
   };
 };

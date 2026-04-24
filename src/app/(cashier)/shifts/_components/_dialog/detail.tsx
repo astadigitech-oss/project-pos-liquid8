@@ -65,9 +65,9 @@ export const ShiftDetailDialog = () => {
                               Waktu Mulai:
                             </p>
                             <p className="text-sm text-gray-600">
-                              {data?.resource.summary.start
+                              {data?.resource.start
                                 ? format(
-                                    data?.resource.summary.start,
+                                    data?.resource.start,
                                     "iii, dd MMM yyyy HH:mm",
                                     { locale: id, in: tz("Asia/Jakarta") },
                                   )
@@ -79,9 +79,9 @@ export const ShiftDetailDialog = () => {
                               Waktu Selesai:
                             </p>
                             <p className="text-sm text-gray-600">
-                              {data?.resource.summary.end
+                              {data?.resource.end
                                 ? format(
-                                    data?.resource.summary.end,
+                                    data?.resource.end,
                                     "iii, dd MMM yyyy HH:mm",
                                     { locale: id, in: tz("Asia/Jakarta") },
                                   )
@@ -93,7 +93,7 @@ export const ShiftDetailDialog = () => {
                               Kasir Mulai:
                             </p>
                             <p className="text-sm text-gray-600">
-                              {data?.resource.summary.user_open ?? "-"}
+                              {data?.resource.user_open ?? "-"}
                             </p>
                           </div>
                           <div className="flex flex-col">
@@ -101,7 +101,7 @@ export const ShiftDetailDialog = () => {
                               Kasir Selesai:
                             </p>
                             <p className="text-sm text-gray-600">
-                              {data?.resource.summary.user_closed ?? "-"}
+                              {data?.resource.user_closed ?? "-"}
                             </p>
                           </div>
                         </div>
@@ -110,33 +110,26 @@ export const ShiftDetailDialog = () => {
                           <div className="flex flex-col">
                             <p className="text-xs font-semibold">Kas Awal:</p>
                             <p className="text-sm text-gray-600">
-                              {formatRupiah(
-                                data?.resource.summary.initial_cash ?? "0",
-                              )}
+                              {formatRupiah(data?.resource.initial_cash ?? "0")}
                             </p>
                           </div>
                           <div className="flex flex-col">
                             <p className="text-xs font-semibold">Kas Akhir:</p>
                             <p className="text-sm text-gray-600">
-                              {formatRupiah(
-                                data?.resource.summary.actual_cash ?? "0",
-                              )}
+                              {formatRupiah(data?.resource.actual_cash ?? "0")}
                             </p>
                           </div>
                           <div className="flex flex-col">
                             <p className="text-xs font-semibold">Selisih:</p>
                             <div className="text-sm text-gray-600 flex items-center gap-2">
-                              {formatRupiah(
-                                data?.resource.summary.difference ?? "0",
-                              )}
-                              {(data?.resource.summary.difference ?? 0) < 0 && (
+                              {formatRupiah(data?.resource.difference ?? "0")}
+                              {(data?.resource.difference ?? 0) < 0 && (
                                 <TrendingDown className="size-4 text-red-500" />
                               )}
-                              {(data?.resource.summary.difference ?? 0) > 0 && (
+                              {(data?.resource.difference ?? 0) > 0 && (
                                 <TrendingUp className="size-4 text-green-500" />
                               )}
-                              {(data?.resource.summary.difference ?? 0) ===
-                                0 && (
+                              {(data?.resource.difference ?? 0) === 0 && (
                                 <div className="size-2.5 rounded-full bg-gray-400" />
                               )}
                             </div>
@@ -147,7 +140,7 @@ export const ShiftDetailDialog = () => {
                             </p>
                             <p className="text-sm text-gray-600">
                               {formatRupiah(
-                                data?.resource.summary.expected_cash ?? "0",
+                                data?.resource.expected_cash ?? "0",
                               )}
                             </p>
                           </div>
@@ -160,7 +153,7 @@ export const ShiftDetailDialog = () => {
                             </p>
                             <p className="text-sm text-gray-600">
                               {(
-                                data?.resource.summary.total_invoice ?? 0
+                                data?.resource.total_invoice ?? 0
                               ).toLocaleString()}
                             </p>
                           </div>
@@ -170,7 +163,7 @@ export const ShiftDetailDialog = () => {
                             </p>
                             <p className="text-sm text-gray-600">
                               {formatRupiah(
-                                data?.resource.summary.total_subtotal ?? "0",
+                                data?.resource.total_subtotal ?? "0",
                               )}
                             </p>
                           </div>
@@ -179,9 +172,7 @@ export const ShiftDetailDialog = () => {
                               Total Pajak:
                             </p>
                             <p className="text-sm text-gray-600">
-                              {formatRupiah(
-                                data?.resource.summary.total_tax ?? "0",
-                              )}
+                              {formatRupiah(data?.resource.total_tax ?? "0")}
                             </p>
                           </div>
                           <div className="flex flex-col">
@@ -190,7 +181,7 @@ export const ShiftDetailDialog = () => {
                             </p>
                             <p className="text-sm text-gray-600">
                               {formatRupiah(
-                                data?.resource.summary.total_penjualan ?? "0",
+                                data?.resource.total_penjualan ?? "0",
                               )}
                             </p>
                           </div>
@@ -200,7 +191,7 @@ export const ShiftDetailDialog = () => {
                           <div className="flex flex-col">
                             <p className="text-xs font-semibold">Catatan:</p>
                             <p className="text-sm text-gray-600">
-                              {data?.resource.summary.note ?? "-"}
+                              {data?.resource.note ?? "-"}
                             </p>
                           </div>
                         </div>

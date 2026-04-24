@@ -80,7 +80,9 @@ export const SummaryCart = () => {
                           render={
                             <Button
                               onClick={() => setOpen(true)}
-                              className={"rounded-full border-gray-300 size-10"}
+                              className={
+                                "rounded-full border-gray-300 size-10 text-red-500 hover:text-red-500"
+                              }
                               variant={"outline"}
                               size={"icon"}
                             >
@@ -120,7 +122,7 @@ export const SummaryCart = () => {
                               render={
                                 <Button
                                   className={
-                                    "rounded-full border-gray-300 size-10"
+                                    "rounded-full border-gray-300 size-10 text-red-500 hover:text-red-500"
                                   }
                                   variant={"outline"}
                                   size={"icon"}
@@ -356,8 +358,9 @@ export const SummaryCart = () => {
                                         {(setOpen) => (
                                           <Button
                                             className={
-                                              "col-span-2 flex-auto h-10 disabled:opacity-70 disabled:cursor-not-allowed disabled:pointer-events-auto disabled:hover:bg-primary"
+                                              "col-span-2 flex-auto h-10 disabled:opacity-70 disabled:cursor-not-allowed disabled:pointer-events-auto disabled:hover:bg-red-500"
                                             }
+                                            variant={"diskonter"}
                                             disabled={
                                               !memberId ||
                                               !data?.resource.items ||
@@ -401,10 +404,10 @@ export const SummaryCart = () => {
 const Loader = () => {
   return (
     <div className="size-full p-4">
-      <div className="size-full border border-gray-300 rounded-lg flex flex-col items-center justify-center gap-2 bg-[repeating-linear-gradient(315deg,var(--pattern-fg)_0,var(--pattern-fg)_1px,transparent_0,transparent_50%)] bg-size-[10px_10px] bg-fixed [--pattern-fg:var(--color-black)]/5">
+      <div className="size-full border border-red-300 rounded-lg flex flex-col items-center justify-center gap-2 bg-[repeating-linear-gradient(315deg,var(--pattern-fg)_0,var(--pattern-fg)_1px,transparent_0,transparent_50%)] bg-size-[10px_10px] bg-fixed [--pattern-fg:var(--color-red-500)]/5">
         <div className="z-10 flex flex-col items-center justify-center gap-2">
-          <div className="size-10 rounded-full bg-gray-200 flex items-center justify-center">
-            <Spinner className="size-5" />
+          <div className="size-10 rounded-full bg-red-200 flex items-center justify-center">
+            <Spinner className="size-5 text-red-500" />
           </div>
           <p className="text-sm font-medium">Memuat data...</p>
         </div>
@@ -422,13 +425,17 @@ const ErrorHandling = ({
 }) => {
   return (
     <div className="size-full p-4">
-      <div className="size-full border border-gray-300 rounded-lg flex flex-col items-center justify-center gap-2 bg-[repeating-linear-gradient(315deg,var(--pattern-fg)_0,var(--pattern-fg)_1px,transparent_0,transparent_50%)] bg-size-[10px_10px] bg-fixed [--pattern-fg:var(--color-black)]/5">
+      <div className="size-full border border-red-300 rounded-lg flex flex-col items-center justify-center gap-2 bg-[repeating-linear-gradient(315deg,var(--pattern-fg)_0,var(--pattern-fg)_1px,transparent_0,transparent_50%)] bg-size-[10px_10px] bg-fixed [--pattern-fg:var(--color-red-500)]/5">
         <div className="z-10 flex flex-col items-center justify-center gap-2">
-          <div className="size-10 rounded-full bg-gray-200 flex items-center justify-center">
-            <PowerOffIcon className="size-5" />
+          <div className="size-10 rounded-full bg-red-200 flex items-center justify-center">
+            <PowerOffIcon className="size-5 text-red-500" />
           </div>
           <p className="text-sm font-medium">{error.message}</p>
-          <Button onClick={() => refetch()} className={"text-xs"}>
+          <Button
+            onClick={() => refetch()}
+            className={"text-xs"}
+            variant="diskonter"
+          >
             <RefreshCw className="size-3.5" />
             Muat ulang
           </Button>

@@ -137,7 +137,7 @@ export const CustomerAdd = () => {
                   <Smartphone className="size-3.5" />
                 </InputGroupAddon>
                 <InputGroupAddon align="inline-end">
-                  <InputGroupText className="text-xs tracking-wider bg-gray-200/80 px-2 rounded tabular-nums">
+                  <InputGroupText className="text-xs tracking-wider bg-red-100/80 text-black/80 px-2 rounded tabular-nums">
                     {formatPhoneNumber(field.value)}
                   </InputGroupText>
                 </InputGroupAddon>
@@ -158,7 +158,7 @@ export const CustomerAdd = () => {
           <XIcon className="size-3.5 mr-2" />
           Batal
         </Button>
-        <Button type="submit" disabled={isLoading}>
+        <Button type="submit" disabled={isLoading} variant={"diskonter"}>
           {isLoading ? (
             <Spinner className="size-3.5 mr-2" />
           ) : (

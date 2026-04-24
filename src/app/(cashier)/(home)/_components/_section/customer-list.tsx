@@ -63,6 +63,7 @@ export const CustomerList = () => {
                 size="icon"
                 type="button"
                 onClick={() => setIsCustomer("add")}
+                variant={"diskonter"}
               >
                 <UserPlus2 className="size-3.5" />
               </Button>

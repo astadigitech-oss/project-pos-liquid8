@@ -111,7 +111,11 @@ export const ProductList = () => {
                         );
                       }}
                     </Atom>
-                    <Button size={"icon"} onClick={() => refetch()}>
+                    <Button
+                      variant={"diskonter"}
+                      size={"icon"}
+                      onClick={() => refetch()}
+                    >
                       <RefreshCw
                         className={cn(
                           "size-3.5",

@@ -50,7 +50,7 @@ export const ProfileSetting = () => {
 
   return (
     <div className="grid grid-cols-2 gap-4">
-      <h2 className="font-semibold h-7 flex items-center relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-red-300 before:rounded-full">
+      <h2 className="font-semibold h-7 flex items-center relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-red-400 before:rounded-full">
         Profil
       </h2>
       <Card>
@@ -142,6 +142,7 @@ export const ProfileSetting = () => {
                 </CardContent>
                 <CardFooter>
                   <Button
+                    variant={"diskonter"}
                     disabled={isLoading}
                     className={"ml-auto"}
                     type="submit"

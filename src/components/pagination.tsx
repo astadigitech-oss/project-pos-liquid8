@@ -47,6 +47,7 @@ export const Pagination = ({
       </div>
       <div className="flex items-center gap-1">
         <Button
+          variant={"diskonter"}
           size={"icon-sm"}
           onClick={() => setPage(1)}
           disabled={page === 1 || isPending}
@@ -54,6 +55,7 @@ export const Pagination = ({
           <ChevronsLeft className="size-3.5" />
         </Button>
         <Button
+          variant={"diskonter"}
           size={"icon-sm"}
           onClick={() => setPage(page - 1)}
           disabled={page === 1 || isPending}
@@ -65,6 +67,7 @@ export const Pagination = ({
           {actualLastPage.toLocaleString()}
         </p>
         <Button
+          variant={"diskonter"}
           size={"icon-sm"}
           onClick={() => setPage(page + 1)}
           disabled={page === actualLastPage || isPending}
@@ -72,6 +75,7 @@ export const Pagination = ({
           <ChevronRight className="size-3.5" />
         </Button>
         <Button
+          variant={"diskonter"}
           size={"icon-sm"}
           onClick={() => setPage(actualLastPage ?? 1)}
           disabled={page === actualLastPage || isPending}

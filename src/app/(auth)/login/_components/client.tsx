@@ -123,7 +123,11 @@ export const LoginClient = () => {
                   </FieldGroup>
                 </CardContent>
                 <CardFooter>
-                  <Button className={"ml-auto"} type="submit">
+                  <Button
+                    className={"ml-auto"}
+                    type="submit"
+                    variant="diskonter"
+                  >
                     {isPending ? (
                       <Spinner className="size-3.5" />
                     ) : (
