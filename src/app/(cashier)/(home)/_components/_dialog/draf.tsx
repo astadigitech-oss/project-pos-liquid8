@@ -46,6 +46,7 @@ export const AddToDraft = () => {
                     {([customerId, setCustomerId]) => (
                       <Button
                         disabled={isPending}
+                        variant={"diskonter"}
                         onClick={() =>
                           mutate(
                             { member_id: Number.parseFloat(customerId) },

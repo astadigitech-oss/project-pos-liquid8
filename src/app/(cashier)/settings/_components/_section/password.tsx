@@ -44,7 +44,7 @@ export const PasswordSetting = () => {
 
   return (
     <div className="grid grid-cols-2 gap-4">
-      <p className="font-semibold h-7 flex items-center relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-red-300 before:rounded-full">
+      <p className="font-semibold h-7 flex items-center relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-red-400 before:rounded-full">
         Password
       </p>
       <Card>
@@ -137,6 +137,7 @@ export const PasswordSetting = () => {
                 </CardContent>
                 <CardFooter>
                   <Button
+                    variant={"diskonter"}
                     disabled={isPending}
                     className={"ml-auto"}
                     type="submit"

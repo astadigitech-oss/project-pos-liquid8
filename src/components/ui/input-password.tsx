@@ -32,6 +32,7 @@ export const InputPassword = ({
           size={"icon-xs"}
           type="button"
           onClick={() => setIsVisible(!isVisible)}
+          className={"hover:bg-red-200"}
         >
           {isVisible ? (
             <EyeOff className="size-3.5" />

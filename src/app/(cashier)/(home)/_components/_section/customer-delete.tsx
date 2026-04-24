@@ -8,7 +8,7 @@ import {
 import { Trash, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { detailMemberAtom } from "../../_api/queries";
-import { AtomValue, SetAtom } from "@suspensive/jotai";
+import { Atom, AtomValue, SetAtom } from "@suspensive/jotai";
 import { customerId, isCustomer } from "../../_api/atoms";
 import { deleteMemberAtom } from "../../_api/mutation";
 import { Spinner } from "@/components/ui/spinner";
@@ -42,8 +42,8 @@ export const CustomerDelete = () => {
               <XIcon className="size-3.5" />
               Batal
             </Button>
-            <AtomValue atom={customerId}>
-              {(idCustomer) => (
+            <Atom atom={customerId}>
+              {([idCustomer, setIdCustomer]) => (
                 <AtomValue atom={deleteMemberAtom}>
                   {({ mutate: deleteMember, isPending: isDeleting }) => (
                     <Button
@@ -54,6 +54,8 @@ export const CustomerDelete = () => {
                           { id: idCustomer },
                           {
                             onSuccess: async () => {
+                              setIsCustomer("");
+                              setIdCustomer("");
                               await invalidate(queryClient, ["list-member"]);
                             },
                           },
@@ -70,7 +72,7 @@ export const CustomerDelete = () => {
                   )}
                 </AtomValue>
               )}
-            </AtomValue>
+            </Atom>
           </DialogFooter>
         )}
       </SetAtom>

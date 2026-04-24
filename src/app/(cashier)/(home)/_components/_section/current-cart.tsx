@@ -130,7 +130,11 @@ const CartContent = () => {
               <BarcodeSearch isRefetching={isRefetching} />
             </div>
 
-            <Button type="button" onClick={() => setProductDialogOpen(true)}>
+            <Button
+              variant={"diskonter"}
+              type="button"
+              onClick={() => setProductDialogOpen(true)}
+            >
               <ScanSearch className="size-3.5 mr-2" />
               Produk
             </Button>
@@ -164,18 +168,20 @@ const CartContent = () => {
 };
 
 // --- UI Sub-components (Loader & Error) ---
-const Loader = () => (
-  <div className="size-full p-4">
-    <div className="size-full border border-gray-300 rounded-lg flex flex-col items-center justify-center gap-2 bg-[repeating-linear-gradient(315deg,var(--pattern-fg)_0,var(--pattern-fg)_1px,transparent_0,transparent_50%)] bg-size-[10px_10px] bg-fixed [--pattern-fg:var(--color-black)]/5">
-      <div className="z-10 flex flex-col items-center justify-center gap-2">
-        <div className="size-10 rounded-full bg-gray-200 flex items-center justify-center">
-          <Spinner className="size-5" />
+const Loader = () => {
+  return (
+    <div className="size-full p-4">
+      <div className="size-full border border-red-300 rounded-lg flex flex-col items-center justify-center gap-2 bg-[repeating-linear-gradient(315deg,var(--pattern-fg)_0,var(--pattern-fg)_1px,transparent_0,transparent_50%)] bg-size-[10px_10px] bg-fixed [--pattern-fg:var(--color-red-500)]/5">
+        <div className="z-10 flex flex-col items-center justify-center gap-2">
+          <div className="size-10 rounded-full bg-red-200 flex items-center justify-center">
+            <Spinner className="size-5 text-red-500" />
+          </div>
+          <p className="text-sm font-medium">Memuat data...</p>
         </div>
-        <p className="text-sm font-medium">Memuat data...</p>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const ErrorHandling = ({
   error,
@@ -183,19 +189,25 @@ const ErrorHandling = ({
 }: {
   error: Error;
   refetch: () => void;
-}) => (
-  <div className="size-full p-4">
-    <div className="size-full border border-gray-300 rounded-lg flex flex-col items-center justify-center gap-2 bg-[repeating-linear-gradient(315deg,var(--pattern-fg)_0,var(--pattern-fg)_1px,transparent_0,transparent_50%)] bg-size-[10px_10px] bg-fixed [--pattern-fg:var(--color-black)]/5">
-      <div className="z-10 flex flex-col items-center justify-center gap-2">
-        <div className="size-10 rounded-full bg-gray-200 flex items-center justify-center">
-          <PowerOffIcon className="size-5" />
+}) => {
+  return (
+    <div className="size-full p-4">
+      <div className="size-full border border-red-300 rounded-lg flex flex-col items-center justify-center gap-2 bg-[repeating-linear-gradient(315deg,var(--pattern-fg)_0,var(--pattern-fg)_1px,transparent_0,transparent_50%)] bg-size-[10px_10px] bg-fixed [--pattern-fg:var(--color-red-500)]/5">
+        <div className="z-10 flex flex-col items-center justify-center gap-2">
+          <div className="size-10 rounded-full bg-red-200 flex items-center justify-center">
+            <PowerOffIcon className="size-5 text-red-500" />
+          </div>
+          <p className="text-sm font-medium">{error.message}</p>
+          <Button
+            onClick={() => refetch()}
+            className={"text-xs"}
+            variant="diskonter"
+          >
+            <RefreshCw className="size-3.5" />
+            Muat ulang
+          </Button>
         </div>
-        <p className="text-sm font-medium">{error.message}</p>
-        <Button onClick={() => refetch()} className={"text-xs"}>
-          <RefreshCw className="size-3.5" />
-          Muat ulang
-        </Button>
       </div>
     </div>
-  </div>
-);
+  );
+};

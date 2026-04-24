@@ -156,7 +156,11 @@ export const ShiftsClient = () => {
                   isSuccess={isSuccess}
                   isError={isError}
                 />
-                <Button size={"icon"} onClick={() => refetch()}>
+                <Button
+                  variant={"diskonter"}
+                  size={"icon"}
+                  onClick={() => refetch()}
+                >
                   <RefreshCw
                     className={cn("size-3.5", isRefetching && "animate-spin")}
                   />
