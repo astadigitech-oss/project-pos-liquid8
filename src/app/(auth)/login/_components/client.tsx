@@ -30,6 +30,10 @@ import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AtomValue } from "@suspensive/jotai";
+import { invalidate } from "@/lib/utils";
+import { useQueryClient } from "@tanstack/react-query";
+import { printCheck } from "@/lib/print-action";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   email_or_username: z.string(),
@@ -38,6 +42,7 @@ const formSchema = z.object({
 
 export const LoginClient = () => {
   const [isPending, startTransition] = useTransition();
+  const queryClient = useQueryClient();
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -51,12 +56,26 @@ export const LoginClient = () => {
     <div className="min-w-sm">
       <AtomValue atom={loginAtom}>
         {({ mutate }) => {
-          const handleLogin = (values: z.infer<typeof formSchema>) => {
-            mutate(values, {
-              onSuccess: () => {
-                startTransition(() => router.push("/"));
-              },
-            });
+          const handleLogin = async (values: z.infer<typeof formSchema>) => {
+            try {
+              const { status } = await printCheck();
+              if (!status) return;
+              mutate(values, {
+                onSuccess: async () => {
+                  startTransition(() => router.push("/"));
+                  await Promise.all([
+                    invalidate(queryClient, ["current-cart"]),
+                    invalidate(queryClient, ["active-shift"]),
+                    invalidate(queryClient, ["list-product"]),
+                    invalidate(queryClient, ["list-pending"]),
+                    invalidate(queryClient, ["list-member"]),
+                  ]);
+                },
+              });
+            } catch (error) {
+              console.error(error);
+              toast.error((error as Error).message);
+            }
           };
           return (
             <form onSubmit={form.handleSubmit(handleLogin)}>
@@ -123,11 +142,7 @@ export const LoginClient = () => {
                   </FieldGroup>
                 </CardContent>
                 <CardFooter>
-                  <Button
-                    className={"ml-auto"}
-                    type="submit"
-                    variant="diskonter"
-                  >
+                  <Button className={"ml-auto"} type="submit">
                     {isPending ? (
                       <Spinner className="size-3.5" />
                     ) : (

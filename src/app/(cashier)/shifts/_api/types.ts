@@ -31,18 +31,26 @@ export type ShiftDetailResponse = {
   message: string;
   resource: {
     start: string;
-    end: any;
+    end: string;
     user_open: string;
     user_closed: string;
     initial_cash: number;
-    expected_cash: number;
-    actual_cash: number;
-    difference: number;
-    note: any;
     total_invoice: number;
-    total_subtotal: number;
+    total_cash: number;
+    total_transfer: number;
+    total_qris: number;
+    total_cash_cancel: number;
+    total_transfer_cancel: number;
+    total_qris_cancel: number;
     total_tax: number;
+    total_subtotal: number;
     total_penjualan: number;
+    expected_cash: number;
+    expected_amount: number;
+    actual_cash: number;
+    actual_amount: number;
+    difference: number;
+    note: string;
     store: {
       name: string;
       phone: string;

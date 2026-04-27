@@ -6,9 +6,14 @@ import { useTime } from "@/hooks/use-time";
 import React from "react";
 import { ProfileSetting } from "./_section/profile";
 import { PasswordSetting } from "./_section/password";
+import { useOS } from "@/hooks/use-os";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { baseUrl } from "@/config";
 
 export const SettingsClient = () => {
   const { formattedDate, formattedTime } = useTime();
+  const { isLoaded, os } = useOS();
 
   return (
     <div className="flex flex-col gap-4 h-full">
@@ -33,6 +38,28 @@ export const SettingsClient = () => {
         <ProfileSetting />
         <Separator />
         <PasswordSetting />
+        <Separator />
+        <div className="grid grid-cols-2 gap-4">
+          <p className="font-semibold h-7 flex items-center relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-red-400 before:rounded-full">
+            Printer Driver
+          </p>
+          {isLoaded && os === "Windows" && (
+            <div>
+              <p>Rekomendasi:</p>
+              <Link href={`${baseUrl}/apps/win/latest.exe`}>
+                <Button>Windows App</Button>
+              </Link>
+            </div>
+          )}
+          {isLoaded && os === "MacOS" && (
+            <div>
+              <p>Rekomendasi:</p>
+              <Link href={`${baseUrl}/apps/mac/latest.dmg`}>
+                <Button>Mac App</Button>
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

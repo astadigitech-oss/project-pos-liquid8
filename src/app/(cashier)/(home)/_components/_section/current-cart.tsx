@@ -130,11 +130,7 @@ const CartContent = () => {
               <BarcodeSearch isRefetching={isRefetching} />
             </div>
 
-            <Button
-              variant={"diskonter"}
-              type="button"
-              onClick={() => setProductDialogOpen(true)}
-            >
+            <Button type="button" onClick={() => setProductDialogOpen(true)}>
               <ScanSearch className="size-3.5 mr-2" />
               Produk
             </Button>
@@ -198,11 +194,7 @@ const ErrorHandling = ({
             <PowerOffIcon className="size-5 text-red-500" />
           </div>
           <p className="text-sm font-medium">{error.message}</p>
-          <Button
-            onClick={() => refetch()}
-            className={"text-xs"}
-            variant="diskonter"
-          >
+          <Button onClick={() => refetch()} className={"text-xs"}>
             <RefreshCw className="size-3.5" />
             Muat ulang
           </Button>

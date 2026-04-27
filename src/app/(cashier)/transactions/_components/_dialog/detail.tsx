@@ -32,6 +32,7 @@ import { Delay, Suspense } from "@suspensive/react";
 import { Spinner } from "@/components/ui/spinner";
 import { printAction } from "@/lib/print-action";
 import ReceiptPrinterEncoder from "@/lib/receipt-encoder";
+import { toast } from "sonner";
 
 export const DetailTransaction = () => {
   const [isPrinting, setIsPrinting] = React.useState(false);
@@ -56,7 +57,7 @@ export const DetailTransaction = () => {
                     (i) => i.value === paymentMethod,
                   )?.label;
 
-                  const handlePrint = () => {
+                  const handlePrint = async () => {
                     setIsPrinting(true);
                     const rawEncoder = new ReceiptPrinterEncoder({ width: 32 });
                     const bytes = rawEncoder
@@ -65,11 +66,10 @@ export const DetailTransaction = () => {
                       .newline(2)
                       .align("center")
                       .font("A")
-                      .line("Diskonter - Proklamasi")
+                      .line(data?.resource.store.name ?? "-")
                       .font("B")
-                      .line(
-                        "Jl. Proklamasi, Abadijaya, Kec. Sukmajaya, Kota Depok, Jawa Barat",
-                      )
+                      .line(data?.resource.store.address ?? "-")
+                      .line(data?.resource.store.phone ?? "-")
                       .font("B")
                       .rule({ style: "double", width: 42 })
                       .font("A")
@@ -159,11 +159,12 @@ export const DetailTransaction = () => {
                       .font("A")
                       .align("center")
                       .line("- Terima Kasih -")
-                      .newline(5)
+                      .newline(4)
                       .cut()
                       .encode();
 
-                    printAction(bytes);
+                    const res = await printAction(bytes);
+                    toast.success(res.message);
                     setIsPrinting(false);
                   };
 

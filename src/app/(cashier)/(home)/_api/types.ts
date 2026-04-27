@@ -158,25 +158,32 @@ export type CheckoutTransactionResponse = {
   status: boolean;
   message: string;
   resource: {
+    change_amount: number;
+    created_at: string;
+    customer_name: string;
     id: number;
-    store_id: number;
-    user_id: number;
-    shift_id: number;
-    member_id: number;
     invoice: string;
+    items: Array<{
+      product_name: string;
+      price: number;
+    }>;
+    kasir: string;
+    paid_amount: number;
+    payment_method: string;
+    ppn: {
+      amount: number;
+      tax: number;
+    };
+    store: {
+      address: string;
+      name: string;
+      phone: string;
+    };
+    shift_id: number;
+    subtotal: number;
+    total_amount: number;
     total_item: number;
     total_quantity: number;
-    member_point: number;
-    subtotal: number;
-    tax: number;
-    discount: number;
-    total_amount: number;
-    paid_amount: number;
-    change_amount: number;
-    payment_method: string;
-    status: string;
-    created_at: string;
-    updated_at: string;
   };
 };
 
