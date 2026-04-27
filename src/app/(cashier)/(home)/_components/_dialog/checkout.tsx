@@ -138,7 +138,7 @@ export const CheckoutTransaction = () => {
                     <Dialog open={open} onOpenChange={setOpen}>
                       <DialogContent
                         showCloseButton={false}
-                        className={"min-w-md"}
+                        className={"min-w-2xl"}
                       >
                         <DialogHeader>
                           <DialogTitle>Apakah Pembayaran Berhasil?</DialogTitle>
@@ -218,44 +218,82 @@ export const CheckoutTransaction = () => {
                             {({ mutate, isPending }) => (
                               <Atom atom={customerSelectedId}>
                                 {([customerId, setCustomerId]) => (
-                                  <Button
-                                    disabled={isPending}
-                                    onClick={async () => {
+                                  <div className="flex items-center gap-2">
+                                    <Button
+                                      disabled={isPending}
+                                      onClick={async () => {
+                                        return mutate(
+                                          {
+                                            member_id:
+                                              Number.parseFloat(customerId),
+                                            grand_total:
+                                              data?.resource.total_amount ?? 0,
+                                            paid_amount: payment,
+                                            payment_method: paymentMethod ?? "",
+                                          },
+                                          {
+                                            onSuccess: async (data) => {
+                                              setOpen(false);
+                                              setPayment(0);
+                                              setPaymentMethod(null);
+                                              setCustomerId("");
+                                              handlePrint(data);
+                                              await Promise.all([
+                                                invalidate(queryClient, [
+                                                  "current-cart",
+                                                ]),
+                                                invalidate(queryClient, [
+                                                  "detail-shift",
+                                                  data.resource.shift_id?.toString(),
+                                                ]),
+                                              ]);
+                                            },
+                                          },
+                                        );
+                                      }}
+                                    >
+                                      <Printer className="size-3.5" />
+                                      Selesaikan Tanpa Cetak Struk
+                                    </Button>
+                                    <Button
+                                      disabled={isPending}
+                                      onClick={async () => {
                                         const { status } = await printCheck();
                                         if (!status) return;
                                         return mutate(
-                                        {
-                                          member_id:
-                                            Number.parseFloat(customerId),
-                                          grand_total:
-                                            data?.resource.total_amount ?? 0,
-                                          paid_amount: payment,
-                                          payment_method: paymentMethod ?? "",
-                                        },
-                                        {
-                                          onSuccess: async (data) => {
-                                            setOpen(false);
-                                            setPayment(0);
-                                            setPaymentMethod(null);
-                                            setCustomerId("");
-                                            handlePrint(data);
-                                            await Promise.all([
-                                              invalidate(queryClient, [
-                                                "current-cart",
-                                              ]),
-                                              invalidate(queryClient, [
-                                                "detail-shift",
-                                                data.resource.shift_id?.toString(),
-                                              ]),
-                                            ]);
+                                          {
+                                            member_id:
+                                              Number.parseFloat(customerId),
+                                            grand_total:
+                                              data?.resource.total_amount ?? 0,
+                                            paid_amount: payment,
+                                            payment_method: paymentMethod ?? "",
                                           },
-                                        },
-                                      );
-                                    }}
-                                  >
-                                    <Printer className="size-3.5" />
-                                    Selesaikan dan Cetak Struk
-                                  </Button>
+                                          {
+                                            onSuccess: async (data) => {
+                                              setOpen(false);
+                                              setPayment(0);
+                                              setPaymentMethod(null);
+                                              setCustomerId("");
+                                              handlePrint(data);
+                                              await Promise.all([
+                                                invalidate(queryClient, [
+                                                  "current-cart",
+                                                ]),
+                                                invalidate(queryClient, [
+                                                  "detail-shift",
+                                                  data.resource.shift_id?.toString(),
+                                                ]),
+                                              ]);
+                                            },
+                                          },
+                                        );
+                                      }}
+                                    >
+                                      <Printer className="size-3.5" />
+                                      Selesaikan dan Cetak Struk
+                                    </Button>
+                                  </div>
                                 )}
                               </Atom>
                             )}
