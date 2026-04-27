@@ -46,9 +46,14 @@ export const SettingsClient = () => {
           {isLoaded && os === "Windows" && (
             <div>
               <p>Rekomendasi:</p>
-              <Link href={`${baseUrl}/apps/win/latest.exe`}>
-                <Button>Windows App</Button>
-              </Link>
+              <div className="flex items-center gap-2">
+                <Link href={`${baseUrl}/apps/win/latest.exe`}>
+                  <Button>Windows App</Button>
+                </Link>
+                <Link href={`${baseUrl}/apps/win/zadig.exe`}>
+                  <Button>Zadig App</Button>
+                </Link>
+              </div>
             </div>
           )}
           {isLoaded && os === "MacOS" && (
