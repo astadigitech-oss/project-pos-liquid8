@@ -5,6 +5,7 @@ export const draftListDialog = atom<boolean>(false);
 export const draftAddDialog = atom<boolean>(false);
 export const productDialog = atom<boolean>(false);
 export const customerDialog = atom<boolean>(false);
+export const printCheckoutDialog = atom<boolean>(false);
 export const emptyTransactionDialog = atom<boolean>(false);
 export const checkoutTransactionDialog = atom<boolean>(false);
 export const isCustomer = atom<string>("");

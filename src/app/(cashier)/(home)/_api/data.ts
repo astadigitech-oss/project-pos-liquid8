@@ -18,9 +18,8 @@ import {
 } from "./types";
 import { getCookie } from "cookies-next/client";
 
-const token = getCookie(secretStore);
-
 export const currentCartQuery = async (): Promise<CurrentCartResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/carts/current`, {
     method: "GET",
     headers: {
@@ -37,6 +36,7 @@ export const currentCartQuery = async (): Promise<CurrentCartResponse> => {
 };
 
 export const activeShiftQuery = async (): Promise<ShiftResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/shifts-active`, {
     method: "GET",
     headers: {
@@ -56,6 +56,7 @@ export const listProductQuery = async (
   q: string = "",
   page: number = 1,
 ): Promise<ProductListResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(
     `${apiUrl}/api/products-by-store?q=${q}&page=${page}&per_page=10`,
     {
@@ -78,6 +79,7 @@ export const listDraftQuery = async (
   q: string = "",
   page: number = 1,
 ): Promise<DraftTransactionResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(
     `${apiUrl}/api/carts/pending?q=${q}&page=${page}&per_page=10`,
     {
@@ -100,6 +102,7 @@ export const listMemberQuery = async (
   q: string = "",
   page: number = 1,
 ): Promise<MemberListResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(
     `${apiUrl}/api/members?q=${q}&page=${page}&per_page=10`,
     {
@@ -120,6 +123,7 @@ export const listMemberQuery = async (
 export const detailMemberQuery = async (
   id: string = "",
 ): Promise<DetailMemberResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/members/${id}`, {
     method: "GET",
     headers: {
@@ -140,6 +144,7 @@ export const detailMemberQuery = async (
 export const startShiftPost = async (
   body: StartShiftBody,
 ): Promise<ShiftResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/shifts/start`, {
     method: "POST",
     headers: {
@@ -159,6 +164,7 @@ export const startShiftPost = async (
 export const endShiftPost = async (
   body: EndShiftBody,
 ): Promise<ShiftResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/shifts/end`, {
     method: "POST",
     headers: {
@@ -178,6 +184,7 @@ export const endShiftPost = async (
 export const addToCartPost = async (
   body: AddToCartBody,
 ): Promise<AddUpdateMemberResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/carts/item`, {
     method: "POST",
     headers: {
@@ -197,6 +204,7 @@ export const addToCartPost = async (
 export const removeItemCartPost = async (
   id: string,
 ): Promise<AddUpdateMemberResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/carts/${id}`, {
     method: "DELETE",
     headers: {
@@ -215,6 +223,7 @@ export const removeItemCartPost = async (
 export const addMemberPost = async (
   body: AddMemberBody,
 ): Promise<AddUpdateMemberResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/members`, {
     method: "POST",
     headers: {
@@ -235,6 +244,7 @@ export const updateMemberPost = async (
   body: AddMemberBody,
   id: string,
 ): Promise<ShiftResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/members/${id}`, {
     method: "PUT",
     headers: {
@@ -252,6 +262,7 @@ export const updateMemberPost = async (
 };
 
 export const deleteMemberPost = async (id: string): Promise<ShiftResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/members/${id}`, {
     method: "DELETE",
     headers: {
@@ -270,6 +281,7 @@ export const deleteMemberPost = async (id: string): Promise<ShiftResponse> => {
 export const pendingTransactionPost = async (
   body: PendingTransactionBody,
 ): Promise<ShiftResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/carts/pending`, {
     method: "POST",
     headers: {
@@ -287,6 +299,7 @@ export const pendingTransactionPost = async (
 };
 
 export const emptyTransactionPost = async (): Promise<ShiftResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/carts/current`, {
     method: "DELETE",
     headers: {
@@ -305,6 +318,7 @@ export const emptyTransactionPost = async (): Promise<ShiftResponse> => {
 export const resumeDraftPut = async (
   code: string,
 ): Promise<ResumeDraftResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/carts/${code}/resume-check`, {
     method: "PUT",
     headers: {
@@ -320,6 +334,7 @@ export const resumeDraftPut = async (
   return res;
 };
 export const draftDelete = async (code: string): Promise<ShiftResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/carts/pending/${code}`, {
     method: "DELETE",
     headers: {
@@ -338,6 +353,7 @@ export const draftDelete = async (code: string): Promise<ShiftResponse> => {
 export const checkoutTransactionPost = async (
   body: CheckoutTransactionBody,
 ): Promise<CheckoutTransactionResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/transactions/checkout`, {
     method: "POST",
     headers: {

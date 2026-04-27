@@ -431,11 +431,7 @@ const ErrorHandling = ({
             <PowerOffIcon className="size-5 text-red-500" />
           </div>
           <p className="text-sm font-medium">{error.message}</p>
-          <Button
-            onClick={() => refetch()}
-            className={"text-xs"}
-            variant="diskonter"
-          >
+          <Button onClick={() => refetch()} className={"text-xs"}>
             <RefreshCw className="size-3.5" />
             Muat ulang
           </Button>

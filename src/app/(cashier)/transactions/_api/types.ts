@@ -31,11 +31,8 @@ export type transactionDetailResponse = {
   resource: {
     id: number;
     invoice: string;
-    store_id: number;
-    store_name: string;
     kasir: string;
     customer_name: string;
-    tax: number;
     total_item: number;
     total_quantity: number;
     paid_amount: number;
@@ -45,6 +42,15 @@ export type transactionDetailResponse = {
     total_amount: number;
     status: string;
     created_at: string;
+    store: {
+      name: string;
+      phone: string;
+      address: string;
+    };
+    ppn: {
+      tax: number;
+      amount: number;
+    };
     items: Array<{
       id: number;
       barcode: string;
@@ -52,10 +58,6 @@ export type transactionDetailResponse = {
       price: number;
       quantity: number;
     }>;
-    ppn: {
-      amount: number;
-      tax: number;
-    };
   };
   success: boolean;
 };

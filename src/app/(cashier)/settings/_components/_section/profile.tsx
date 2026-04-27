@@ -29,6 +29,7 @@ import { updateUserDataAtom } from "../../_api/mutations";
 import { invalidate } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 import { Spinner } from "@/components/ui/spinner";
+import { Delay } from "@suspensive/react";
 
 const formSchema = z.object({
   name: z.string().min(1, "Nama harus diisi"),
@@ -39,7 +40,7 @@ type FormSchema = z.infer<typeof formSchema>;
 
 export const ProfileSetting = () => {
   const queryClient = useQueryClient();
-  const { data, isPending } = useAtomValue(userInfoAtom);
+  const { data, isPending, isSuccess } = useAtomValue(userInfoAtom);
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
     values: {
@@ -70,96 +71,100 @@ export const ProfileSetting = () => {
 
             const isLoading = isUpdating || isPending;
 
-            if (isPending) {
+            if (isSuccess)
               return (
-                <div
-                  data-slot="card-footer"
-                  className="h-48.5 w-full flex items-center justify-center text-sm flex-col gap-1"
-                >
-                  <Spinner className="size-5" />
-                  <p>Memuat data...</p>
-                </div>
-              );
-            }
-
-            return (
-              <form
-                className="flex flex-col gap-4"
-                onSubmit={form.handleSubmit(handleSubmit)}
-              >
-                <CardContent>
-                  <FieldGroup className="gap-2">
-                    <Controller
-                      control={form.control}
-                      name="name"
-                      render={({ field, fieldState }) => (
-                        <Field className="gap-1">
-                          <FieldLabel required htmlFor={field.name}>
-                            Nama
-                          </FieldLabel>
-                          <InputGroup>
-                            <InputGroupInput
-                              id={field.name}
-                              {...field}
-                              placeholder="Jhon Doe"
-                            />
-                            <InputGroupAddon>
-                              <User2 className="size-3.5" />
-                            </InputGroupAddon>
-                          </InputGroup>
-                          {fieldState && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
-                        </Field>
-                      )}
-                    />
-                    <Controller
-                      control={form.control}
-                      name="email"
-                      render={({ field, fieldState }) => (
-                        <Field className="gap-1">
-                          <FieldLabel required htmlFor={field.name}>
-                            Email
-                          </FieldLabel>
-                          <InputGroup>
-                            <InputGroupInput
-                              id={field.name}
-                              {...field}
-                              type="email"
-                              placeholder="ex@mail.co"
-                            />
-                            <InputGroupAddon>
-                              <AtSign className="size-3.5" />
-                            </InputGroupAddon>
-                          </InputGroup>
-                          {fieldState && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
-                        </Field>
-                      )}
-                    />
-                  </FieldGroup>
-                </CardContent>
-                <CardFooter>
-                  <Button
-                    variant={"diskonter"}
-                    disabled={isLoading}
-                    className={"ml-auto"}
-                    type="submit"
+                <Delay ms={500} fallback={<Loader />}>
+                  <form
+                    className="flex flex-col gap-4"
+                    onSubmit={form.handleSubmit(handleSubmit)}
                   >
-                    {isLoading ? (
-                      <Spinner className="size-3.5" />
-                    ) : (
-                      <Send className="size-3.5" />
-                    )}
-                    {isUpdating ? "Menyimpan..." : "Simpan"}
-                  </Button>
-                </CardFooter>
-              </form>
-            );
+                    <CardContent>
+                      <FieldGroup className="gap-2">
+                        <Controller
+                          control={form.control}
+                          name="name"
+                          render={({ field, fieldState }) => (
+                            <Field className="gap-1">
+                              <FieldLabel required htmlFor={field.name}>
+                                Nama
+                              </FieldLabel>
+                              <InputGroup>
+                                <InputGroupInput
+                                  id={field.name}
+                                  {...field}
+                                  placeholder="Jhon Doe"
+                                />
+                                <InputGroupAddon>
+                                  <User2 className="size-3.5" />
+                                </InputGroupAddon>
+                              </InputGroup>
+                              {fieldState && (
+                                <FieldError errors={[fieldState.error]} />
+                              )}
+                            </Field>
+                          )}
+                        />
+                        <Controller
+                          control={form.control}
+                          name="email"
+                          render={({ field, fieldState }) => (
+                            <Field className="gap-1">
+                              <FieldLabel required htmlFor={field.name}>
+                                Email
+                              </FieldLabel>
+                              <InputGroup>
+                                <InputGroupInput
+                                  id={field.name}
+                                  {...field}
+                                  type="email"
+                                  placeholder="ex@mail.co"
+                                />
+                                <InputGroupAddon>
+                                  <AtSign className="size-3.5" />
+                                </InputGroupAddon>
+                              </InputGroup>
+                              {fieldState && (
+                                <FieldError errors={[fieldState.error]} />
+                              )}
+                            </Field>
+                          )}
+                        />
+                      </FieldGroup>
+                    </CardContent>
+                    <CardFooter>
+                      <Button
+                        variant={"diskonter"}
+                        disabled={isLoading}
+                        className={"ml-auto"}
+                        type="submit"
+                      >
+                        {isLoading ? (
+                          <Spinner className="size-3.5" />
+                        ) : (
+                          <Send className="size-3.5" />
+                        )}
+                        {isUpdating ? "Menyimpan..." : "Simpan"}
+                      </Button>
+                    </CardFooter>
+                  </form>
+                </Delay>
+              );
+            return <Loader />;
           }}
         </AtomValue>
       </Card>
+    </div>
+  );
+};
+
+const Loader = () => {
+  return (
+    <div
+      data-slot="card-footer"
+      className="h-48.5 w-full flex items-center justify-center text-sm flex-col gap-1"
+    >
+      <Spinner className="size-5" />
+      <p>Memuat data...</p>
     </div>
   );
 };

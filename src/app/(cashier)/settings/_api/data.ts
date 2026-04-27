@@ -7,9 +7,8 @@ import {
   UserPasswordBodyUpdate,
 } from "./types";
 
-const token = getCookie(secretStore);
-
 export const userInfoQuery = async (): Promise<UserInfo> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/users-info`, {
     method: "GET",
     headers: {
@@ -28,6 +27,7 @@ export const userInfoQuery = async (): Promise<UserInfo> => {
 export const userDataUpdate = async (
   body: UserBodyUpdate,
 ): Promise<UserDataResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/users-profile`, {
     method: "PUT",
     headers: {
@@ -47,6 +47,7 @@ export const userDataUpdate = async (
 export const userPasswordUpdate = async (
   body: UserPasswordBodyUpdate,
 ): Promise<UserDataResponse> => {
+  const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/users-password`, {
     method: "PUT",
     headers: {
