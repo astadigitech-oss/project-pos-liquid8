@@ -221,9 +221,9 @@ export const CheckoutTransaction = () => {
                                   <Button
                                     disabled={isPending}
                                     onClick={async () => {
-                                        const { status } = await printCheck();
-                                        if (!status) return;
-                                        return mutate(
+                                      await printCheck();
+                                      // if (!status) return;
+                                      return mutate(
                                         {
                                           member_id:
                                             Number.parseFloat(customerId),

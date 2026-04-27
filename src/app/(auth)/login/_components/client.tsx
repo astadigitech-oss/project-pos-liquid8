@@ -32,8 +32,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AtomValue } from "@suspensive/jotai";
 import { invalidate } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
-import { printCheck } from "@/lib/print-action";
-import { toast } from "sonner";
 
 const formSchema = z.object({
   email_or_username: z.string(),
@@ -57,25 +55,18 @@ export const LoginClient = () => {
       <AtomValue atom={loginAtom}>
         {({ mutate }) => {
           const handleLogin = async (values: z.infer<typeof formSchema>) => {
-            try {
-              const { status } = await printCheck();
-              if (!status) return;
-              mutate(values, {
-                onSuccess: async () => {
-                  startTransition(() => router.push("/"));
-                  await Promise.all([
-                    invalidate(queryClient, ["current-cart"]),
-                    invalidate(queryClient, ["active-shift"]),
-                    invalidate(queryClient, ["list-product"]),
-                    invalidate(queryClient, ["list-pending"]),
-                    invalidate(queryClient, ["list-member"]),
-                  ]);
-                },
-              });
-            } catch (error) {
-              console.error(error);
-              toast.error((error as Error).message);
-            }
+            mutate(values, {
+              onSuccess: async () => {
+                startTransition(() => router.push("/"));
+                await Promise.all([
+                  invalidate(queryClient, ["current-cart"]),
+                  invalidate(queryClient, ["active-shift"]),
+                  invalidate(queryClient, ["list-product"]),
+                  invalidate(queryClient, ["list-pending"]),
+                  invalidate(queryClient, ["list-member"]),
+                ]);
+              },
+            });
           };
           return (
             <form onSubmit={form.handleSubmit(handleLogin)}>
