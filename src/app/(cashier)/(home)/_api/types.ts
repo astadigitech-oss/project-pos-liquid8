@@ -201,6 +201,66 @@ export type AddUpdateMemberResponse = {
   };
 };
 
+export type ShiftStartResponse = {
+  status: boolean;
+  message: string;
+  resource: {
+    id: number;
+    store_id: number;
+    open_by: number;
+    closed_by: any;
+    start_time: string;
+    status: string;
+    initial_cash: number;
+    total_cash: number;
+    total_transfer: number;
+    total_qris: number;
+    total_tax: number;
+    subtotal: number;
+    expected_amount: number;
+    actual_cash: number;
+    difference: number;
+    note: any;
+    created_at: string;
+    updated_at: string;
+    expected_cash: number;
+  };
+};
+
+export type ShiftEndResponse = {
+  status: boolean;
+  message: string;
+  resource: {
+    start: string;
+    end: string;
+    user_open: string;
+    user_closed: string;
+    initial_cash: number;
+    total_invoice: number;
+    total_cash: number;
+    total_transfer: number;
+    total_qris: number;
+    total_cash_cancel: number;
+    total_transfer_cancel: number;
+    total_qris_cancel: number;
+    total_tax: number;
+    total_subtotal: number;
+    total_penjualan: number;
+    pembulatan: number;
+    expected_cash: number;
+    expected_amount: number;
+    actual_cash: number;
+    actual_amount: number;
+    difference: number;
+    note: string;
+    store: {
+      name: string;
+      phone: string;
+      address: string;
+    };
+  };
+};
+
 export type ShiftResponse = {
   status: boolean;
   message: string;
@@ -208,15 +268,21 @@ export type ShiftResponse = {
     id: number;
     store_id: number;
     open_by: number;
-    closed_by: string | null;
+    closed_by: any;
     start_time: string;
     status: string;
     initial_cash: number;
-    expected_cash: number;
+    total_cash: number;
+    total_transfer: number;
+    total_qris: number;
+    total_tax: number;
+    subtotal: number;
+    expected_amount: number;
     actual_cash: number;
     difference: number;
-    note: string | null;
+    note: any;
     created_at: string;
     updated_at: string;
+    expected_cash: number;
   };
 };

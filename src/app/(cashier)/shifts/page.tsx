@@ -1,7 +1,13 @@
 import React from "react";
 import { ShiftsClient } from "./_components/client";
+import { session } from "@/lib/session";
+import { redirect } from "next/navigation";
 
-const ShiftPage = () => {
+const ShiftPage = async () => {
+  const auth = await session();
+  if (!auth.status) redirect("/login");
+  if (auth.status && auth.role === "admin") redirect("/admin");
+
   return (
     <div className="p-4">
       <ShiftsClient />

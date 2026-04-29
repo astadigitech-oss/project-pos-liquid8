@@ -51,8 +51,9 @@ export const DialogCancelTransaction = () => {
                           mutate(transactionId, {
                             onSuccess: async () => {
                               setOpen(false);
-                              await invalidate(queryClient, [
-                                "list-transaction",
+                              await Promise.all([
+                                invalidate(queryClient, ["list-transaction"]),
+                                invalidate(queryClient, ["active-shift"]),
                               ]);
                             },
                           })

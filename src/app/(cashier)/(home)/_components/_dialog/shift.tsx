@@ -1,10 +1,10 @@
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAtom, useAtomValue } from "jotai"; // Gunakan hook standar untuk readability
-import { Send, XIcon } from "lucide-react";
+import { Printer, PrinterX, Send, XIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +23,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { endShiftAtom, startShiftAtom } from "../../_api/mutation";
 import { activeShiftAtom } from "../../_api/queries";
 import { shiftDialog } from "../../_api/atoms";
-import { invalidate, numericString } from "@/lib/utils";
+import { formatRupiah, invalidate, numericString } from "@/lib/utils";
+import ReceiptPrinterEncoder from "@/lib/receipt-encoder";
+import { format } from "date-fns";
+import { printAction, printCheck } from "@/lib/print-action";
+import { ShiftEndResponse } from "../../_api/types";
+import { userInfoAtom } from "@/app/(cashier)/settings/_api/queries";
 
 const formSchema = z.object({
   cash: z.string().min(1, "Saldo wajib diisi"),
@@ -37,9 +42,10 @@ export const ShiftDialog = () => {
 
   // State & Atoms
   const [open, setOpen] = useAtom(shiftDialog);
-  const { isSuccess: isActive } = useAtomValue(activeShiftAtom);
+  const { data, isSuccess: isActive } = useAtomValue(activeShiftAtom);
   const { mutate: startShift, isPending: isStarting } =
     useAtomValue(startShiftAtom);
+  const { data: userInfo } = useAtomValue(userInfoAtom);
   const { mutate: endShift, isPending: isEnding } = useAtomValue(endShiftAtom);
 
   const form = useForm<FormValues>({
@@ -53,8 +59,183 @@ export const ShiftDialog = () => {
     form.reset();
   };
 
+  const handlePrint = async (data: ShiftEndResponse) => {
+    const rawEncoder = new ReceiptPrinterEncoder({ width: 32 });
+    const bytes = rawEncoder
+      .initialize()
+      .codepage("cp437")
+      .newline(2)
+      .align("center")
+      .font("A")
+      .line(data?.resource.store.name ?? "-")
+      .line("--Penutupan Penjualan--")
+      .font("B")
+      .rule({ style: "double", width: 42 })
+      .table(
+        [
+          { width: 16, align: "left" }, // Kolom Nama
+          { width: 26, align: "right" }, // Kolom Harga
+        ],
+        [
+          ["Tanggal", format(new Date(), "dd/MM/yyyy HH:mm")],
+          ["Dicetak Oleh", userInfo?.resource.name],
+        ],
+      )
+      .newline(1)
+      .table(
+        [
+          { width: 16, align: "left" }, // Kolom Nama
+          { width: 26, align: "right" }, // Kolom Harga
+        ],
+        [
+          ["Kasir Mulai", data?.resource.user_open ?? "-"],
+          ["Kasir Akhir", data?.resource.user_closed ?? "-"],
+          [
+            "Shift Mulai",
+            data?.resource.start
+              ? format(data?.resource.start, "dd/MM/yyyy HH:mm")
+              : "-",
+          ],
+          [
+            "Shift Akhir",
+            data?.resource.end
+              ? format(data?.resource.end, "dd/MM/yyyy HH:mm")
+              : "-",
+          ],
+        ],
+      )
+      .newline()
+      .rule({ style: "single", width: 42 })
+      .table(
+        [
+          { width: 16, align: "left" }, // Kolom Nama
+          { width: 26, align: "right" }, // Kolom Harga
+        ],
+        [["Total Resi", data?.resource.total_invoice.toLocaleString() ?? "-"]],
+      )
+      .newline()
+      .table(
+        [
+          { width: 16, align: "left" }, // Kolom Nama
+          { width: 26, align: "right" }, // Kolom Harga
+        ],
+        [
+          ["Kas Awal (A)", data?.resource.initial_cash.toLocaleString() ?? "-"],
+          ["Kas Akhir", data?.resource.expected_cash.toLocaleString() ?? "-"],
+          [
+            "Selisih Kas (B)",
+            data?.resource.difference.toLocaleString() ?? "-",
+          ],
+          ["Aktual Kas", data?.resource.actual_cash.toLocaleString() ?? "-"],
+        ],
+      )
+      .newline()
+      .rule({ style: "single", width: 42 })
+      .table(
+        [
+          { width: 16, align: "left" }, // Kolom Nama
+          { width: 26, align: "right" }, // Kolom Harga
+        ],
+        [
+          ["Tunai", data?.resource.total_cash.toLocaleString() ?? "-"],
+          [
+            "Pembatalan Tunai",
+            data?.resource.total_cash_cancel.toLocaleString() ?? "-",
+          ],
+        ],
+      )
+      .newline()
+      .rule({ style: "single", width: 42 })
+      .table(
+        [
+          { width: 16, align: "left" }, // Kolom Nama
+          { width: 26, align: "right" }, // Kolom Harga
+        ],
+        [
+          ["QRIS", data?.resource.total_qris.toLocaleString() ?? "-"],
+          [
+            "Pembatalan QRIS",
+            data?.resource.total_qris_cancel.toLocaleString() ?? "-",
+          ],
+        ],
+      )
+      .newline()
+      .rule({ style: "single", width: 42 })
+      .table(
+        [
+          { width: 23, align: "left" }, // Kolom Nama
+          { width: 19, align: "right" }, // Kolom Harga
+        ],
+        [
+          [
+            "Transfer EDC",
+            data?.resource.total_transfer.toLocaleString() ?? "-",
+          ],
+          [
+            "Pembatalan Transfer EDC",
+            data?.resource.total_transfer_cancel.toLocaleString() ?? "-",
+          ],
+        ],
+      )
+      .newline()
+      .rule({ style: "single", width: 42 })
+      .table(
+        [
+          { width: 20, align: "left" }, // Kolom Nama
+          { width: 22, align: "right" }, // Kolom Harga
+        ],
+        [
+          ["Total Pajak", data?.resource.total_tax.toLocaleString() ?? "-"],
+          [
+            "Total Subtotal",
+            data?.resource.total_subtotal.toLocaleString() ?? "-",
+          ],
+          [
+            "Total Penjualan (C)",
+            data?.resource.total_penjualan.toLocaleString() ?? "-",
+          ],
+          [
+            "Total Pembulatan",
+            data?.resource.pembulatan.toLocaleString() ?? "-",
+          ],
+        ],
+      )
+      .newline()
+      .rule({ style: "single", width: 42 })
+      .table(
+        [
+          { width: 25, align: "left" }, // Kolom Nama
+          { width: 17, align: "right" }, // Kolom Harga
+        ],
+        [
+          ["Ekspektasi Pendapatan (D)", ""],
+          ["(A+C)", data?.resource.expected_amount.toLocaleString() ?? "-"],
+        ],
+      )
+      .newline()
+      .table(
+        [
+          { width: 20, align: "left" }, // Kolom Nama
+          { width: 22, align: "right" }, // Kolom Harga
+        ],
+        [
+          ["Aktual Pendapatan", ""],
+          ["(D+B)", data?.resource.actual_amount.toLocaleString() ?? "-"],
+        ],
+      )
+      .newline()
+      .rule({ style: "single", width: 42 })
+      .newline(4)
+      .cut()
+      .encode();
+
+    const res = await printAction(bytes);
+    return res;
+  };
+
   const onSuccessAction = async () => {
     handleClose();
+
     await Promise.all([
       invalidate(queryClient, ["current-cart"]),
       invalidate(queryClient, ["active-shift"]),
@@ -62,16 +243,43 @@ export const ShiftDialog = () => {
     ]);
   };
 
-  const onSubmit = (values: FormValues) => {
-    const cashAmount = Number.parseFloat(values.cash);
+  const [cash, note] = useWatch({
+    control: form.control,
+    name: ["cash", "note"],
+  });
 
-    if (isActive) {
-      endShift(
-        { actual_cash: cashAmount, note: values.note ?? "" },
+  const onSubmit = async (withStruck: boolean = true) => {
+    const isValid = await form.trigger();
+    if (!isValid) return;
+    const cashAmount = Number.parseFloat(cash);
+
+    if (!isActive) {
+      return startShift(
+        { initial_cash: cashAmount },
         { onSuccess: onSuccessAction },
       );
+    }
+
+    if (withStruck) {
+      const check = await printCheck();
+      if (!check.status) return;
+      endShift(
+        { actual_cash: cashAmount, note: note ?? "" },
+        {
+          onSuccess: async (data) => {
+            const res = await handlePrint(data);
+            if (!res.status) return;
+            await onSuccessAction();
+          },
+        },
+      );
     } else {
-      startShift({ initial_cash: cashAmount }, { onSuccess: onSuccessAction });
+      endShift(
+        { actual_cash: cashAmount, note: note ?? "" },
+        {
+          onSuccess: onSuccessAction,
+        },
+      );
     }
   };
 
@@ -93,10 +301,7 @@ export const ShiftDialog = () => {
           <DialogDescription>{config.description}</DialogDescription>
         </DialogHeader>
 
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-4"
-        >
+        <div className="flex flex-col gap-4">
           {/* Input Saldo */}
           <Controller
             control={form.control}
@@ -120,23 +325,31 @@ export const ShiftDialog = () => {
 
           {/* Input Catatan (Hanya muncul saat Akhiri Shift) */}
           {isActive && (
-            <Controller
-              control={form.control}
-              name="note"
-              render={({ field, fieldState }) => (
-                <Field className="gap-1" data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Catatan</FieldLabel>
-                  <Textarea
-                    {...field}
-                    id={field.name}
-                    placeholder="Catatan selisih saldo (opsional)"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+            <div className="flex flex-col gap-4">
+              <Controller
+                control={form.control}
+                name="note"
+                render={({ field, fieldState }) => (
+                  <Field className="gap-1" data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>Catatan</FieldLabel>
+                    <Textarea
+                      {...field}
+                      id={field.name}
+                      placeholder="Catatan selisih saldo (opsional)"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-medium">Expetasi Saldo Akhir</p>
+                <div className="px-3 h-8 flex items-center bg-red-100 text-sm rounded-md border border-red-200">
+                  {formatRupiah(data.resource.expected_cash)}
+                </div>
+              </div>
+            </div>
           )}
 
           <DialogFooter>
@@ -152,12 +365,29 @@ export const ShiftDialog = () => {
                 </Button>
               }
             />
-            <Button type="submit" disabled={config.isLoading}>
-              <Send className="size-3.5 mr-2" />
-              {config.isLoading ? "Memproses..." : "Kirim"}
+            {isActive && (
+              <Button
+                disabled={config.isLoading}
+                onClick={() => onSubmit(false)}
+              >
+                <PrinterX className="size-3.5" />
+                {config.isLoading ? "Memproses..." : "Tanpa Struk"}
+              </Button>
+            )}
+            <Button disabled={config.isLoading} onClick={() => onSubmit(true)}>
+              {isActive ? (
+                <Printer className="size-3.5 " />
+              ) : (
+                <Send className="size-3.5 " />
+              )}
+              {config.isLoading
+                ? "Memproses..."
+                : isActive
+                  ? "Cetak Struk"
+                  : "Kirim"}
             </Button>
           </DialogFooter>
-        </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

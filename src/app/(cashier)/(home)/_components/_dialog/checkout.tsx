@@ -9,7 +9,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { Banknote, CreditCard, Printer, QrCode, XIcon } from "lucide-react";
+import {
+  Banknote,
+  CreditCard,
+  Printer,
+  PrinterX,
+  QrCode,
+  XIcon,
+} from "lucide-react";
 import { formatRupiah, invalidate, paymentMethods } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Atom, AtomValue } from "@suspensive/jotai";
@@ -126,6 +133,7 @@ export const CheckoutTransaction = () => {
     printAction(bytes);
     setIsPrinting(false);
   };
+
   return (
     <Atom atom={checkoutTransactionDialog}>
       {([open, setOpen]) => (
@@ -138,7 +146,7 @@ export const CheckoutTransaction = () => {
                     <Dialog open={open} onOpenChange={setOpen}>
                       <DialogContent
                         showCloseButton={false}
-                        className={"min-w-2xl"}
+                        className={"min-w-md"}
                       >
                         <DialogHeader>
                           <DialogTitle>Apakah Pembayaran Berhasil?</DialogTitle>
@@ -237,10 +245,12 @@ export const CheckoutTransaction = () => {
                                               setPayment(0);
                                               setPaymentMethod(null);
                                               setCustomerId("");
-                                              handlePrint(data);
                                               await Promise.all([
                                                 invalidate(queryClient, [
                                                   "current-cart",
+                                                ]),
+                                                invalidate(queryClient, [
+                                                  "active-shift",
                                                 ]),
                                                 invalidate(queryClient, [
                                                   "detail-shift",
@@ -252,8 +262,8 @@ export const CheckoutTransaction = () => {
                                         );
                                       }}
                                     >
-                                      <Printer className="size-3.5" />
-                                      Selesaikan Tanpa Cetak Struk
+                                      <PrinterX className="size-3.5" />
+                                      Tanpa Struk
                                     </Button>
                                     <Button
                                       disabled={isPending}
@@ -281,6 +291,9 @@ export const CheckoutTransaction = () => {
                                                   "current-cart",
                                                 ]),
                                                 invalidate(queryClient, [
+                                                  "active-shift",
+                                                ]),
+                                                invalidate(queryClient, [
                                                   "detail-shift",
                                                   data.resource.shift_id?.toString(),
                                                 ]),
@@ -291,7 +304,7 @@ export const CheckoutTransaction = () => {
                                       }}
                                     >
                                       <Printer className="size-3.5" />
-                                      Selesaikan dan Cetak Struk
+                                      Cetak Struk
                                     </Button>
                                   </div>
                                 )}

@@ -5,7 +5,10 @@ import { redirect } from "next/navigation";
 
 const LoginPage = async () => {
   const auth = await session();
-  if (auth) redirect("/");
+  if (auth.status) {
+    if (auth.role === "kasir") redirect("/");
+    if (auth.role === "admin") redirect("/admin");
+  }
 
   return (
     <div className="w-svw h-svh flex items-center justify-center bg-radial from-gray-300 to-white">

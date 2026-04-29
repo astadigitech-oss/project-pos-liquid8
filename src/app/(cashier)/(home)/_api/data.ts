@@ -13,7 +13,9 @@ import {
   PendingTransactionBody,
   ProductListResponse,
   ResumeDraftResponse,
+  ShiftEndResponse,
   ShiftResponse,
+  ShiftStartResponse,
   StartShiftBody,
 } from "./types";
 import { getCookie } from "cookies-next/client";
@@ -143,7 +145,7 @@ export const detailMemberQuery = async (
 
 export const startShiftPost = async (
   body: StartShiftBody,
-): Promise<ShiftResponse> => {
+): Promise<ShiftStartResponse> => {
   const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/shifts/start`, {
     method: "POST",
@@ -154,7 +156,7 @@ export const startShiftPost = async (
     body: JSON.stringify(body),
   });
 
-  const res = (await response.json()) as ShiftResponse;
+  const res = (await response.json()) as ShiftStartResponse;
 
   if (!response.ok) throw new Error(res.message);
 
@@ -163,7 +165,7 @@ export const startShiftPost = async (
 
 export const endShiftPost = async (
   body: EndShiftBody,
-): Promise<ShiftResponse> => {
+): Promise<ShiftEndResponse> => {
   const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/shifts/end`, {
     method: "POST",
@@ -174,7 +176,7 @@ export const endShiftPost = async (
     body: JSON.stringify(body),
   });
 
-  const res = (await response.json()) as ShiftResponse;
+  const res = (await response.json()) as ShiftEndResponse;
 
   if (!response.ok) throw new Error(res.message);
 
