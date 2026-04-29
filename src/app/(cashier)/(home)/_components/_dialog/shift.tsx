@@ -212,7 +212,6 @@ export const ShiftDialog = () => {
           ["(A+C)", data?.resource.expected_amount.toLocaleString() ?? "-"],
         ],
       )
-      .newline()
       .table(
         [
           { width: 20, align: "left" }, // Kolom Nama
