@@ -12,12 +12,13 @@ export async function session() {
     });
 
     if (!res.ok) {
-      return false;
+      return { status: false, role: null };
     }
 
-    return true;
+    const data = await res.json();
+    return { status: true, role: data.resource.role };
   } catch (error) {
     console.log("ERROR_CHECK", error);
-    return false;
+    return { status: false, role: null };
   }
 }

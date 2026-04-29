@@ -30,7 +30,6 @@ import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AtomValue } from "@suspensive/jotai";
-import { invalidate } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
 
 const formSchema = z.object({
@@ -56,15 +55,13 @@ export const LoginClient = () => {
         {({ mutate }) => {
           const handleLogin = async (values: z.infer<typeof formSchema>) => {
             mutate(values, {
-              onSuccess: async () => {
-                startTransition(() => router.push("/"));
-                await Promise.all([
-                  invalidate(queryClient, ["current-cart"]),
-                  invalidate(queryClient, ["active-shift"]),
-                  invalidate(queryClient, ["list-product"]),
-                  invalidate(queryClient, ["list-pending"]),
-                  invalidate(queryClient, ["list-member"]),
-                ]);
+              onSuccess: async (data) => {
+                startTransition(() =>
+                  router.push(
+                    data.resource.user.role === "kasir" ? "/" : "/admin",
+                  ),
+                );
+                await queryClient.invalidateQueries();
               },
             });
           };

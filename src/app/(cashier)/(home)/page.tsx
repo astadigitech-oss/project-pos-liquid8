@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 
 const HomePage = async () => {
   const auth = await session();
-  if (!auth) redirect("/login");
+  if (!auth.status) redirect("/login");
+  if (auth.status && auth.role === "admin") redirect("/admin");
 
   return (
     <div className="p-4">

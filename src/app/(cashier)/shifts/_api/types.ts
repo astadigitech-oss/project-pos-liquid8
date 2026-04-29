@@ -48,6 +48,7 @@ export type ShiftDetailResponse = {
     expected_cash: number;
     expected_amount: number;
     actual_cash: number;
+    pembulatan: number;
     actual_amount: number;
     difference: number;
     note: string;
