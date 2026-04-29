@@ -239,7 +239,6 @@ export const ShiftDetailDialog = () => {
                             ],
                           ],
                         )
-                        .newline()
                         .table(
                           [
                             { width: 20, align: "left" }, // Kolom Nama
