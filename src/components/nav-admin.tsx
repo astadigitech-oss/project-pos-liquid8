@@ -74,7 +74,6 @@ export const NavAdmin = () => {
       <AtomValue atom={logoutAtom}>
         {({ mutate }) => (
           <Button
-            size={"icon"}
             variant={"destructive"}
             className={"ml-auto"}
             onClick={() =>
