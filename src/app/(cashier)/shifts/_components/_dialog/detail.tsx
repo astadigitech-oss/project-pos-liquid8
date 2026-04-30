@@ -393,7 +393,7 @@ export const ShiftDetailDialog = () => {
                                 </div>
                               </div>
                               <Separator className={"bg-gray-300"} />
-                              <div className="grid grid-cols-4 gap-4 px-4">
+                              <div className="grid grid-cols-5 gap-4 px-4">
                                 <div className="flex flex-col">
                                   <p className="text-xs font-semibold">
                                     Total Invoice:
@@ -421,6 +421,16 @@ export const ShiftDetailDialog = () => {
                                   <p className="text-sm text-gray-600">
                                     {formatRupiah(
                                       data?.resource.total_tax ?? "0",
+                                    )}
+                                  </p>
+                                </div>
+                                <div className="flex flex-col">
+                                  <p className="text-xs font-semibold">
+                                    Pembulatan:
+                                  </p>
+                                  <p className="text-sm text-gray-600">
+                                    {formatRupiah(
+                                      data?.resource.pembulatan ?? "0",
                                     )}
                                   </p>
                                 </div>

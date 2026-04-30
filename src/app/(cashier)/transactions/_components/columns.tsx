@@ -8,10 +8,10 @@ import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { ReceiptText, TicketX } from "lucide-react";
 import {
-  cancelTransactionDialog,
   detailTransactionDialog,
+  cancelTransactionDialog,
   selectedTransactionId,
-} from "../_api/atom";
+} from "@/components/global/transactions/_api/atom";
 
 export const column = (): ColumnDef<{
   id: number;

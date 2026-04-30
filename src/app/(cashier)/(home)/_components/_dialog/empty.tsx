@@ -11,7 +11,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { Trash, XIcon } from "lucide-react";
 import { Atom, AtomValue, SetAtom } from "@suspensive/jotai";
-import { customerSelectedId, emptyTransactionDialog } from "../../_api/atoms";
+import {
+  customerSelectedId,
+  emptyTransactionDialog,
+  paymentCustomer,
+  paymentMethodSelected,
+} from "../../_api/atoms";
 import { emptyTransactionAtom } from "../../_api/mutation";
 import { invalidate } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
@@ -42,28 +47,42 @@ export const EmptyTransaction = () => {
               />
               <AtomValue atom={emptyTransactionAtom}>
                 {({ mutate, isPending }) => (
-                  <SetAtom atom={customerSelectedId}>
-                    {(setCustomerId) => (
-                      <Button
-                        variant={"destructive"}
-                        onClick={() =>
-                          mutate(undefined, {
-                            onSuccess: async () => {
-                              setOpen(false);
-                              setCustomerId("");
-                              await invalidate(queryClient, ["current-cart"]);
-                            },
-                          })
-                        }
-                        disabled={isPending}
-                      >
-                        {isPending ? (
-                          <Spinner className="size-3.5" />
-                        ) : (
-                          <Trash className="size-3.5" />
+                  <SetAtom atom={paymentCustomer}>
+                    {(setPayment) => (
+                      <SetAtom atom={paymentMethodSelected}>
+                        {(setPaymentMethod) => (
+                          <SetAtom atom={customerSelectedId}>
+                            {(setCustomerId) => (
+                              <Button
+                                variant={"destructive"}
+                                onClick={() =>
+                                  mutate(undefined, {
+                                    onSuccess: async () => {
+                                      setOpen(false);
+                                      setCustomerId("");
+                                      setPayment(0);
+                                      setPaymentMethod(null);
+                                      await invalidate(queryClient, [
+                                        "current-cart",
+                                      ]);
+                                    },
+                                  })
+                                }
+                                disabled={isPending}
+                              >
+                                {isPending ? (
+                                  <Spinner className="size-3.5" />
+                                ) : (
+                                  <Trash className="size-3.5" />
+                                )}
+                                {isPending
+                                  ? "Membatalkan..."
+                                  : "Batalkan Transaksi"}
+                              </Button>
+                            )}
+                          </SetAtom>
                         )}
-                        {isPending ? "Membatalkan..." : "Batalkan Transaksi"}
-                      </Button>
+                      </SetAtom>
                     )}
                   </SetAtom>
                 )}

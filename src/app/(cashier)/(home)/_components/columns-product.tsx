@@ -16,6 +16,7 @@ interface ColumnProduct {
   name: string;
   quantity: number;
   barcode: string;
+  old_barcode: string;
   price: number;
 }
 
@@ -32,6 +33,12 @@ export const columnProduct = ({
         {(from + row.index).toLocaleString()}
       </div>
     ),
+  },
+  {
+    accessorKey: "old_barcode",
+    header: "Old Barcode",
+    cell: ({ row }) =>
+      row.original.old_barcode ? row.original.old_barcode : "-",
   },
   {
     accessorKey: "barcode",

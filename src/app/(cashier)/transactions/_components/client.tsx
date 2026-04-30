@@ -14,8 +14,6 @@ import { column } from "./columns";
 import { useTime } from "@/hooks/use-time";
 import { AtomValue } from "@suspensive/jotai";
 import { listtransactionAtom } from "../_api/queries";
-import { DialogCancelTransaction } from "./_dialog/cancel";
-import { DetailTransaction } from "./_dialog/detail";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipText } from "@/providers/tooltip-provider";
 import { transactionPage, transactionSearch } from "../_api/atom";
@@ -23,6 +21,8 @@ import { useAtom } from "jotai";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Pagination } from "@/components/pagination";
+import { DetailTransaction } from "@/components/global/transactions/detail";
+import { DialogCancelTransaction } from "@/components/global/transactions/cancel";
 
 export const TransactionClient = () => {
   const { formattedDate, formattedTime } = useTime();
