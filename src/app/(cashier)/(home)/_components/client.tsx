@@ -16,7 +16,7 @@ export const HomeClient = () => {
     <div className="grid grid-cols-5 gap-4">
       <ShiftDialog />
       <div className="col-span-3">
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 h-full">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <SidebarTrigger
@@ -46,13 +46,15 @@ export const HomeClient = () => {
             </div>
             <ButtonShift />
           </div>
-          <div className="h-[calc(100svh-32px-40px-16px)] w-full bg-white rounded-xl">
-            <CurrentCart />
+          <div className="w-full h-full">
+            <div className="min-h-[calc(100svh-32px-40px-16px)] h-full w-full bg-white rounded-xl">
+              <CurrentCart />
+            </div>
           </div>
         </div>
       </div>
       <div className="col-span-2 w-full">
-        <div className="bg-white w-full h-[calc(100svh-32px)] rounded-xl shadow">
+        <div className="bg-white w-full min-h-[calc(100svh-32px)] h-full rounded-xl shadow">
           <SummaryCart />
         </div>
       </div>

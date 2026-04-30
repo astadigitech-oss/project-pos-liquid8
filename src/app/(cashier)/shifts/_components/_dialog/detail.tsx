@@ -36,7 +36,12 @@ export const ShiftDetailDialog = () => {
     <Atom atom={detailShiftDialog}>
       {([open, setOpen]) => (
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent showCloseButton={false} className={"min-w-5xl"}>
+          <DialogContent
+            showCloseButton={false}
+            className={
+              "lg:min-w-[calc(var(--container-5xl)-32px)] xl:min-w-5xl min-w-[calc(var(--container-3xl)-32px)]"
+            }
+          >
             <AtomValue atom={userInfoAtom}>
               {({ data: userInfo }) => (
                 <AtomValue atom={detailShiftAtom}>

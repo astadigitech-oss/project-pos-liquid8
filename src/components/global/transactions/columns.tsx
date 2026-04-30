@@ -25,6 +25,11 @@ export const columnDetail: ColumnDef<ColumnItem>[] = [
   {
     accessorKey: "product_name",
     header: "Nama Product",
+    cell: ({ row }) => (
+      <p className="lg:max-w-150 xl:max-w-175 max-w-90 truncate">
+        {row.original.product_name ? row.original.product_name : "-"}
+      </p>
+    ),
   },
   {
     accessorKey: "price",

@@ -31,6 +31,11 @@ export const columnSelected = (): ColumnDef<{
   {
     accessorKey: "product_name",
     header: "Nama",
+    cell: ({ row }) => (
+      <p className="lg:w-40 xl:w-80 w-30 truncate">
+        {row.original.product_name ? row.original.product_name : "-"}
+      </p>
+    ),
   },
   {
     accessorKey: "price",

@@ -43,10 +43,14 @@ export const PpnSettingClient = () => {
                 }
                 value="Muat Ulang"
               />
-              <Button className={"text-xs"}>
-                <Plus className="size-3.5" />
-                Tambah PPN
-              </Button>
+              <TooltipText
+                value="Tambah PPN"
+                render={
+                  <Button size={"icon"} className={"text-xs"}>
+                    <Plus className="size-3.5" />
+                  </Button>
+                }
+              />
             </div>
           </div>
           <DataTable columns={column()} data={data?.data ?? []} />
