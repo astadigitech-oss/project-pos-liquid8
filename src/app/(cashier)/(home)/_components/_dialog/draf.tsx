@@ -10,8 +10,13 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Send, XIcon } from "lucide-react";
-import { Atom, AtomValue } from "@suspensive/jotai";
-import { customerSelectedId, draftAddDialog } from "../../_api/atoms";
+import { Atom, AtomValue, SetAtom } from "@suspensive/jotai";
+import {
+  customerSelectedId,
+  draftAddDialog,
+  paymentCustomer,
+  paymentMethodSelected,
+} from "../../_api/atoms";
 import { pendingTransactionAtom } from "../../_api/mutation";
 import { invalidate } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
@@ -44,32 +49,48 @@ export const AddToDraft = () => {
                   />
                   <Atom atom={customerSelectedId}>
                     {([customerId, setCustomerId]) => (
-                      <Button
-                        disabled={isPending}
-                        variant={"diskonter"}
-                        onClick={() =>
-                          mutate(
-                            { member_id: Number.parseFloat(customerId) },
-                            {
-                              onSuccess: async () => {
-                                setOpen(false);
-                                setCustomerId("");
-                                await Promise.all([
-                                  invalidate(queryClient, ["current-cart"]),
-                                  invalidate(queryClient, ["list-pending"]),
-                                ]);
-                              },
-                            },
-                          )
-                        }
-                      >
-                        {isPending ? (
-                          <Spinner className="size-3.5" />
-                        ) : (
-                          <Send className="size-3.5" />
+                      <SetAtom atom={paymentCustomer}>
+                        {(setPayment) => (
+                          <SetAtom atom={paymentMethodSelected}>
+                            {(setPaymentMethod) => (
+                              <Button
+                                disabled={isPending}
+                                variant={"diskonter"}
+                                onClick={() =>
+                                  mutate(
+                                    {
+                                      member_id: Number.parseFloat(customerId),
+                                    },
+                                    {
+                                      onSuccess: async () => {
+                                        setOpen(false);
+                                        setCustomerId("");
+                                        setPayment(0);
+                                        setPaymentMethod(null);
+                                        await Promise.all([
+                                          invalidate(queryClient, [
+                                            "current-cart",
+                                          ]),
+                                          invalidate(queryClient, [
+                                            "list-pending",
+                                          ]),
+                                        ]);
+                                      },
+                                    },
+                                  )
+                                }
+                              >
+                                {isPending ? (
+                                  <Spinner className="size-3.5" />
+                                ) : (
+                                  <Send className="size-3.5" />
+                                )}
+                                {isPending ? "Memproses..." : "Masukan ke Draf"}
+                              </Button>
+                            )}
+                          </SetAtom>
                         )}
-                        {isPending ? "Memproses..." : "Masukan ke Draf"}
-                      </Button>
+                      </SetAtom>
                     )}
                   </Atom>
                 </DialogFooter>

@@ -46,48 +46,55 @@ export const DashboardAdminClient = () => {
                 <p className="text-sm font-semibold">Riwayat Transaksi</p>
               </div>
               <div className="flex flex-col gap-2">
-                {data?.resource.recent_transactions.map((item) => (
-                  <div
-                    key={item.id}
-                    className="flex items-center border p-2.5 rounded-lg justify-between text-sm h-16"
-                  >
-                    <div className="flex items-center gap-2.5 h-full">
-                      <div className="h-full aspect-square flex items-center justify-center flex-none bg-red-200 rounded-md">
-                        <ShoppingBag className="size-5 stroke-[1.5]" />
+                {data?.resource.recent_transactions &&
+                data?.resource.recent_transactions.length > 0 ? (
+                  data?.resource.recent_transactions.map((item) => (
+                    <div
+                      key={item.id}
+                      className="flex items-center border p-2.5 rounded-lg justify-between text-sm h-16"
+                    >
+                      <div className="flex items-center gap-2.5 h-full">
+                        <div className="h-full aspect-square flex items-center justify-center flex-none bg-red-200 rounded-md">
+                          <ShoppingBag className="size-5 stroke-[1.5]" />
+                        </div>
+                        <div className="flex flex-col justify-between h-full">
+                          <div className="flex items-center gap-1.5">
+                            <p className="font-medium">{item.invoice}</p>
+                            <div
+                              className={cn(
+                                "size-1.5 rounded-full",
+                                item.status === "done"
+                                  ? "bg-green-500"
+                                  : "bg-red-500",
+                              )}
+                            />
+                          </div>
+                          <div className="flex items-center gap-1 text-gray-500">
+                            <StoreIcon className="size-3" />
+                            <p className="text-xs capitalize">
+                              {item.store_name}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex flex-col justify-between h-full">
-                        <div className="flex items-center gap-1.5">
-                          <p className="font-medium">{item.invoice}</p>
-                          <div
-                            className={cn(
-                              "size-1.5 rounded-full",
-                              item.status === "done"
-                                ? "bg-green-500"
-                                : "bg-red-500",
-                            )}
-                          />
-                        </div>
-                        <div className="flex items-center gap-1 text-gray-500">
-                          <StoreIcon className="size-3" />
-                          <p className="text-xs capitalize">
-                            {item.store_name}
-                          </p>
-                        </div>
+                      <div className="flex flex-col items-end justify-between h-full">
+                        <p className="text-xs">
+                          {format(item.created_at, "dd/MM/yyyy - HH:mm", {
+                            locale: id,
+                            in: tz("Asia/Jakarta"),
+                          })}
+                        </p>
+                        <p className="font-medium">
+                          {formatRupiah(item.total_amount)}
+                        </p>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end justify-between h-full">
-                      <p className="text-xs">
-                        {format(item.created_at, "dd/MM/yyyy - HH:mm", {
-                          locale: id,
-                          in: tz("Asia/Jakarta"),
-                        })}
-                      </p>
-                      <p className="font-medium">
-                        {formatRupiah(item.total_amount)}
-                      </p>
-                    </div>
+                  ))
+                ) : (
+                  <div className="flex items-center justify-center h-32 font-semibold text-sm">
+                    <p>Tidak ada riwayat transaksi</p>
                   </div>
-                ))}
+                )}
               </div>
             </div>
           </div>

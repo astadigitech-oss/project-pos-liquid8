@@ -339,14 +339,7 @@ export const SummaryCart = () => {
                                             disabled={
                                               !memberId ||
                                               !data?.resource.items ||
-                                              data?.resource.items?.length ===
-                                                0 ||
-                                              (paymentMethod === "cash" &&
-                                                (data?.resource.total_amount ??
-                                                  0) > payment) ||
-                                              ((data?.resource.items?.length ??
-                                                0) > 0 &&
-                                                !paymentMethod)
+                                              data?.resource.items?.length === 0
                                             }
                                           >
                                             <Clock />

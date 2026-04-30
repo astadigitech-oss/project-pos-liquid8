@@ -22,7 +22,11 @@ import { DataTable } from "@/components/data-table";
 import { TooltipText } from "@/providers/tooltip-provider";
 
 import { currentCartAtom } from "../../_api/queries";
-import { productDialog } from "../../_api/atoms";
+import {
+  paymentCustomer,
+  paymentMethodSelected,
+  productDialog,
+} from "../../_api/atoms";
 import { addToCartAtom } from "../../_api/mutation";
 import { columnSelected } from "../columns-selected";
 import { cn, invalidate } from "@/lib/utils";
@@ -35,6 +39,8 @@ const BarcodeSearch = ({ isRefetching }: { isRefetching: boolean }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const { mutate: addToCart, isPending: isAdding } =
     useAtomValue(addToCartAtom);
+  const setPayment = useSetAtom(paymentCustomer);
+  const setPaymentMethod = useSetAtom(paymentMethodSelected);
 
   useEffect(() => {
     if (!localValue) return;
@@ -45,6 +51,8 @@ const BarcodeSearch = ({ isRefetching }: { isRefetching: boolean }) => {
         {
           onSuccess: async () => {
             setLocalValue("");
+            setPayment(0);
+            setPaymentMethod(null);
             inputRef.current?.focus();
             await Promise.all([
               invalidate(queryClient, ["current-cart"]),
@@ -56,7 +64,7 @@ const BarcodeSearch = ({ isRefetching }: { isRefetching: boolean }) => {
     }, 500);
 
     return () => clearTimeout(handler);
-  }, [localValue, addToCart, queryClient]);
+  }, [localValue, addToCart, queryClient, setPayment, setPaymentMethod]);
 
   return (
     <InputGroup className="has-disabled:opacity-100 has-disabled:bg-transparent">
