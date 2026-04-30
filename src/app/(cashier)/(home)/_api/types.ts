@@ -22,6 +22,7 @@ export type CurrentCartResponse = {
       amount: number;
       tax: number;
     };
+    pembulatan: number;
     subtotal: number;
     total_amount: number;
   };
@@ -102,6 +103,7 @@ export type ProductListResponse = {
       quantity: number;
       status: string;
       store_name: string;
+      old_barcode: string;
       created_at: string;
     }[];
     pagination: {
@@ -169,6 +171,7 @@ export type CheckoutTransactionResponse = {
     }>;
     kasir: string;
     paid_amount: number;
+    pembulatan: number;
     payment_method: string;
     ppn: {
       amount: number;

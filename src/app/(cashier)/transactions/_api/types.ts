@@ -37,6 +37,7 @@ export type transactionDetailResponse = {
     total_quantity: number;
     paid_amount: number;
     change_amount: number;
+    pembulatan: number;
     payment_method: string;
     subtotal: number;
     total_amount: number;

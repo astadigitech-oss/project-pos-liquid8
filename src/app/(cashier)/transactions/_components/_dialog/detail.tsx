@@ -135,6 +135,14 @@ export const DetailTransaction = () => {
                               "id-ID",
                             ),
                           ],
+
+                          [
+                            `Pembulatan:`,
+                            (data?.resource.pembulatan ?? 0).toLocaleString(
+                              "id-ID",
+                            ),
+                          ],
+
                           [
                             "Total:",
                             (data?.resource.total_amount ?? 0).toLocaleString(
@@ -229,7 +237,7 @@ export const DetailTransaction = () => {
                                 - Rangkuman Transaksi
                               </p>
                               <div className="flex flex-col gap-4 py-4 rounded-lg border-gray-300 border">
-                                <div className="grid grid-cols-4 gap-4 px-4">
+                                <div className="grid grid-cols-3 gap-4 px-4">
                                   <div className="flex flex-col">
                                     <p className="text-xs font-semibold">
                                       Invoice:
@@ -252,23 +260,6 @@ export const DetailTransaction = () => {
                                     </p>
                                     <p className="text-sm text-gray-600">
                                       {data?.resource.kasir ?? "-"}
-                                    </p>
-                                  </div>
-                                  <div className="flex flex-col">
-                                    <p className="text-xs font-semibold">
-                                      Tanggal:
-                                    </p>
-                                    <p className="text-sm text-gray-600">
-                                      {data?.resource.created_at
-                                        ? format(
-                                            data?.resource.created_at,
-                                            "iii, dd MMM yyyy HH:mm",
-                                            {
-                                              locale: id,
-                                              in: tz("Asia/Jakarta"),
-                                            },
-                                          )
-                                        : "-"}
                                     </p>
                                   </div>
                                 </div>
@@ -306,6 +297,19 @@ export const DetailTransaction = () => {
                                   </div>
                                   <div className="flex flex-col">
                                     <p className="text-xs font-semibold">
+                                      Pembulatan:
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                      {formatRupiah(
+                                        data?.resource.pembulatan ?? 0,
+                                      )}
+                                    </p>
+                                  </div>
+                                </div>
+                                <Separator className={"bg-gray-300"} />
+                                <div className="grid grid-cols-3 gap-4 px-4">
+                                  <div className="flex flex-col">
+                                    <p className="text-xs font-semibold">
                                       Total Harga:
                                     </p>
                                     <p className="text-sm text-gray-600">
@@ -313,28 +317,6 @@ export const DetailTransaction = () => {
                                         data?.resource.total_amount ?? 0,
                                       )}
                                     </p>
-                                  </div>
-                                </div>
-                                <Separator className={"bg-gray-300"} />
-                                <div className="grid grid-cols-4 gap-4 px-4">
-                                  <div className="flex flex-col gap-1">
-                                    <p className="text-xs font-semibold">
-                                      Metode Pembayaran:
-                                    </p>
-                                    <div className="text-sm text-gray-600 flex items-center gap-1">
-                                      <div className="size-6 rounded bg-gray-200 flex items-center justify-center">
-                                        {paymentMethod === "qris" && (
-                                          <QrCode className="size-4" />
-                                        )}
-                                        {paymentMethod === "transfer" && (
-                                          <CreditCard className="size-3.5" />
-                                        )}
-                                        {paymentMethod === "cash" && (
-                                          <Banknote className="size-3.5" />
-                                        )}
-                                      </div>
-                                      {paymentMethodLabel}
-                                    </div>
                                   </div>
                                   <div className="flex flex-col">
                                     <p className="text-xs font-semibold">
@@ -355,6 +337,45 @@ export const DetailTransaction = () => {
                                         data?.resource.change_amount ?? 0,
                                       )}
                                     </p>
+                                  </div>
+                                </div>
+                                <Separator className={"bg-gray-300"} />
+                                <div className="grid grid-cols-3 gap-4 px-4">
+                                  <div className="flex flex-col">
+                                    <p className="text-xs font-semibold">
+                                      Tanggal:
+                                    </p>
+                                    <p className="text-sm text-gray-600">
+                                      {data?.resource.created_at
+                                        ? format(
+                                            data?.resource.created_at,
+                                            "iii, dd MMM yyyy HH:mm",
+                                            {
+                                              locale: id,
+                                              in: tz("Asia/Jakarta"),
+                                            },
+                                          )
+                                        : "-"}
+                                    </p>
+                                  </div>
+                                  <div className="flex flex-col gap-1">
+                                    <p className="text-xs font-semibold">
+                                      Metode Pembayaran:
+                                    </p>
+                                    <div className="text-sm text-gray-600 flex items-center gap-1">
+                                      <div className="size-6 rounded bg-gray-200 flex items-center justify-center">
+                                        {paymentMethod === "qris" && (
+                                          <QrCode className="size-4" />
+                                        )}
+                                        {paymentMethod === "transfer" && (
+                                          <CreditCard className="size-3.5" />
+                                        )}
+                                        {paymentMethod === "cash" && (
+                                          <Banknote className="size-3.5" />
+                                        )}
+                                      </div>
+                                      {paymentMethodLabel}
+                                    </div>
                                   </div>
                                   <div className="flex flex-col gap-0.5">
                                     <p className="text-xs font-semibold">

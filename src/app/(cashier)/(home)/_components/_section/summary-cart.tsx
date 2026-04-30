@@ -162,6 +162,12 @@ export const SummaryCart = () => {
                           {formatRupiah(data.resource.ppn.amount)}
                         </p>
                       </div>
+                      <div className="flex justify-between items-center">
+                        <p>Pembulatan:</p>
+                        <p className="tabular-nums">
+                          {formatRupiah(data.resource.pembulatan)}
+                        </p>
+                      </div>
                       <Separator />
                       <div className="flex justify-between items-center text-base font-medium">
                         <p>Total:</p>

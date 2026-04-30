@@ -26,13 +26,13 @@ export const DashboardAdminClient = () => {
             <div className="bg-white border shadow rounded-xl p-4 flex flex-col gap-1">
               <p className="text-sm">Stok Produk Semua Toko</p>
               <p className="text-2xl text-gray-700 font-medium">
-                {formatRupiah(data?.resource.total_price ?? 0)}
+                {(data?.resource.total_stock ?? 0).toLocaleString()}
               </p>
             </div>
             <div className="bg-white border shadow rounded-xl p-4 flex flex-col gap-1">
               <p className="text-sm">Total Harga Produk Semua Toko</p>
               <p className="text-2xl text-gray-700 font-medium">
-                {(data?.resource.total_stock ?? 0).toLocaleString()}
+                {formatRupiah(data?.resource.total_price ?? 0)}
               </p>
             </div>
           </div>

@@ -112,6 +112,10 @@ export const CheckoutTransaction = () => {
             (data?.resource.ppn.amount ?? 0).toLocaleString("id-ID"),
           ],
           [
+            `Pembulatan:`,
+            (data?.resource.pembulatan ?? 0).toLocaleString("id-ID"),
+          ],
+          [
             "Total:",
             (data?.resource.total_amount ?? 0).toLocaleString("id-ID"),
           ],
