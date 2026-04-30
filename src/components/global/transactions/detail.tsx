@@ -9,8 +9,8 @@ import {
 } from "@/components/ui/dialog";
 import { Atom, AtomValue } from "@suspensive/jotai";
 import React from "react";
-import { detailTransactionDialog } from "../../_api/atom";
-import { detailtransactionAtom } from "../../_api/queries";
+import { detailTransactionDialog } from "./_api/atom";
+import { detailtransactionAtom } from "./_api/queries";
 import { Button } from "@/components/ui/button";
 import {
   Banknote,
@@ -27,7 +27,7 @@ import { DataTable } from "@/components/data-table";
 import { id } from "date-fns/locale";
 import { tz } from "@date-fns/tz";
 import { format } from "date-fns";
-import { columnDetail } from "../columns-detail";
+import { columnDetail } from "./columns";
 import { Delay, Suspense } from "@suspensive/react";
 import { Spinner } from "@/components/ui/spinner";
 import { printAction } from "@/lib/print-action";

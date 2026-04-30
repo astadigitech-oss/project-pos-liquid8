@@ -11,13 +11,10 @@ import {
 import { Atom, AtomValue } from "@suspensive/jotai";
 import { Send, XIcon } from "lucide-react";
 import React from "react";
-import {
-  cancelTransactionDialog,
-  selectedTransactionId,
-} from "../../_api/atom";
-import { deleteTransactionAtom } from "../../_api/mutations";
 import { invalidate } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
+import { cancelTransactionDialog, selectedTransactionId } from "./_api/atom";
+import { deleteTransactionAtom } from "./_api/mutations";
 
 export const DialogCancelTransaction = () => {
   const queryClient = useQueryClient();

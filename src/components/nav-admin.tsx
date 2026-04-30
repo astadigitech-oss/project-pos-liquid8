@@ -16,6 +16,7 @@ import { AtomValue } from "@suspensive/jotai";
 import { logoutAtom } from "./sidebar/_api/mutations";
 import { deleteCookie } from "cookies-next/client";
 import { secretStore } from "@/config";
+import { userInfoAtom } from "@/app/(cashier)/settings/_api/queries";
 
 export const NavAdmin = () => {
   const pathname = usePathname();
@@ -71,25 +72,40 @@ export const NavAdmin = () => {
           </Link>
         </div>
       </div>
-      <AtomValue atom={logoutAtom}>
-        {({ mutate }) => (
-          <Button
-            variant={"destructive"}
-            className={"ml-auto"}
-            onClick={() =>
-              mutate(undefined, {
-                onSuccess: () => {
-                  deleteCookie(secretStore);
-                  router.push("/login");
-                },
-              })
-            }
-          >
-            Keluar
-            <LogOut className="size-3.5" />
-          </Button>
-        )}
-      </AtomValue>
+      <div className={"ml-auto flex items-center gap-6 border p-1 rounded-xl"}>
+        <AtomValue atom={userInfoAtom}>
+          {({ data }) => (
+            <div className="flex items-center">
+              <div className="border rounded-lg px-1 ml-1 flex justify-center bg-gray-200">
+                <p className="font-semibold text-xs capitalize">
+                  {data?.resource.role}
+                </p>
+              </div>
+              <p className="font-semibold text-sm pl-1 capitalize">
+                {data?.resource.name}
+              </p>
+            </div>
+          )}
+        </AtomValue>
+        <AtomValue atom={logoutAtom}>
+          {({ mutate }) => (
+            <Button
+              variant={"destructive"}
+              size={"icon-sm"}
+              onClick={() =>
+                mutate(undefined, {
+                  onSuccess: () => {
+                    deleteCookie(secretStore);
+                    router.push("/login");
+                  },
+                })
+              }
+            >
+              <LogOut className="size-3.5" />
+            </Button>
+          )}
+        </AtomValue>
+      </div>
     </div>
   );
 };

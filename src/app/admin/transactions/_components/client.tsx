@@ -20,13 +20,15 @@ import { transactionListAdminAtom } from "../_api/queries";
 import { useAtom } from "jotai";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipText } from "@/providers/tooltip-provider";
-import { DetailTransaction } from "./_dialog/detail";
+import { DetailTransaction } from "@/components/global/transactions/detail";
+import { DialogCancelTransaction } from "@/components/global/transactions/cancel";
 
 export const TransactionAdminClient = () => {
   return (
     <AtomValue atom={transactionListAdminAtom}>
       {({ data, isSuccess, isError, isRefetching }) => (
         <div className="bg-white border shadow rounded-xl p-4 flex flex-col gap-4">
+          <DialogCancelTransaction />
           <DetailTransaction />
           <div className="flex items-center justify-between">
             <h1 className="font-semibold">Transactions</h1>
