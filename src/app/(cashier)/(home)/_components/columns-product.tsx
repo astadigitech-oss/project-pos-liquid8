@@ -6,7 +6,11 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
 import { addToCartAtom } from "../_api/mutation";
 import { useQueryClient } from "@tanstack/react-query";
-import { productDialog } from "../_api/atoms";
+import {
+  paymentCustomer,
+  paymentMethodSelected,
+  productDialog,
+} from "../_api/atoms";
 
 interface ColumnProduct {
   name: string;
@@ -54,40 +58,50 @@ export const columnProduct = ({
         <div className="flex items-center">
           <SetAtom atom={productDialog}>
             {(setOpen) => (
-              <AtomValue atom={addToCartAtom}>
-                {({ mutate }) => {
-                  const queryClient = useQueryClient();
-                  const handleAddToCart = () => {
-                    mutate(
-                      { product_barcode: row.original.barcode },
-                      {
-                        onSuccess: async () => {
-                          setOpen(false);
-                          await Promise.all([
-                            invalidate(queryClient, ["current-cart"]),
-                            invalidate(queryClient, ["list-product"]),
-                          ]);
-                        },
-                      },
-                    );
-                  };
-                  return (
-                    <TooltipText
-                      value={"Pilih Produk"}
-                      render={
-                        <Button
-                          size={"icon-xs"}
-                          className={"hover:bg-gray-200"}
-                          variant={"outline"}
-                          onClick={handleAddToCart}
-                        >
-                          <Plus />
-                        </Button>
-                      }
-                    />
-                  );
-                }}
-              </AtomValue>
+              <SetAtom atom={paymentCustomer}>
+                {(setPayment) => (
+                  <SetAtom atom={paymentMethodSelected}>
+                    {(setPaymentMethod) => (
+                      <AtomValue atom={addToCartAtom}>
+                        {({ mutate }) => {
+                          const queryClient = useQueryClient();
+                          const handleAddToCart = () => {
+                            mutate(
+                              { product_barcode: row.original.barcode },
+                              {
+                                onSuccess: async () => {
+                                  setOpen(false);
+                                  setPayment(0);
+                                  setPaymentMethod(null);
+                                  await Promise.all([
+                                    invalidate(queryClient, ["current-cart"]),
+                                    invalidate(queryClient, ["list-product"]),
+                                  ]);
+                                },
+                              },
+                            );
+                          };
+                          return (
+                            <TooltipText
+                              value={"Pilih Produk"}
+                              render={
+                                <Button
+                                  size={"icon-xs"}
+                                  className={"hover:bg-gray-200"}
+                                  variant={"outline"}
+                                  onClick={handleAddToCart}
+                                >
+                                  <Plus />
+                                </Button>
+                              }
+                            />
+                          );
+                        }}
+                      </AtomValue>
+                    )}
+                  </SetAtom>
+                )}
+              </SetAtom>
             )}
           </SetAtom>
         </div>
