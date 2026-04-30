@@ -32,6 +32,11 @@ export const columnDetail: ColumnDef<ColumnItem>[] = [
   {
     accessorKey: "product_name",
     header: "Nama Product",
+    cell: ({ row }) => (
+      <p className="lg:max-w-100 xl:max-w-120 max-w-50  truncate">
+        {row.original.product_name ? row.original.product_name : "-"}
+      </p>
+    ),
   },
   {
     accessorKey: "subtotal",

@@ -47,6 +47,11 @@ export const columnProduct = ({
   {
     accessorKey: "name",
     header: "Nama",
+    cell: ({ row }) => (
+      <p className="w-50 lg:w-80 xl:w-90 truncate">
+        {row.original.name ? row.original.name : "-"}
+      </p>
+    ),
   },
   {
     accessorKey: "quantity",

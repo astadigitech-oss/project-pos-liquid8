@@ -31,15 +31,20 @@ export const ProductList = () => {
     <Atom atom={productDialog}>
       {([open, setOpen]) => (
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent showCloseButton={false} className={"min-w-3xl"}>
+          <DialogContent
+            showCloseButton={false}
+            className={
+              "lg:min-w-[calc(var(--container-5xl)-32px)] xl:min-w-5xl min-w-[calc(var(--container-3xl)-32px)]"
+            }
+          >
             <DialogHeader>
               <DialogTitle>Daftar Produk</DialogTitle>
               <DialogDescription>Pilih produk secara manual</DialogDescription>
             </DialogHeader>
             <AtomValue atom={listProductAtom}>
               {({ data, refetch, isRefetching, isPending, isSuccess }) => (
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-4 w-full">
+                  <div className="flex items-center gap-2 w-full">
                     <Atom atom={productSearch}>
                       {([search, setSearch]) => {
                         const SearchInput = ({

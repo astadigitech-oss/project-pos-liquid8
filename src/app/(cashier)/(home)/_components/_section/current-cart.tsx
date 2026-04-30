@@ -106,7 +106,7 @@ const BarcodeSearch = ({ isRefetching }: { isRefetching: boolean }) => {
 // --- Komponen Utama ---
 export const CurrentCart = () => {
   return (
-    <Suspense fallback={<Loader />}>
+    <Suspense clientOnly fallback={<Loader />}>
       <CartContent />
     </Suspense>
   );
@@ -130,8 +130,8 @@ const CartContent = () => {
   if (isSuccess) {
     return (
       <Delay ms={500} fallback={<Loader />}>
-        <ProductList />
-        <div className="w-full rounded-lg h-full shadow flex flex-col bg-white">
+        <div className="size-full flex flex-col">
+          <ProductList />
           {/* Header Action */}
           <div className="flex items-center gap-2 p-4 border-b border-gray-300">
             <div className="flex-1">
@@ -157,11 +157,13 @@ const CartContent = () => {
           </div>
 
           {/* Table Area */}
-          <div className="p-4 flex-1 overflow-auto">
-            <DataTable
-              columns={columnSelected()}
-              data={data?.resource?.items ?? []}
-            />
+          <div className="p-4 flex-1  overflow-hidden w-full">
+            <div className="max-h-[calc(100svh-32px-40px-16px-65px-16px-16px)] h-full overflow-y-auto overflow-x-hidden custom-scrollbar">
+              <DataTable
+                columns={columnSelected()}
+                data={data?.resource?.items ?? []}
+              />
+            </div>
           </div>
         </div>
       </Delay>

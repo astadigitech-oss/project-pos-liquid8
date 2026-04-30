@@ -95,7 +95,9 @@ export const CheckoutTransaction = () => {
         ],
         data?.resource.items.map((i) => [
           "-",
-          i.product_name,
+          i.product_name.length > 55
+            ? i.product_name.trim().slice(0, 55) + "..."
+            : i.product_name.trim(),
           (i.price ?? 0).toLocaleString("id-ID"),
         ]) ?? [],
       )
