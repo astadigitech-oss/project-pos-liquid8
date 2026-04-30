@@ -30,9 +30,9 @@ import { Spinner } from "@/components/ui/spinner";
 import { printAction } from "@/lib/print-action";
 import ReceiptPrinterEncoder from "@/lib/receipt-encoder";
 import { toast } from "sonner";
-import { detailTransactionDialog } from "@/app/(cashier)/transactions/_api/atom";
-import { detailtransactionAtom } from "@/app/(cashier)/transactions/_api/queries";
-import { columnDetail } from "@/app/(cashier)/transactions/_components/columns-detail";
+import { detailTransactionDialog } from "@/components/global/transactions/_api/atom";
+import { detailtransactionAtom } from "@/components/global/transactions/_api/queries";
+import { columnDetail } from "@/components/global/transactions/columns";
 
 export const DetailTransaction = () => {
   const [isPrinting, setIsPrinting] = React.useState(false);

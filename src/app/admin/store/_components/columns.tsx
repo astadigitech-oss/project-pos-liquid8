@@ -2,7 +2,7 @@ import {
   cancelTransactionDialog,
   detailTransactionDialog,
   selectedTransactionId,
-} from "@/app/(cashier)/transactions/_api/atom";
+} from "@/components/global/transactions/_api/atom";
 import { Button } from "@/components/ui/button";
 import { cn, formatRupiah } from "@/lib/utils";
 import { TooltipText } from "@/providers/tooltip-provider";
