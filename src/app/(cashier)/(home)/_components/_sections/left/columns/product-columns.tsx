@@ -4,13 +4,13 @@ import { TooltipText } from "@/providers/tooltip-provider";
 import { AtomValue, SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { Plus } from "lucide-react";
-import { addToCartAtom } from "../_api/mutation";
 import { useQueryClient } from "@tanstack/react-query";
 import {
+  cashierDialog,
   paymentCustomer,
   paymentMethodSelected,
-  productDialog,
-} from "../_api/atoms";
+} from "@/app/(cashier)/(home)/_api/atoms";
+import { addToCartAtom } from "@/app/(cashier)/(home)/_api/mutation";
 
 interface ColumnProduct {
   name: string;
@@ -48,7 +48,7 @@ export const columnProduct = ({
     accessorKey: "name",
     header: "Nama",
     cell: ({ row }) => (
-      <p className="w-50 lg:w-80 xl:w-90 truncate">
+      <p className="max-w-50 lg:max-w-80 xl:max-w-90 truncate">
         {row.original.name ? row.original.name : "-"}
       </p>
     ),
@@ -68,7 +68,7 @@ export const columnProduct = ({
     cell: ({ row }) => {
       return (
         <div className="flex items-center">
-          <SetAtom atom={productDialog}>
+          <SetAtom atom={cashierDialog}>
             {(setOpen) => (
               <SetAtom atom={paymentCustomer}>
                 {(setPayment) => (
@@ -82,7 +82,7 @@ export const columnProduct = ({
                               { product_barcode: row.original.barcode },
                               {
                                 onSuccess: async () => {
-                                  setOpen(false);
+                                  setOpen("");
                                   setPayment(0);
                                   setPaymentMethod(null);
                                   await Promise.all([

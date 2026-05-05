@@ -21,3 +21,22 @@ export const listStaffQuery = async (
 
   return res;
 };
+
+export const detailStaffQuery = async (
+  id: string,
+): Promise<StaffListResponse> => {
+  const token = getCookie(secretStore);
+  const response = await fetch(`${apiUrl}/api/users/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const res = (await response.json()) as StaffListResponse;
+
+  if (!response.ok) throw new Error(res.data.message);
+
+  return res;
+};

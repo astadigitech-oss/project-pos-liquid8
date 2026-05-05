@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/input-group";
 import { RefreshCw, UserPlus2, UserSearch, XCircle, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { customerPage, customerSearch, isCustomer } from "../../_api/atoms";
+import { cashierDialog, customerPage, customerSearch } from "../../_api/atoms";
 import { DataTable } from "@/components/data-table";
 import { column } from "../columns";
 import { listMemberAtom } from "../../_api/queries";
@@ -57,12 +57,12 @@ export const CustomerList = () => {
             />
           </Button>
 
-          <SetAtom atom={isCustomer}>
-            {(setIsCustomer) => (
+          <SetAtom atom={cashierDialog}>
+            {(setDialog) => (
               <Button
                 size="icon"
                 type="button"
-                onClick={() => setIsCustomer("add")}
+                onClick={() => setDialog("customer-add")}
                 variant={"diskonter"}
               >
                 <UserPlus2 className="size-3.5" />

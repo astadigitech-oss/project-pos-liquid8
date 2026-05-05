@@ -27,9 +27,6 @@ import { tz } from "@date-fns/tz";
 import { format } from "date-fns";
 import { Delay, Suspense } from "@suspensive/react";
 import { Spinner } from "@/components/ui/spinner";
-import { printAction } from "@/lib/print-action";
-import ReceiptPrinterEncoder from "@/lib/receipt-encoder";
-import { toast } from "sonner";
 import { detailTransactionDialog } from "@/components/global/transactions/_api/atom";
 import { detailtransactionAtom } from "@/components/global/transactions/_api/queries";
 import { columnDetail } from "@/components/global/transactions/columns";
@@ -59,112 +56,6 @@ export const DetailTransaction = () => {
 
                   const handlePrint = async () => {
                     setIsPrinting(true);
-                    const rawEncoder = new ReceiptPrinterEncoder({ width: 32 });
-                    const bytes = rawEncoder
-                      .initialize()
-                      .codepage("cp437")
-                      .newline(2)
-                      .align("center")
-                      .font("A")
-                      .line(data?.resource.store.name ?? "-")
-                      .font("B")
-                      .line(data?.resource.store.address ?? "-")
-                      .line(data?.resource.store.phone ?? "-")
-                      .font("B")
-                      .rule({ style: "double", width: 42 })
-                      .font("A")
-                      .line(`--${data?.resource.invoice ?? "-"}--`)
-                      .font("B")
-                      .rule({ style: "double", width: 42 })
-                      .table(
-                        [
-                          { width: 10, align: "left", marginRight: 2 }, // Kolom Nama
-                          { width: 30, align: "right" }, // Kolom Harga
-                        ],
-                        [
-                          [
-                            "Tanggal",
-                            data?.resource.created_at
-                              ? format(
-                                  data?.resource.created_at,
-                                  "dd/MM/yyyy HH:mm",
-                                )
-                              : "-",
-                          ],
-                          ["Kasir", data?.resource.kasir ?? "-"],
-                          ["Pelanggan", data?.resource.customer_name ?? "-"],
-                        ],
-                      )
-                      .rule({ style: "single", width: 42 })
-                      .table(
-                        [
-                          { width: 20, align: "left", marginRight: 2 }, // Kolom Nama
-                          { width: 20, align: "right" }, // Kolom Harga
-                        ],
-                        [["Pembayaran", paymentMethodLabel ?? "-"]],
-                      )
-                      .rule({ style: "single", width: 42 })
-                      .table(
-                        [
-                          { width: 2, align: "left" }, // Kolom Nama
-                          { width: 28, align: "left" }, // Kolom Nama
-                          { width: 12, align: "right" }, // Kolom Harga
-                        ],
-                        data?.resource.items.map((i) => [
-                          "-",
-                          i.product_name,
-                          (i.price ?? 0).toLocaleString("id-ID"),
-                        ]) ?? [],
-                      )
-                      .rule({ style: "single", width: 42 })
-                      .table(
-                        [
-                          { width: 27, align: "right", marginRight: 2 },
-                          { width: 13, align: "right" },
-                        ],
-                        [
-                          [
-                            "Subtotal:",
-                            (data?.resource.subtotal ?? 0).toLocaleString(
-                              "id-ID",
-                            ),
-                          ],
-                          [
-                            `PPN (${data?.resource.ppn.tax}):`,
-                            (data?.resource.ppn.amount ?? 0).toLocaleString(
-                              "id-ID",
-                            ),
-                          ],
-                          [
-                            "Total:",
-                            (data?.resource.total_amount ?? 0).toLocaleString(
-                              "id-ID",
-                            ),
-                          ],
-                          [
-                            "Bayar:",
-                            (data?.resource.paid_amount ?? 0).toLocaleString(
-                              "id-ID",
-                            ),
-                          ],
-                          [
-                            "Kembalian:",
-                            (data?.resource.change_amount ?? 0).toLocaleString(
-                              "id-ID",
-                            ),
-                          ],
-                        ],
-                      )
-                      .newline()
-                      .font("A")
-                      .align("center")
-                      .line("- Terima Kasih -")
-                      .newline(4)
-                      .cut()
-                      .encode();
-
-                    const res = await printAction(bytes);
-                    toast.success(res.message);
                     setIsPrinting(false);
                   };
 
@@ -384,7 +275,7 @@ export const DetailTransaction = () => {
                               <DataTable
                                 isLoading={isRefetching}
                                 columns={columnDetail}
-                                data={data?.resource.items ?? []}
+                                data={[]}
                               />
                             </div>
                           </div>

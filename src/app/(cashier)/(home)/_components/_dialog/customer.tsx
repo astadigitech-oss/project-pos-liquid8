@@ -1,6 +1,6 @@
-import { Atom, AtomValue } from "@suspensive/jotai";
+import { Atom } from "@suspensive/jotai";
 import React from "react";
-import { customerDialog, isCustomer } from "../../_api/atoms";
+import { cashierDialog } from "../../_api/atoms";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { CustomerList } from "../_section/customer-list";
 import { CustomerAdd } from "../_section/customer-add";
@@ -9,29 +9,40 @@ import { cn } from "@/lib/utils";
 
 export const CustomerDialog = () => {
   return (
-    <Atom atom={customerDialog}>
+    <Atom atom={cashierDialog}>
       {([open, setOpen]) => (
-        <Dialog open={open} onOpenChange={setOpen}>
-          <AtomValue atom={isCustomer}>
-            {(isAdd) => (
-              <DialogContent
-                showCloseButton={false}
-                className={cn(
-                  "min-w-2xl",
-                  (isAdd === "add" || isAdd === "edit" || isAdd === "delete") &&
-                    "min-w-md",
-                )}
-              >
-                {isAdd === "add" || isAdd === "edit" ? (
-                  <CustomerAdd />
-                ) : isAdd === "delete" ? (
-                  <CustomerDelete />
-                ) : (
-                  <CustomerList />
-                )}
-              </DialogContent>
+        <Dialog
+          open={
+            !!open &&
+            (open === "customer-list" ||
+              open === "customer-add" ||
+              open === "customer-edit" ||
+              open === "customer-delete")
+          }
+          onOpenChange={(e) => {
+            if (!e) {
+              setOpen("");
+            }
+          }}
+        >
+          <DialogContent
+            showCloseButton={false}
+            className={cn(
+              "min-w-2xl",
+              (open === "customer-add" ||
+                open === "customer-edit" ||
+                open === "customer-delete") &&
+                "min-w-md",
             )}
-          </AtomValue>
+          >
+            {open === "customer-add" || open === "customer-edit" ? (
+              <CustomerAdd />
+            ) : open === "customer-delete" ? (
+              <CustomerDelete />
+            ) : (
+              <CustomerList />
+            )}
+          </DialogContent>
         </Dialog>
       )}
     </Atom>

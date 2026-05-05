@@ -1,20 +1,14 @@
-export type TransactionListAdminResponse = {
+export type StoreListResponse = {
+  status: boolean;
   message: string;
   resource: {
     data: Array<{
       id: number;
-      invoice: string;
-      total_item: number;
-      total_quantity: number;
-      customer_name: string;
-      kasir: string;
       store_name: string;
-      subtotal: number;
-      tax: number;
-      total_amount: number;
-      status: string;
-      payment_method: string;
-      created_at: string;
+      phone: string;
+      address: string;
+      total_product: number;
+      total_sales: number;
     }>;
     pagination: {
       current_page: number;
@@ -25,5 +19,4 @@ export type TransactionListAdminResponse = {
       total: number;
     };
   };
-  success: boolean;
 };

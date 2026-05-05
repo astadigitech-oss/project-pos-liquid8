@@ -16,21 +16,32 @@ import {
 } from "@/components/ui/input-group";
 import { TextSearchIcon, XCircle, XIcon } from "lucide-react";
 import { DataTable } from "@/components/data-table";
-import { columnDraf } from "../columns-draf";
 import { Button } from "@/components/ui/button";
 import { Atom, AtomValue } from "@suspensive/jotai";
-import { listPendingAtom } from "../../_api/queries";
-import { draftListDialog, draftPage, draftSearch } from "../../_api/atoms";
 import { Pagination } from "@/components/pagination";
 import { useAtom } from "jotai";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipText } from "@/providers/tooltip-provider";
+import {
+  cashierDialog,
+  draftPage,
+  draftSearch,
+} from "@/app/(cashier)/(home)/_api/atoms";
+import { listPendingAtom } from "@/app/(cashier)/(home)/_api/queries";
+import { columnDraft } from "../columns/draft-columns";
 
 export const DraftTransaction = () => {
   return (
-    <Atom atom={draftListDialog}>
+    <Atom atom={cashierDialog}>
       {([open, setOpen]) => (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog
+          open={!!open && open === "draft-list"}
+          onOpenChange={(e) => {
+            if (!e) {
+              setOpen("");
+            }
+          }}
+        >
           <DialogContent showCloseButton={false} className={"min-w-3xl"}>
             <DialogHeader>
               <DialogTitle>Draf Transaksi</DialogTitle>
@@ -46,7 +57,7 @@ export const DraftTransaction = () => {
                     disabled={isPending || isRefetching}
                   />
                   <DataTable
-                    columns={columnDraf({
+                    columns={columnDraft({
                       from: data?.resource.pagination.from ?? 0,
                     })}
                     data={data?.resource.data ?? []}

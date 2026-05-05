@@ -13,12 +13,14 @@ import { Pagination } from "@/components/pagination";
 import { staffPage } from "../_api/atom";
 import { AtomValue } from "@suspensive/jotai";
 import { listStaffAtom } from "../_api/queries";
+import { StaffDialog } from "./dialog";
 
 export const StaffSettingClient = () => {
   return (
     <AtomValue atom={listStaffAtom}>
       {({ data }) => (
         <div className="bg-white border shadow rounded-xl p-4 flex flex-col gap-6">
+          <StaffDialog />
           <div className="flex items-center justify-between">
             <h2 className="font-semibold h-7 flex items-center relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-red-400 before:rounded-full">
               Staff

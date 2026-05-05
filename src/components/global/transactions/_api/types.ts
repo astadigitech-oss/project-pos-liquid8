@@ -9,9 +9,9 @@ export type transactionDetailResponse = {
     total_quantity: number;
     paid_amount: number;
     change_amount: number;
-    pembulatan: number;
     payment_method: string;
     subtotal: number;
+    pembulatan: number;
     total_amount: number;
     status: string;
     created_at: string;
@@ -24,12 +24,18 @@ export type transactionDetailResponse = {
       tax: number;
       amount: number;
     };
-    items: Array<{
+    products: Array<{
       id: number;
       barcode: string;
       product_name: string;
       price: number;
       quantity: number;
+    }>;
+    items: Array<{
+      name: string;
+      price: number;
+      quantity: number;
+      total: number;
     }>;
   };
   success: boolean;

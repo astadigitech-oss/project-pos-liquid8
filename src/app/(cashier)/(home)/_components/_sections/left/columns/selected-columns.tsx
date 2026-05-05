@@ -4,10 +4,13 @@ import { TooltipText } from "@/providers/tooltip-provider";
 import { AtomValue, SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { Trash } from "lucide-react";
-import { removeItemCartAtom } from "../_api/mutation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Spinner } from "@/components/ui/spinner";
-import { paymentCustomer, paymentMethodSelected } from "../_api/atoms";
+import {
+  paymentCustomer,
+  paymentMethodSelected,
+} from "@/app/(cashier)/(home)/_api/atoms";
+import { removeItemCartAtom } from "@/app/(cashier)/(home)/_api/mutation";
 
 export const columnSelected = (): ColumnDef<{
   id: number;
@@ -32,7 +35,7 @@ export const columnSelected = (): ColumnDef<{
     accessorKey: "product_name",
     header: "Nama",
     cell: ({ row }) => (
-      <p className="lg:w-40 xl:w-80 w-30 truncate">
+      <p className="lg:max-w-40 xl:max-w-80 max-w-30 truncate">
         {row.original.product_name ? row.original.product_name : "-"}
       </p>
     ),

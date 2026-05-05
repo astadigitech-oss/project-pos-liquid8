@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { cn, formatRupiah } from "@/lib/utils";
 import { TooltipText } from "@/providers/tooltip-provider";
 import { tz } from "@date-fns/tz";
-import { SetAtom } from "@suspensive/jotai";
+import { AtomValue, SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { ReceiptText, TicketX } from "lucide-react";
+import { userInfoAtom } from "../../settings/(profil)/_api/queries";
 
 export const column = ({
   from,
@@ -92,50 +93,56 @@ export const column = ({
       return (
         <SetAtom atom={selectedTransactionId}>
           {(setTransactionId) => (
-            <div className="flex items-center gap-1">
-              <SetAtom atom={detailTransactionDialog}>
-                {(setOpen) => (
-                  <TooltipText
-                    value="Detail Transaksi"
-                    render={
-                      <Button
-                        size={"icon-sm"}
-                        className={
-                          "text-blue-500 bg-blue-100 hover:bg-blue-200 hover:text-blue-600"
+            <AtomValue atom={userInfoAtom}>
+              {({ data: user }) => (
+                <div className="flex items-center gap-1">
+                  <SetAtom atom={detailTransactionDialog}>
+                    {(setOpen) => (
+                      <TooltipText
+                        value="Detail Transaksi"
+                        render={
+                          <Button
+                            size={"icon-sm"}
+                            className={
+                              "text-blue-500 bg-blue-100 hover:bg-blue-200 hover:text-blue-600"
+                            }
+                            variant={"ghost"}
+                            onClick={() => {
+                              setOpen(true);
+                              setTransactionId(row.original.id.toString());
+                            }}
+                          >
+                            <ReceiptText className="size-3.5" />
+                          </Button>
                         }
-                        variant={"ghost"}
-                        onClick={() => {
-                          setOpen(true);
-                          setTransactionId(row.original.id.toString());
-                        }}
-                      >
-                        <ReceiptText className="size-3.5" />
-                      </Button>
-                    }
-                  />
-                )}
-              </SetAtom>
-              <SetAtom atom={cancelTransactionDialog}>
-                {(setOpen) => (
-                  <TooltipText
-                    value={"Batalkan Transaksi"}
-                    render={
-                      <Button
-                        disabled={row.original.status === "cancelled"}
-                        size={"icon-sm"}
-                        variant={"destructive"}
-                        onClick={() => {
-                          setOpen(true);
-                          setTransactionId(row.original.id.toString());
-                        }}
-                      >
-                        <TicketX className="size-3.5" />
-                      </Button>
-                    }
-                  />
-                )}
-              </SetAtom>
-            </div>
+                      />
+                    )}
+                  </SetAtom>
+                  {user?.resource.role === "superadmin" && (
+                    <SetAtom atom={cancelTransactionDialog}>
+                      {(setOpen) => (
+                        <TooltipText
+                          value={"Batalkan Transaksi"}
+                          render={
+                            <Button
+                              disabled={row.original.status === "cancelled"}
+                              size={"icon-sm"}
+                              variant={"destructive"}
+                              onClick={() => {
+                                setOpen(true);
+                                setTransactionId(row.original.id.toString());
+                              }}
+                            >
+                              <TicketX className="size-3.5" />
+                            </Button>
+                          }
+                        />
+                      )}
+                    </SetAtom>
+                  )}
+                </div>
+              )}
+            </AtomValue>
           )}
         </SetAtom>
       );

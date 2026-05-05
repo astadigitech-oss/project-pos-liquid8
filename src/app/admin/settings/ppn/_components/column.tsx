@@ -1,8 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { TooltipText } from "@/providers/tooltip-provider";
+import { SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { Check, Edit2, XIcon } from "lucide-react";
+import {
+  alertPpnDialog,
+  addEditPpnDialog,
+  selectedDialogId,
+} from "../_api/atom";
 
 export const column = (): ColumnDef<{
   id: number;
@@ -45,52 +51,77 @@ export const column = (): ColumnDef<{
   {
     id: "actions",
     enableHiding: false,
-    cell: () => {
+    cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-1">
-          <TooltipText
-            value="Aktifkan PPN"
-            render={
-              <Button
-                size={"icon-sm"}
-                className={
-                  "text-green-500 bg-green-100 hover:bg-green-200 hover:text-green-600"
-                }
-                variant={"ghost"}
-              >
-                <Check className="size-3.5" />
-              </Button>
-            }
-          />
-          <TooltipText
-            value="Edit PPN"
-            render={
-              <Button
-                size={"icon-sm"}
-                className={
-                  "text-yellow-500 bg-yellow-100 hover:bg-yellow-200 hover:text-yellow-600"
-                }
-                variant={"ghost"}
-              >
-                <Edit2 className="size-3.5" />
-              </Button>
-            }
-          />
-          <TooltipText
-            value="Hapus PPN"
-            render={
-              <Button
-                size={"icon-sm"}
-                className={
-                  "text-red-500 bg-red-100 hover:bg-red-200 hover:text-red-600"
-                }
-                variant={"ghost"}
-              >
-                <XIcon className="size-3.5" />
-              </Button>
-            }
-          />
-        </div>
+        <SetAtom atom={selectedDialogId}>
+          {(setSelectedId) => (
+            <SetAtom atom={alertPpnDialog}>
+              {(setOpen) => (
+                <div className="flex items-center gap-1">
+                  <TooltipText
+                    value="Aktifkan PPN"
+                    render={
+                      <Button
+                        size={"icon-sm"}
+                        disabled={row.original.is_tax_default}
+                        className={
+                          "text-green-700 bg-green-100 hover:bg-green-200 hover:text-green-700"
+                        }
+                        variant={"ghost"}
+                        onClick={() => {
+                          setOpen("activate");
+                          setSelectedId(row.original.id.toString());
+                        }}
+                      >
+                        <Check className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <SetAtom atom={addEditPpnDialog}>
+                    {(setOpen) => (
+                      <TooltipText
+                        value="Edit PPN"
+                        render={
+                          <Button
+                            size={"icon-sm"}
+                            className={
+                              "text-yellow-700 bg-yellow-100 hover:bg-yellow-200 hover:text-yellow-700"
+                            }
+                            variant={"ghost"}
+                            onClick={() => {
+                              setOpen("edit");
+                              setSelectedId(row.original.id.toString());
+                            }}
+                          >
+                            <Edit2 className="size-3.5" />
+                          </Button>
+                        }
+                      />
+                    )}
+                  </SetAtom>
+                  <TooltipText
+                    value="Hapus PPN"
+                    render={
+                      <Button
+                        size={"icon-sm"}
+                        className={
+                          "text-red-700 bg-red-100 hover:bg-red-200 hover:text-red-700"
+                        }
+                        variant={"ghost"}
+                        onClick={() => {
+                          setOpen("delete");
+                          setSelectedId(row.original.id.toString());
+                        }}
+                      >
+                        <XIcon className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                </div>
+              )}
+            </SetAtom>
+          )}
+        </SetAtom>
       );
     },
   },

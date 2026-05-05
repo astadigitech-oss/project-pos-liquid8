@@ -4,12 +4,7 @@ import { TooltipText } from "@/providers/tooltip-provider";
 import { SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { Check, Edit2, Trash } from "lucide-react";
-import {
-  customerDialog,
-  customerId,
-  customerSelectedId,
-  isCustomer,
-} from "../_api/atoms";
+import { cashierDialog, customerId, customerSelectedId } from "../_api/atoms";
 
 export const column = ({
   from,
@@ -39,35 +34,29 @@ export const column = ({
     enableHiding: false,
     cell: ({ row }) => {
       return (
-        <SetAtom atom={isCustomer}>
-          {(setIsCustomer) => (
-            <SetAtom atom={customerId}>
-              {(setCustomerId) => (
+        <SetAtom atom={customerId}>
+          {(setCustomerId) => (
+            <SetAtom atom={cashierDialog}>
+              {(setOpen) => (
                 <div className="flex items-center gap-2">
-                  <SetAtom atom={customerDialog}>
-                    {(setOpen) => (
-                      <SetAtom atom={customerSelectedId}>
-                        {(setSelectedCustomer) => (
-                          <TooltipText
-                            value={"Pilih Customer"}
-                            render={
-                              <Button
-                                size={"icon-xs"}
-                                className={"hover:bg-gray-200"}
-                                variant={"outline"}
-                                onClick={() => {
-                                  setSelectedCustomer(
-                                    row.original.id.toString(),
-                                  );
-                                  setOpen(false);
-                                }}
-                              >
-                                <Check />
-                              </Button>
-                            }
-                          />
-                        )}
-                      </SetAtom>
+                  <SetAtom atom={customerSelectedId}>
+                    {(setSelectedCustomer) => (
+                      <TooltipText
+                        value={"Pilih Customer"}
+                        render={
+                          <Button
+                            size={"icon-xs"}
+                            className={"hover:bg-gray-200"}
+                            variant={"outline"}
+                            onClick={() => {
+                              setSelectedCustomer(row.original.id.toString());
+                              setOpen("");
+                            }}
+                          >
+                            <Check />
+                          </Button>
+                        }
+                      />
                     )}
                   </SetAtom>
                   <TooltipText
@@ -78,7 +67,7 @@ export const column = ({
                         variant={"outlineWarning"}
                         onClick={() => {
                           setCustomerId(row.original.id.toString());
-                          setIsCustomer("edit");
+                          setOpen("customer-edit");
                         }}
                       >
                         <Edit2 />
@@ -93,7 +82,7 @@ export const column = ({
                         variant={"outlineDestructive"}
                         onClick={() => {
                           setCustomerId(row.original.id.toString());
-                          setIsCustomer("delete");
+                          setOpen("customer-delete");
                         }}
                       >
                         <Trash />

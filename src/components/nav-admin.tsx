@@ -51,14 +51,16 @@ export const NavAdmin = () => {
               Transaksi
             </Button>
           </Link>
-          <Button
-            variant={"ghost"}
-            className={"hover:bg-red-100 data-[active=true]:bg-red-200"}
-            size={"sm"}
-          >
-            <Store className="size-3.5" />
-            Store
-          </Button>
+          <Link href={"/admin/store"}>
+            <Button
+              variant={"ghost"}
+              className={"hover:bg-red-100 data-[active=true]:bg-red-200"}
+              size={"sm"}
+            >
+              <Store className="size-3.5" />
+              Toko
+            </Button>
+          </Link>
           <Link href={"/admin/settings"}>
             <Button
               variant={"ghost"}
