@@ -22,7 +22,7 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
-import { customerId, isCustomer } from "../../_api/atoms";
+import { cashierDialog, customerId } from "../../_api/atoms";
 import { addMemberAtom, updateMemberAtom } from "../../_api/mutation";
 import { detailMemberAtom } from "../../_api/queries";
 import { formatPhoneNumber, invalidate } from "@/lib/utils";
@@ -38,7 +38,7 @@ export const CustomerAdd = () => {
   const queryClient = useQueryClient();
 
   // Atoms & State
-  const [isVisible, setIsVisible] = useAtom(isCustomer);
+  const [dialog, setDialog] = useAtom(cashierDialog);
   const idCustomer = useAtomValue(customerId);
   const { data: detail } = useAtomValue(detailMemberAtom);
 
@@ -48,7 +48,7 @@ export const CustomerAdd = () => {
   const { mutate: updateMember, isPending: isUpdating } =
     useAtomValue(updateMemberAtom);
 
-  const isEditMode = isVisible === "edit";
+  const isEditMode = dialog === "customer-edit";
   const isLoading = isAdding || isUpdating;
 
   const form = useForm<CustomerFormValues>({
@@ -61,7 +61,7 @@ export const CustomerAdd = () => {
 
   // Handlers
   const handleClose = () => {
-    setIsVisible("");
+    setDialog("customer-list");
     form.reset();
   };
 

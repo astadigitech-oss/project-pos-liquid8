@@ -7,7 +7,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { Search, XCircle } from "lucide-react";
+import { RefreshCw, Search, XCircle } from "lucide-react";
 import React from "react";
 import { column } from "./columns";
 import { Pagination } from "@/components/pagination";
@@ -22,21 +22,40 @@ import { Spinner } from "@/components/ui/spinner";
 import { TooltipText } from "@/providers/tooltip-provider";
 import { DetailTransaction } from "@/components/global/transactions/detail";
 import { DialogCancelTransaction } from "@/components/global/transactions/cancel";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export const TransactionAdminClient = () => {
   return (
     <AtomValue atom={transactionListAdminAtom}>
-      {({ data, isSuccess, isError, isRefetching }) => (
+      {({ data, isSuccess, isError, isRefetching, refetch }) => (
         <div className="bg-white border shadow rounded-xl p-4 flex flex-col gap-4">
           <DialogCancelTransaction />
           <DetailTransaction />
           <div className="flex items-center justify-between">
             <h1 className="font-semibold">Transactions</h1>
-            <TransactionAdminSearchInput
-              isSuccess={isSuccess}
-              isError={isError}
-              disabled={isRefetching}
-            />
+            <div className="flex items-center gap-2">
+              <TransactionAdminSearchInput
+                isSuccess={isSuccess}
+                isError={isError}
+                disabled={isRefetching}
+              />
+              <TooltipText
+                render={
+                  <Button
+                    onClick={() => refetch()}
+                    size={"icon"}
+                    variant={"outline"}
+                    className={"border-gray-300"}
+                  >
+                    <RefreshCw
+                      className={cn("size-3.5", isRefetching && "animate-spin")}
+                    />
+                  </Button>
+                }
+                value="Muat Ulang"
+              />
+            </div>
           </div>
           <div className="flex flex-col gap-4">
             <DataTable

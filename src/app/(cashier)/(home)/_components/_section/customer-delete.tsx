@@ -9,7 +9,7 @@ import { Trash, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { detailMemberAtom } from "../../_api/queries";
 import { Atom, AtomValue, SetAtom } from "@suspensive/jotai";
-import { customerId, isCustomer } from "../../_api/atoms";
+import { cashierDialog, customerId } from "../../_api/atoms";
 import { deleteMemberAtom } from "../../_api/mutation";
 import { Spinner } from "@/components/ui/spinner";
 import { invalidate } from "@/lib/utils";
@@ -31,13 +31,13 @@ export const CustomerDelete = () => {
         </DialogDescription>
       </DialogHeader>
 
-      <SetAtom atom={isCustomer}>
-        {(setIsCustomer) => (
+      <SetAtom atom={cashierDialog}>
+        {(setDialog) => (
           <DialogFooter>
             <Button
               variant="outline"
               type="button"
-              onClick={() => setIsCustomer("")}
+              onClick={() => setDialog("customer-list")}
             >
               <XIcon className="size-3.5" />
               Batal
@@ -54,7 +54,7 @@ export const CustomerDelete = () => {
                           { id: idCustomer },
                           {
                             onSuccess: async () => {
-                              setIsCustomer("");
+                              setDialog("customer-list");
                               setIdCustomer("");
                               await invalidate(queryClient, ["list-member"]);
                             },

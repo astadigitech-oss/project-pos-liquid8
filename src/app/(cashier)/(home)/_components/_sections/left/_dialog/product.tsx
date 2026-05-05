@@ -15,27 +15,80 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { RefreshCw, SearchIcon, XCircle, XIcon } from "lucide-react";
-import React from "react";
-import { columnProduct } from "../columns-product";
+import React, { useRef, useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Atom, AtomValue } from "@suspensive/jotai";
-import { productDialog, productPage, productSearch } from "../../_api/atoms";
-import { listProductAtom } from "../../_api/queries";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipText } from "@/providers/tooltip-provider";
 import { cn } from "@/lib/utils";
 import { Pagination } from "@/components/pagination";
+import {
+  cashierDialog,
+  productPage,
+  productSearch,
+} from "@/app/(cashier)/(home)/_api/atoms";
+import { listProductAtom } from "@/app/(cashier)/(home)/_api/queries";
+import { columnProduct } from "../columns/product-columns";
 
-export const ProductList = () => {
+// --- Search Input terpisah ---
+function SearchInput({
+  search,
+  setSearch,
+  isPending,
+  isRefetching,
+  isSuccess,
+}: {
+  search: string;
+  setSearch: (v: string) => void;
+  isPending: boolean;
+  isRefetching: boolean;
+  isSuccess: boolean;
+}) {
+  const [localValue, setLocalValue] = useState(search);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setSearch(localValue);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [localValue, setSearch]);
+
+  useEffect(() => {
+    if (!isRefetching && isSuccess) {
+      inputRef.current?.focus();
+    }
+  }, [isSuccess, isRefetching]);
+
+  useEffect(() => {
+    setLocalValue(search);
+  }, [search]);
+
   return (
-    <Atom atom={productDialog}>
+    <InputGroupInput
+      placeholder="Cari produk..."
+      ref={inputRef}
+      value={localValue}
+      onChange={(e) => setLocalValue(e.target.value)}
+      className="disabled:opacity-100"
+      disabled={isPending || isRefetching}
+    />
+  );
+}
+
+export const ProductDialog = () => {
+  return (
+    <Atom atom={cashierDialog}>
       {([open, setOpen]) => (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog
+          open={!!open && open === "product"}
+          onOpenChange={(e) => {
+            if (!e) setOpen("");
+          }}
+        >
           <DialogContent
             showCloseButton={false}
-            className={
-              "lg:min-w-[calc(var(--container-5xl)-32px)] xl:min-w-5xl min-w-[calc(var(--container-3xl)-32px)]"
-            }
+            className="lg:min-w-[calc(var(--container-5xl)-32px)] xl:min-w-5xl min-w-[calc(var(--container-3xl)-32px)]"
           >
             <DialogHeader>
               <DialogTitle>Daftar Produk</DialogTitle>
@@ -47,62 +100,33 @@ export const ProductList = () => {
                   <div className="flex items-center gap-2 w-full">
                     <Atom atom={productSearch}>
                       {([search, setSearch]) => {
-                        const SearchInput = ({
-                          isSuccess,
-                        }: {
-                          isSuccess: boolean;
-                        }) => {
-                          const [localValue, setLocalValue] =
-                            React.useState(search);
-
-                          const inputRef = React.useRef<HTMLInputElement>(null);
-
-                          React.useEffect(() => {
-                            const handler = setTimeout(() => {
-                              setSearch(localValue);
-                            }, 500);
-                            return () => clearTimeout(handler);
-                          }, [localValue]);
-
-                          React.useEffect(() => {
-                            if (isSuccess) {
-                              inputRef.current?.focus();
-                            }
-                          }, [isSuccess]);
-
-                          return (
-                            <InputGroupInput
-                              placeholder="Cari produk..."
-                              ref={inputRef}
-                              value={localValue}
-                              onChange={(e) => setLocalValue(e.target.value)}
-                              className="disabled:opacity-100"
-                              disabled={isPending || isRefetching}
-                            />
-                          );
-                        };
-
                         return (
                           <InputGroup className="has-disabled:opacity-100 has-disabled:bg-transparent">
-                            <SearchInput isSuccess={isSuccess} />
+                            <SearchInput
+                              search={search}
+                              setSearch={setSearch}
+                              isPending={isPending}
+                              isRefetching={isRefetching}
+                              isSuccess={isSuccess}
+                            />
                             <InputGroupAddon>
                               <SearchIcon className="size-3.5" />
                             </InputGroupAddon>
                             {(isPending || isRefetching) && (
-                              <InputGroupAddon align={"inline-end"}>
+                              <InputGroupAddon align="inline-end">
                                 <Spinner className="size-3.5" />
                               </InputGroupAddon>
                             )}
                             {!isPending &&
                               !isRefetching &&
                               search.length > 0 && (
-                                <InputGroupAddon align={"inline-end"}>
+                                <InputGroupAddon align="inline-end">
                                   <TooltipText
-                                    value={"Bersihkan pencarian"}
+                                    value="Bersihkan pencarian"
                                     sideOffset={10}
                                     render={
                                       <InputGroupButton
-                                        size={"icon-xs"}
+                                        size="icon-xs"
                                         type="button"
                                         onClick={() => setSearch("")}
                                       >
@@ -116,11 +140,7 @@ export const ProductList = () => {
                         );
                       }}
                     </Atom>
-                    <Button
-                      variant={"diskonter"}
-                      size={"icon"}
-                      onClick={() => refetch()}
-                    >
+                    <Button size="icon" onClick={() => refetch()}>
                       <RefreshCw
                         className={cn(
                           "size-3.5",
@@ -146,7 +166,7 @@ export const ProductList = () => {
             <DialogFooter>
               <DialogClose
                 render={
-                  <Button variant={"outline"}>
+                  <Button variant="outline">
                     <XIcon />
                     Tutup
                   </Button>

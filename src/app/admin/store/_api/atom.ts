@@ -1,4 +1,4 @@
 import { atom } from "jotai";
 
-export const transactionListAdminSearch = atom<string>("");
-export const transactionListAdminPage = atom<number>(1);
+export const listStorePage = atom<number>(1);
+export const listStoreSearch = atom<string>("");

@@ -11,10 +11,7 @@ import { Search, XCircle } from "lucide-react";
 import React from "react";
 import { column } from "./columns";
 import { Pagination } from "@/components/pagination";
-import {
-  transactionListAdminPage,
-  transactionListAdminSearch,
-} from "../_api/atom";
+import { listStorePage, listStoreSearch } from "../_api/atom";
 import { AtomValue } from "@suspensive/jotai";
 import { transactionListAdminAtom } from "../_api/queries";
 import { useAtom } from "jotai";
@@ -29,7 +26,7 @@ export const StoreAdminClient = () => {
         <div className="bg-white border shadow rounded-xl p-4 flex flex-col gap-4">
           <DetailTransaction />
           <div className="flex items-center justify-between">
-            <h1 className="font-semibold">Store</h1>
+            <h1 className="font-semibold">Toko</h1>
             <TransactionAdminSearchInput
               isSuccess={isSuccess}
               isError={isError}
@@ -42,7 +39,7 @@ export const StoreAdminClient = () => {
               columns={column({ from: data?.resource.pagination.from ?? 0 })}
             />
             <Pagination
-              atomPage={transactionListAdminPage}
+              atomPage={listStorePage}
               isPending={false}
               pagination={data?.resource.pagination}
             />
@@ -62,7 +59,7 @@ const TransactionAdminSearchInput = ({
   isSuccess: boolean;
   isError: boolean;
 }) => {
-  const [search, setSearch] = useAtom(transactionListAdminSearch);
+  const [search, setSearch] = useAtom(listStoreSearch);
   const [localValue, setLocalValue] = React.useState(search);
   const inputRef = React.useRef<HTMLInputElement>(null);
 

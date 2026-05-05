@@ -2,27 +2,31 @@ export type CurrentCartResponse = {
   status: boolean;
   message: string;
   resource: {
-    items: {
+    items: Array<{
+      name: string;
+      price: number;
+      quantity: number;
+      total: number;
+    }>;
+    pembulatan: number;
+    ppn: {
+      amount: number;
+      tax: number;
+    };
+    products: Array<{
       id: number;
       store_id: number;
-      member_id: number;
+      member_id: any;
       user_id: number;
       product_id: number;
-      keep_code: string | null;
       barcode: string;
+      keep_code: any;
       product_name: string;
       quantity: number;
       price: number;
       discount_price: number;
       subtotal: number;
-      created_at: string;
-      updated_at: string;
-    }[];
-    ppn: {
-      amount: number;
-      tax: number;
-    };
-    pembulatan: number;
+    }>;
     subtotal: number;
     total_amount: number;
   };
@@ -166,8 +170,10 @@ export type CheckoutTransactionResponse = {
     id: number;
     invoice: string;
     items: Array<{
-      product_name: string;
+      name: string;
       price: number;
+      quantity: number;
+      total: number;
     }>;
     kasir: string;
     paid_amount: number;

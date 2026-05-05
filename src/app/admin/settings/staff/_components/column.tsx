@@ -1,11 +1,9 @@
 import { Button } from "@/components/ui/button";
-import { cn, formatRupiah } from "@/lib/utils";
 import { TooltipText } from "@/providers/tooltip-provider";
-import { tz } from "@date-fns/tz";
+import { SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { id } from "date-fns/locale";
-import { ReceiptText, TicketX } from "lucide-react";
+import { Edit2, ShieldCheck, Trash } from "lucide-react";
+import { addEditStaffDialog, selectedStaffId } from "../_api/atom";
 
 export const column = ({
   from,
@@ -48,30 +46,67 @@ export const column = ({
     enableHiding: false,
     cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-1">
-          <TooltipText
-            value="Detail Transaksi"
-            render={
-              <Button
-                size={"icon-sm"}
-                className={
-                  "text-blue-500 bg-blue-100 hover:bg-blue-200 hover:text-blue-600"
-                }
-                variant={"ghost"}
-              >
-                <ReceiptText className="size-3.5" />
-              </Button>
-            }
-          />
-          <TooltipText
-            value={"Batalkan Transaksi"}
-            render={
-              <Button size={"icon-sm"} variant={"destructive"}>
-                <TicketX className="size-3.5" />
-              </Button>
-            }
-          />
-        </div>
+        <SetAtom atom={selectedStaffId}>
+          {(setSelectedId) => (
+            <SetAtom atom={addEditStaffDialog}>
+              {(setOpen) => (
+                <div className="flex items-center gap-1">
+                  <TooltipText
+                    value="Edit Staff"
+                    render={
+                      <Button
+                        size={"icon-sm"}
+                        className={
+                          "text-yellow-600 bg-yellow-100 hover:bg-yellow-200 hover:text-yellow-700"
+                        }
+                        variant={"ghost"}
+                        onClick={() => {
+                          setSelectedId(row.original.id.toString());
+                          setOpen("edit");
+                        }}
+                      >
+                        <Edit2 className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <TooltipText
+                    value={"Ganti Password Staff"}
+                    render={
+                      <Button
+                        size={"icon-sm"}
+                        className={
+                          "text-blue-600 bg-blue-100 hover:bg-blue-200 hover:text-blue-700"
+                        }
+                        variant={"ghost"}
+                        onClick={() => {
+                          setSelectedId(row.original.id.toString());
+                          setOpen("password");
+                        }}
+                      >
+                        <ShieldCheck className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <TooltipText
+                    value={"Hapus Staff"}
+                    render={
+                      <Button
+                        size={"icon-sm"}
+                        variant={"destructive"}
+                        onClick={() => {
+                          setSelectedId(row.original.id.toString());
+                          setOpen("delete");
+                        }}
+                      >
+                        <Trash className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                </div>
+              )}
+            </SetAtom>
+          )}
+        </SetAtom>
       );
     },
   },

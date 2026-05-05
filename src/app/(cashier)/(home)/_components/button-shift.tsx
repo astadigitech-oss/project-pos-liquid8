@@ -4,7 +4,7 @@ import { AtomValue, SetAtom } from "@suspensive/jotai";
 import { Suspense } from "@suspensive/react";
 import React from "react";
 import { activeShiftAtom } from "../_api/queries";
-import { shiftDialog } from "../_api/atoms";
+import { cashierDialog } from "../_api/atoms";
 import { cn } from "@/lib/utils";
 import { LucideIcon, PowerIcon, PowerOffIcon } from "lucide-react";
 
@@ -29,7 +29,6 @@ const ShiftButtonBase = ({
     disabled={disabled}
     onClick={onClick}
   >
-    <p className="pl-2 tabular-nums">{label}</p>
     <div
       className={cn(
         "size-7 flex items-center justify-center rounded-full",
@@ -44,6 +43,7 @@ const ShiftButtonBase = ({
         <Icon className="size-3.5" />
       )}
     </div>
+    <p className="pr-2 tabular-nums">{label}</p>
   </Button>
 );
 
@@ -55,7 +55,7 @@ export const ButtonShift = () => {
     >
       <AtomValue atom={activeShiftAtom}>
         {({ isSuccess, isLoading }) => (
-          <SetAtom atom={shiftDialog}>
+          <SetAtom atom={cashierDialog}>
             {(setOpen) => {
               // Menentukan state dalam variabel agar JSX lebih bersih
               const label = isLoading
@@ -76,7 +76,9 @@ export const ButtonShift = () => {
                   icon={Icon}
                   variant={variant}
                   disabled={isLoading}
-                  onClick={() => setOpen(isSuccess ? "end" : "start")}
+                  onClick={() =>
+                    setOpen(isSuccess ? "shift-end" : "shift-start")
+                  }
                 />
               );
             }}

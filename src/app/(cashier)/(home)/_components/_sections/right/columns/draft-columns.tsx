@@ -4,12 +4,18 @@ import { TooltipText } from "@/providers/tooltip-provider";
 import { AtomValue, SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { Play, Trash } from "lucide-react";
-import { deleteDraftAtom, resumeDraftAtom } from "../_api/mutation";
 import { useQueryClient } from "@tanstack/react-query";
 import { Spinner } from "@/components/ui/spinner";
-import { customerSelectedId, draftListDialog } from "../_api/atoms";
+import {
+  deleteDraftAtom,
+  resumeDraftAtom,
+} from "@/app/(cashier)/(home)/_api/mutation";
+import {
+  cashierDialog,
+  customerSelectedId,
+} from "@/app/(cashier)/(home)/_api/atoms";
 
-export const columnDraf = ({
+export const columnDraft = ({
   from,
 }: {
   from: number;
@@ -59,7 +65,7 @@ export const columnDraf = ({
                 const isLoading = isResuming || isDeleting;
                 return (
                   <div className="flex items-center gap-1">
-                    <SetAtom atom={draftListDialog}>
+                    <SetAtom atom={cashierDialog}>
                       {(setOpen) => (
                         <SetAtom atom={customerSelectedId}>
                           {(setCustomerId) => (
@@ -73,7 +79,7 @@ export const columnDraf = ({
                                   onClick={() =>
                                     resume(row.original.keep_code, {
                                       onSuccess: async (data) => {
-                                        setOpen(false);
+                                        setOpen("");
                                         setCustomerId(
                                           data.resource[0].member_id.toString(),
                                         );
