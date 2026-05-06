@@ -1,11 +1,6 @@
 import { useAtomValue } from "jotai";
 import React from "react";
-import {
-  cashierDialog,
-  customerSelectedId,
-  paymentCustomer,
-  paymentMethodSelected,
-} from "../../../_api/atoms";
+import { cashierDialog, customerSelectedId } from "../../../_api/atoms";
 import { currentCartAtom } from "../../../_api/queries";
 import { Alert } from "./alert";
 import { SetAtom } from "@suspensive/jotai";
@@ -14,8 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Clock, ShoppingCart, Trash } from "lucide-react";
 
 export const Action = () => {
-  const payment = useAtomValue(paymentCustomer);
-  const paymentMethod = useAtomValue(paymentMethodSelected);
   const memberId = useAtomValue(customerSelectedId);
   const { data } = useAtomValue(currentCartAtom);
 
@@ -23,28 +16,17 @@ export const Action = () => {
     <SetAtom atom={cashierDialog}>
       {(setOpen) => (
         <div className="flex flex-col w-full gap-4">
-          {!data?.resource.items ||
+          {(!data?.resource.items ||
             data?.resource.items?.length === 0 ||
-            !memberId ||
-            ((data?.resource.items?.length ?? 0) > 0 && !paymentMethod) ||
-            (paymentMethod === "cash" &&
-              (data?.resource.total_amount ?? 0) > payment && (
-                <div className="flex flex-col w-full gap-2">
-                  {(!data?.resource.items ||
-                    data?.resource.items?.length === 0) && (
-                    <Alert label="Produk belum ditambahkan" isError />
-                  )}
-                  {!memberId && <Alert label="Customer belum dipilih" />}
-                  {(data?.resource.items?.length ?? 0) > 0 &&
-                    !paymentMethod && (
-                      <Alert label="Metode pembayaran belum dipilih" />
-                    )}
-                  {paymentMethod === "cash" &&
-                    (data?.resource.total_amount ?? 0) > payment && (
-                      <Alert label="Pembayaran Customer Kurang" />
-                    )}
-                </div>
-              ))}
+            !memberId) && (
+            <div className="flex flex-col w-full gap-2">
+              {(!data?.resource.items ||
+                data?.resource.items?.length === 0) && (
+                <Alert label="Produk belum ditambahkan" isError />
+              )}
+              {!memberId && <Alert label="Customer belum dipilih" />}
+            </div>
+          )}
           <div className="flex items-center gap-2">
             <TooltipText
               value={"Batalkan transaksi"}
@@ -61,7 +43,7 @@ export const Action = () => {
             />
             <div className="w-full grid grid-cols-3 gap-3">
               <Button
-                variant={"outline"}
+                variant={"outlineDestructive"}
                 className={
                   "col-span-1 flex-auto h-10 disabled:opacity-70 disabled:cursor-not-allowed disabled:pointer-events-auto disabled:hover:bg-white"
                 }
@@ -83,10 +65,7 @@ export const Action = () => {
                 disabled={
                   !memberId ||
                   !data?.resource.items ||
-                  data?.resource.items?.length === 0 ||
-                  (paymentMethod === "cash" &&
-                    (data?.resource.total_amount ?? 0) > payment) ||
-                  ((data?.resource.items?.length ?? 0) > 0 && !paymentMethod)
+                  data?.resource.items?.length === 0
                 }
                 onClick={() => setOpen("checkout")}
               >
