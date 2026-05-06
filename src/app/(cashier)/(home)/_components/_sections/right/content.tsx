@@ -7,18 +7,8 @@ import { currentCartAtom } from "../../../_api/queries";
 
 import { Separator } from "@/components/ui/separator";
 import { formatRupiah } from "@/lib/utils";
-import {
-  AlertTriangle,
-  Banknote,
-  ChevronRight,
-  CreditCard,
-  HandCoins,
-  QrCode,
-  ShoppingBag,
-} from "lucide-react";
+import { AlertTriangle, ChevronRight, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { AtomValue, SetAtom } from "@suspensive/jotai";
-import { cashierDialog, paymentMethodSelected } from "../../../_api/atoms";
 
 export const Content = () => {
   const { data, refetch, isError, error, isSuccess, isRefetching } =
@@ -121,47 +111,6 @@ export const Content = () => {
               </p>
             </div>
           </div>
-          <SetAtom atom={cashierDialog}>
-            {(setOpen) => (
-              <AtomValue atom={paymentMethodSelected}>
-                {(paymentMethod) => (
-                  <Button
-                    onClick={() => setOpen("payment")}
-                    className="bg-white text-black rounded-md justify-between hover:bg-white p-4 h-auto group shadow"
-                  >
-                    {!paymentMethod && (
-                      <div className="flex items-center gap-2">
-                        <HandCoins className="size-3.5" />
-                        <p>Metode Pembayaran</p>
-                      </div>
-                    )}
-                    {paymentMethod && paymentMethod === "cash" && (
-                      <div className="flex items-center gap-2">
-                        <Banknote className="size-3.5" />
-                        <p>Pembayaran Tunai</p>
-                      </div>
-                    )}
-                    {paymentMethod && paymentMethod === "card" && (
-                      <div className="flex items-center gap-2">
-                        <CreditCard className="size-3.5" />
-                        <p>Pembayaran EDC</p>
-                      </div>
-                    )}
-                    {paymentMethod && paymentMethod === "qris" && (
-                      <div className="flex items-center gap-2">
-                        <QrCode className="size-3.5" />
-                        <p>Pembayaran QRIS</p>
-                      </div>
-                    )}
-                    <div className="border rounded-full flex items-center gap-2 px-2 text-xs py-1 group-hover:bg-red-200 bg-red-100 transition-all">
-                      Ganti Metode
-                      <ChevronRight className="size-3.5" />
-                    </div>
-                  </Button>
-                )}
-              </AtomValue>
-            )}
-          </SetAtom>
         </div>
       </Delay>
     );
