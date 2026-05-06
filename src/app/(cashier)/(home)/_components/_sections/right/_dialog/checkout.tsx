@@ -239,20 +239,22 @@ export const CheckoutDialog = () => {
               </Field>
             </div>
           </div>
-          {!paymentMethod ||
-            (payment < (data?.resource.total_amount ?? 0) && (
-              <div className="flex items-center gap-2">
-                {!paymentMethod && (
-                  <Alert
-                    className="w-full"
-                    label="Metode pembayaran belum di pilih"
-                  />
-                )}
-                {payment < (data?.resource.total_amount ?? 0) && (
+          {(!paymentMethod ||
+            (paymentMethod === "cash" &&
+              payment < (data?.resource.total_amount ?? 0))) && (
+            <div className="flex items-center gap-2">
+              {!paymentMethod && (
+                <Alert
+                  className="w-full"
+                  label="Metode pembayaran belum di pilih"
+                />
+              )}
+              {paymentMethod === "cash" &&
+                payment < (data?.resource.total_amount ?? 0) && (
                   <Alert className="w-full" label="Uang Tunai Kurang" />
                 )}
-              </div>
-            ))}
+            </div>
+          )}
           <DialogFooter>
             <DialogClose
               render={
@@ -262,11 +264,26 @@ export const CheckoutDialog = () => {
                 </Button>
               }
             />
-            <Button type="button" onClick={handleCheckout}>
+            <Button
+              disabled={
+                !paymentMethod ||
+                (paymentMethod === "cash" &&
+                  payment < (data?.resource.total_amount ?? 0))
+              }
+              type="button"
+              onClick={handleCheckout}
+            >
               <PrinterX className="size-3.5" />
               Tanpa Struk
             </Button>
-            <Button type="submit">
+            <Button
+              disabled={
+                !paymentMethod ||
+                (paymentMethod === "cash" &&
+                  payment < (data?.resource.total_amount ?? 0))
+              }
+              type="submit"
+            >
               <Printer className="size-3.5" />
               Selesaikan
             </Button>
