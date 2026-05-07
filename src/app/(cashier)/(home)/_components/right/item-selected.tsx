@@ -12,9 +12,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { formatRupiah, invalidate } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
-import { AtomValue } from "@suspensive/jotai";
-import { removeItemCartAtom } from "../../_api/mutation";
+import { removeItemCartAtom, updatePackagingAtom } from "../../_api/mutation";
 import { Spinner } from "@/components/ui/spinner";
+import NumberFlow from "@number-flow/react";
+import { useAtomValue } from "jotai";
 
 export const ItemSelected = ({
   item,
@@ -30,8 +31,19 @@ export const ItemSelected = ({
   isPackaging?: boolean;
 }) => {
   const queryClient = useQueryClient();
+  const [localeQty, setLocaleQty] = React.useState(item.quantity);
+  const { mutate: updateQty, isPending: isUpdating } =
+    useAtomValue(updatePackagingAtom);
+  const { mutate: removePkg, isPending: isRemoving } =
+    useAtomValue(removeItemCartAtom);
+
+  const isLoading = isUpdating || isRemoving;
+
   return (
-    <div className="flex p-1 rounded-md items-center h-14 w-full cursor-default overflow-hidden bg-red-200 group">
+    <div
+      onMouseLeave={() => setLocaleQty(item.quantity)}
+      className="flex p-1 rounded-md items-center h-14 w-full cursor-default overflow-hidden bg-red-200 group"
+    >
       <div className="h-full aspect-square  flex items-center justify-center  ">
         {isPackaging ? (
           <ShoppingBag
@@ -58,8 +70,10 @@ export const ItemSelected = ({
                     className={
                       "h-full w-8 border-0 rounded-none  bg-yellow-200 hover:bg-yellow-300 text-yellow-700 hover:text-yellow-700"
                     }
+                    onClick={() => setLocaleQty(item.quantity)}
+                    disabled={isLoading}
                   >
-                    <RotateCw />
+                    {isLoading ? <Spinner /> : <RotateCw />}
                   </Button>
                 }
               />
@@ -70,14 +84,17 @@ export const ItemSelected = ({
                     size={"icon"}
                     variant={"destructive"}
                     className={"h-full w-8 border-0 rounded-none"}
+                    onClick={() => setLocaleQty((prev) => prev - 1)}
+                    disabled={localeQty === 0 || isLoading}
                   >
-                    <Minus />
+                    {isLoading ? <Spinner /> : <Minus />}
                   </Button>
                 }
               />
-              <div className="h-full w-8 flex items-center justify-center font-medium">
-                <p>4</p>
-              </div>
+              <NumberFlow
+                className="h-full w-8 flex items-center justify-center font-medium"
+                value={localeQty}
+              />
               <TooltipText
                 value={"Tambah Qty"}
                 render={
@@ -85,8 +102,10 @@ export const ItemSelected = ({
                     size={"icon"}
                     variant={"destructive"}
                     className={"h-full w-8 border-0 rounded-none"}
+                    onClick={() => setLocaleQty((prev) => prev + 1)}
+                    disabled={isLoading}
                   >
-                    <Plus />
+                    {isLoading ? <Spinner /> : <Plus />}
                   </Button>
                 }
               />
@@ -98,38 +117,45 @@ export const ItemSelected = ({
                     className={
                       "h-full w-8 border-0 rounded-none bg-green-200 hover:bg-green-300 text-green-700 hover:text-green-700"
                     }
+                    disabled={localeQty <= 0 || isLoading}
+                    onClick={() =>
+                      updateQty(
+                        { item_id: item.id ?? 0, qty: localeQty },
+                        {
+                          onSuccess: async () => {
+                            await invalidate(queryClient, ["current-cart"]);
+                          },
+                        },
+                      )
+                    }
                   >
-                    <Send />
+                    {isLoading ? <Spinner /> : <Send />}
                   </Button>
                 }
               />
             </div>
             <p className="text-sm font-semibold pl-3">Edit</p>
             <div className="flex items-center h-full">
-              <AtomValue atom={removeItemCartAtom}>
-                {({ mutate, isPending }) => (
-                  <TooltipText
-                    value={"Hapus"}
-                    render={
-                      <Button
-                        size={"icon"}
-                        variant={"destructive"}
-                        className={"h-full w-8 border-0 rounded-none"}
-                        disabled={isPending}
-                        onClick={() => {
-                          mutate((item.id ?? 0).toString(), {
-                            onSuccess: async () => {
-                              await invalidate(queryClient, ["current-cart"]);
-                            },
-                          });
-                        }}
-                      >
-                        {isPending ? <Spinner /> : <Trash />}
-                      </Button>
-                    }
-                  />
-                )}
-              </AtomValue>
+              <TooltipText
+                value={"Hapus"}
+                render={
+                  <Button
+                    size={"icon"}
+                    variant={"destructive"}
+                    className={"h-full w-8 border-0 rounded-none"}
+                    disabled={isLoading}
+                    onClick={() => {
+                      removePkg((item.id ?? 0).toString(), {
+                        onSuccess: async () => {
+                          await invalidate(queryClient, ["current-cart"]);
+                        },
+                      });
+                    }}
+                  >
+                    {isLoading ? <Spinner /> : <Trash />}
+                  </Button>
+                }
+              />
             </div>
           </div>
         )}
