@@ -18,6 +18,7 @@ import {
   ShiftResponse,
   ShiftStartResponse,
   StartShiftBody,
+  UpdatePackagingBody,
 } from "./types";
 import { getCookie } from "cookies-next/client";
 
@@ -383,6 +384,26 @@ export const checkoutTransactionPost = async (
   });
 
   const res = (await response.json()) as CheckoutTransactionResponse;
+
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
+
+export const updatePackagingPut = async (
+  body: UpdatePackagingBody,
+): Promise<any> => {
+  const token = getCookie(secretStore);
+  const response = await fetch(`${apiUrl}/api/carts/packaging`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  const res = (await response.json()) as any;
 
   if (!response.ok) throw new Error(res.message);
 

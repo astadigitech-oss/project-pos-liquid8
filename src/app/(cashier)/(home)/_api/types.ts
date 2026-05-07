@@ -165,6 +165,10 @@ export type CheckoutTransactionBody = {
   paid_amount: number;
   grand_total: number;
 };
+export type UpdatePackagingBody = {
+  item_id: number;
+  qty: number;
+};
 export type CheckoutTransactionResponse = {
   status: boolean;
   message: string;
