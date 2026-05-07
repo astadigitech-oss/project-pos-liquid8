@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai";
 import React from "react";
-import { cashierDialog, customerSelectedId } from "../../../_api/atoms";
-import { currentCartAtom } from "../../../_api/queries";
+import { cashierDialog, customerSelectedId } from "../../_api/atoms";
+import { currentCartAtom } from "../../_api/queries";
 import { Alert } from "./alert";
 import { SetAtom } from "@suspensive/jotai";
 import { TooltipText } from "@/providers/tooltip-provider";

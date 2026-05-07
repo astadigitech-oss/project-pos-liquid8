@@ -3,12 +3,16 @@ import React from "react";
 import { ErrorHandling } from "../error-handling";
 import { Loader } from "../loader";
 import { useAtomValue } from "jotai";
-import { currentCartAtom } from "../../../_api/queries";
+import { currentCartAtom } from "../../_api/queries";
 
 import { Separator } from "@/components/ui/separator";
 import { formatRupiah } from "@/lib/utils";
 import { AlertTriangle, ChevronRight, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { PackagingDialog } from "./_dialog/packaging";
+import { SetAtom } from "@suspensive/jotai";
+import { cashierDialog } from "../../_api/atoms";
+import { ItemSelected } from "./item-selected";
 
 export const Content = () => {
   const { data, refetch, isError, error, isSuccess, isRefetching } =
@@ -30,6 +34,7 @@ export const Content = () => {
     return (
       <Delay ms={500} fallback={<RightLoader />}>
         <div className="flex flex-col gap-4 text-sm">
+          <PackagingDialog />
           <div className="px-4 bg-white rounded-md flex flex-col gap-4 shadow overflow-hidden">
             <div className="flex justify-between items-center bg-red-300 rounded-b-md px-3 font-semibold h-8 text-xs">
               <p>Total Items:</p>
@@ -42,40 +47,32 @@ export const Content = () => {
             {data.resource.items && data.resource.items?.length > 0 ? (
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
-                  {data.resource.items.map((item) => (
-                    <div
-                      key={item.name}
-                      className="grid grid-cols-2 items-center bg-gray-100 border border-gray-300 rounded-md p-2 cursor-default"
-                    >
-                      <div className="flex flex-col">
-                        <p className="font-medium">{item.name}</p>
-                        <div className="flex items-center gap-2 justify-between text-black/70 text-xs">
-                          <p className="tabular-nums">
-                            {formatRupiah(item.price)}
-                          </p>
-                          <p className="tabular-nums">
-                            {item.quantity.toString()}x
-                          </p>
-                        </div>
-                      </div>
-                      <p className="tabular-nums ml-auto">
-                        {formatRupiah(item.total)}
-                      </p>
-                    </div>
+                  {data.resource.items?.map((item) => (
+                    <ItemSelected key={item.name} item={item} />
+                  ))}
+                  {data.resource.items_packaging?.map((item) => (
+                    <ItemSelected key={item.name} item={item} isPackaging />
                   ))}
                 </div>
-                <Button
-                  className={"rounded-b-none justify-between h-8 border-none"}
-                >
-                  <div className="flex items-center gap-2">
-                    <ShoppingBag />
-                    Plastik
-                  </div>
-                  <div className="flex items-center gap-1 text-xs">
-                    Tambah
-                    <ChevronRight />
-                  </div>
-                </Button>
+                <SetAtom atom={cashierDialog}>
+                  {(setOpen) => (
+                    <Button
+                      className={
+                        "rounded-b-none justify-between h-8 border-none"
+                      }
+                      onClick={() => setOpen("packaging")}
+                    >
+                      <div className="flex items-center gap-2">
+                        <ShoppingBag />
+                        Plastik
+                      </div>
+                      <div className="flex items-center gap-1 text-xs">
+                        Tambah
+                        <ChevronRight />
+                      </div>
+                    </Button>
+                  )}
+                </SetAtom>
               </div>
             ) : (
               <div className="text-xs font-medium flex items-center gap-1.5 px-3 bg-gray-300 h-8 rounded-t-md">

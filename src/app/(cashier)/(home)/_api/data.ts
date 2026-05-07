@@ -9,6 +9,7 @@ import {
   DetailMemberResponse,
   DraftTransactionResponse,
   EndShiftBody,
+  ListPackagingResponse,
   MemberListResponse,
   PendingTransactionBody,
   ProductListResponse,
@@ -135,6 +136,22 @@ export const detailMemberQuery = async (
   });
 
   const res = (await response.json()) as DetailMemberResponse;
+
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
+export const packagingQuery = async (): Promise<ListPackagingResponse> => {
+  const token = getCookie(secretStore);
+  const response = await fetch(`${apiUrl}/api/packagings`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const res = (await response.json()) as ListPackagingResponse;
 
   if (!response.ok) throw new Error(res.message);
 

@@ -6,6 +6,7 @@ import {
   listDraftQuery,
   listMemberQuery,
   listProductQuery,
+  packagingQuery,
 } from "./data";
 import { atomWithQuery } from "jotai-tanstack-query";
 import {
@@ -66,6 +67,13 @@ export const detailSelectedMemberAtom = atomWithQuery((get) => ({
   queryKey: ["detail-selected-member", get(customerSelectedId)],
   queryFn: () => detailMemberQuery(get(customerSelectedId)),
   enabled: !!get(customerSelectedId),
+  placeholderData: keepPreviousData,
+  retry: 0,
+}));
+
+export const listPackagingAtom = atomWithQuery(() => ({
+  queryKey: ["list-packaging"],
+  queryFn: packagingQuery,
   placeholderData: keepPreviousData,
   retry: 0,
 }));

@@ -79,7 +79,10 @@ export const columnProduct = ({
                           const queryClient = useQueryClient();
                           const handleAddToCart = () => {
                             mutate(
-                              { product_barcode: row.original.barcode },
+                              {
+                                reference_id: row.original.barcode,
+                                type: "product",
+                              },
                               {
                                 onSuccess: async () => {
                                   setOpen("");

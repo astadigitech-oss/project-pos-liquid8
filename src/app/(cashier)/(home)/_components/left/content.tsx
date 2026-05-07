@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai";
-import { currentCartAtom } from "../../../_api/queries";
+import { currentCartAtom } from "../../_api/queries";
 import { Loader } from "../loader";
 import { Delay } from "@suspensive/react";
 import { ErrorHandling } from "../error-handling";
