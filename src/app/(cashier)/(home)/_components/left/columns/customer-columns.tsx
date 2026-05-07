@@ -4,7 +4,11 @@ import { TooltipText } from "@/providers/tooltip-provider";
 import { SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { Check, Edit2, Trash } from "lucide-react";
-import { cashierDialog, customerId, customerSelectedId } from "../_api/atoms";
+import {
+  cashierDialog,
+  customerId,
+  customerSelectedId,
+} from "../../../_api/atoms";
 
 export const column = ({
   from,

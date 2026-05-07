@@ -6,6 +6,7 @@ import {
   EndShiftBody,
   PendingTransactionBody,
   StartShiftBody,
+  UpdatePackagingBody,
 } from "./types";
 import {
   addMemberPost,
@@ -20,6 +21,7 @@ import {
   resumeDraftPut,
   startShiftPost,
   updateMemberPost,
+  updatePackagingPut,
 } from "./data";
 import { atomWithMutation } from "jotai-tanstack-query";
 
@@ -129,6 +131,16 @@ export const deleteDraftAtom = atomWithMutation(() => ({
 
 export const checkoutTransactionAtom = atomWithMutation(() => ({
   mutationFn: (body: CheckoutTransactionBody) => checkoutTransactionPost(body),
+  onSuccess: (data) => {
+    toast.success(data.message);
+  },
+  onError: (error) => {
+    toast.error((error as Error).message);
+  },
+}));
+
+export const updatePackagingAtom = atomWithMutation(() => ({
+  mutationFn: (body: UpdatePackagingBody) => updatePackagingPut(body),
   onSuccess: (data) => {
     toast.success(data.message);
   },

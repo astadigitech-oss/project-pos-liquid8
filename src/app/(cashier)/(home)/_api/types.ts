@@ -8,6 +8,13 @@ export type CurrentCartResponse = {
       quantity: number;
       total: number;
     }>;
+    items_packaging: Array<{
+      id: number;
+      name: string;
+      price: number;
+      quantity: number;
+      total: number;
+    }>;
     pembulatan: number;
     ppn: {
       amount: number;
@@ -15,12 +22,8 @@ export type CurrentCartResponse = {
     };
     products: Array<{
       id: number;
-      store_id: number;
-      member_id: any;
-      user_id: number;
       product_id: number;
       barcode: string;
-      keep_code: any;
       product_name: string;
       quantity: number;
       price: number;
@@ -145,7 +148,9 @@ export type EndShiftBody = {
 };
 
 export type AddToCartBody = {
-  product_barcode: string;
+  reference_id: string;
+  qty?: number;
+  type: "product" | "packaging";
 };
 export type AddMemberBody = {
   name: string;
@@ -159,6 +164,10 @@ export type CheckoutTransactionBody = {
   payment_method: string;
   paid_amount: number;
   grand_total: number;
+};
+export type UpdatePackagingBody = {
+  item_id: number;
+  qty: number;
 };
 export type CheckoutTransactionResponse = {
   status: boolean;
@@ -294,4 +303,14 @@ export type ShiftResponse = {
     updated_at: string;
     expected_cash: number;
   };
+};
+
+export type ListPackagingResponse = {
+  status: boolean;
+  message: string;
+  resource: Array<{
+    id: number;
+    name: string;
+    price: number;
+  }>;
 };

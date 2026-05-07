@@ -9,6 +9,7 @@ import {
   DetailMemberResponse,
   DraftTransactionResponse,
   EndShiftBody,
+  ListPackagingResponse,
   MemberListResponse,
   PendingTransactionBody,
   ProductListResponse,
@@ -17,6 +18,7 @@ import {
   ShiftResponse,
   ShiftStartResponse,
   StartShiftBody,
+  UpdatePackagingBody,
 } from "./types";
 import { getCookie } from "cookies-next/client";
 
@@ -135,6 +137,22 @@ export const detailMemberQuery = async (
   });
 
   const res = (await response.json()) as DetailMemberResponse;
+
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
+export const packagingQuery = async (): Promise<ListPackagingResponse> => {
+  const token = getCookie(secretStore);
+  const response = await fetch(`${apiUrl}/api/packagings`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const res = (await response.json()) as ListPackagingResponse;
 
   if (!response.ok) throw new Error(res.message);
 
@@ -366,6 +384,26 @@ export const checkoutTransactionPost = async (
   });
 
   const res = (await response.json()) as CheckoutTransactionResponse;
+
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
+
+export const updatePackagingPut = async (
+  body: UpdatePackagingBody,
+): Promise<any> => {
+  const token = getCookie(secretStore);
+  const response = await fetch(`${apiUrl}/api/carts/packaging`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  const res = (await response.json()) as any;
 
   if (!response.ok) throw new Error(res.message);
 

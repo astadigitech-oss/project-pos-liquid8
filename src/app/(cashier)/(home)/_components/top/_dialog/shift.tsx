@@ -20,12 +20,12 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { RupiahInput } from "@/components/ui/rupiah-input";
 import { Textarea } from "@/components/ui/textarea";
 
-import { endShiftAtom, startShiftAtom } from "../../_api/mutation";
-import { activeShiftAtom } from "../../_api/queries";
-import { cashierDialog } from "../../_api/atoms";
+import { endShiftAtom, startShiftAtom } from "../../../_api/mutation";
+import { activeShiftAtom } from "../../../_api/queries";
+import { cashierDialog } from "../../../_api/atoms";
 import { formatRupiah, invalidate, numericString } from "@/lib/utils";
 import { printAction, printCheck } from "@/lib/print-action";
-import { ShiftEndResponse } from "../../_api/types";
+import { ShiftEndResponse } from "../../../_api/types";
 import { userInfoAtom } from "@/app/(cashier)/settings/_api/queries";
 import { shiftReceipt } from "@/lib/receipt-template";
 

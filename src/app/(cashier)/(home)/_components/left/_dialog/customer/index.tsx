@@ -1,10 +1,10 @@
 import { Atom } from "@suspensive/jotai";
 import React from "react";
-import { cashierDialog } from "../../_api/atoms";
+import { cashierDialog } from "../../../../_api/atoms";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { CustomerList } from "../_section/customer-list";
-import { CustomerAdd } from "../_section/customer-add";
-import { CustomerDelete } from "../_section/customer-delete";
+import { CustomerList } from "./customer-list";
+import { CustomerAdd } from "./customer-add";
+import { CustomerDelete } from "./customer-delete";
 import { cn } from "@/lib/utils";
 
 export const CustomerDialog = () => {

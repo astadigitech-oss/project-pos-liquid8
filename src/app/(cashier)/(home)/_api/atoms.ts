@@ -14,6 +14,7 @@ export const cashierDialog = atom<
   | "empty"
   | "checkout"
   | "payment"
+  | "packaging"
   | ""
 >("");
 export const isCustomer = atom<string>("");
