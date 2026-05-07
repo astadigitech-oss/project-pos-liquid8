@@ -14,10 +14,14 @@ import {
 } from "@/components/ui/input-group";
 import { RefreshCw, UserPlus2, UserSearch, XCircle, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cashierDialog, customerPage, customerSearch } from "../../_api/atoms";
+import {
+  cashierDialog,
+  customerPage,
+  customerSearch,
+} from "../../../../_api/atoms";
 import { DataTable } from "@/components/data-table";
-import { column } from "../columns";
-import { listMemberAtom } from "../../_api/queries";
+import { column } from "../../columns/customer-columns";
+import { listMemberAtom } from "../../../../_api/queries";
 import { Pagination } from "@/components/pagination";
 import { cn } from "@/lib/utils";
 import { TooltipText } from "@/providers/tooltip-provider";

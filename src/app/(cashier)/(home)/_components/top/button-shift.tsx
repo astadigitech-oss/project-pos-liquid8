@@ -3,8 +3,8 @@ import { Spinner } from "@/components/ui/spinner";
 import { AtomValue, SetAtom } from "@suspensive/jotai";
 import { Suspense } from "@suspensive/react";
 import React from "react";
-import { activeShiftAtom } from "../_api/queries";
-import { cashierDialog } from "../_api/atoms";
+import { activeShiftAtom } from "../../_api/queries";
+import { cashierDialog } from "../../_api/atoms";
 import { cn } from "@/lib/utils";
 import { LucideIcon, PowerIcon, PowerOffIcon } from "lucide-react";
 

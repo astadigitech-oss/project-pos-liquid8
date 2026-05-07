@@ -1,8 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useRef, useState } from "react";
-import { addToCartAtom } from "../../../_api/mutation";
-import { paymentCustomer, paymentMethodSelected } from "../../../_api/atoms";
+import { addToCartAtom } from "../../_api/mutation";
+import { paymentCustomer, paymentMethodSelected } from "../../_api/atoms";
 import {
   InputGroup,
   InputGroupAddon,
@@ -32,7 +32,7 @@ export const BarcodeSearch = ({ isRefetching }: { isRefetching: boolean }) => {
 
     const handler = setTimeout(() => {
       addToCart(
-        { product_barcode: localValue },
+        { reference_id: localValue, type: "product" },
         {
           onSuccess: async () => {
             setLocalValue("");

@@ -9,16 +9,18 @@ import {
 import { useTime } from "@/hooks/use-time";
 import { Button } from "@/components/ui/button";
 import { TooltipText } from "@/providers/tooltip-provider";
-import { ButtonShift } from "../../button-shift";
-import { CustomerDialog } from "../../_dialog/customer";
+import { ButtonShift } from "./button-shift";
+import { CustomerDialog } from "../left/_dialog/customer";
 import { AtomValue, SetAtom } from "@suspensive/jotai";
-import { cashierDialog, customerSelectedId } from "../../../_api/atoms";
-import { detailSelectedMemberAtom } from "../../../_api/queries";
+import { cashierDialog, customerSelectedId } from "../../_api/atoms";
+import { detailSelectedMemberAtom } from "../../_api/queries";
+import { ShiftDialog } from "./_dialog/shift";
 
 export const TopSection = () => {
   const { formattedDate, formattedTime } = useTime();
   return (
     <div className="flex items-center justify-between gap-4">
+      <ShiftDialog />
       <CustomerDialog />
       <div className="flex items-center gap-3">
         <SidebarTrigger

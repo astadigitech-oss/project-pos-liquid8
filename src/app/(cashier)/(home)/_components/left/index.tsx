@@ -7,9 +7,9 @@ import { RefreshCw, ScanSearch } from "lucide-react";
 import { TooltipText } from "@/providers/tooltip-provider";
 import { cn } from "@/lib/utils";
 import { useSetAtom } from "jotai";
-import { cashierDialog } from "../../../_api/atoms";
+import { cashierDialog } from "../../_api/atoms";
 import { AtomValue } from "@suspensive/jotai";
-import { currentCartAtom } from "../../../_api/queries";
+import { currentCartAtom } from "../../_api/queries";
 
 export const LeftSection = () => {
   const setProductDialogOpen = useSetAtom(cashierDialog);

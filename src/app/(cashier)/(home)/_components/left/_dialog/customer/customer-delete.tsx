@@ -7,10 +7,10 @@ import {
 } from "@/components/ui/dialog";
 import { Trash, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { detailMemberAtom } from "../../_api/queries";
+import { detailMemberAtom } from "../../../../_api/queries";
 import { Atom, AtomValue, SetAtom } from "@suspensive/jotai";
-import { cashierDialog, customerId } from "../../_api/atoms";
-import { deleteMemberAtom } from "../../_api/mutation";
+import { cashierDialog, customerId } from "../../../../_api/atoms";
+import { deleteMemberAtom } from "../../../../_api/mutation";
 import { Spinner } from "@/components/ui/spinner";
 import { invalidate } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";

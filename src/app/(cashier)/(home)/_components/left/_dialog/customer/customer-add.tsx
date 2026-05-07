@@ -22,9 +22,9 @@ import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
-import { cashierDialog, customerId } from "../../_api/atoms";
-import { addMemberAtom, updateMemberAtom } from "../../_api/mutation";
-import { detailMemberAtom } from "../../_api/queries";
+import { cashierDialog, customerId } from "../../../../_api/atoms";
+import { addMemberAtom, updateMemberAtom } from "../../../../_api/mutation";
+import { detailMemberAtom } from "../../../../_api/queries";
 import { formatPhoneNumber, invalidate } from "@/lib/utils";
 
 const formSchema = z.object({
