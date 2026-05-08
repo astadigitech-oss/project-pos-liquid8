@@ -13,7 +13,7 @@ import { column } from "./columns";
 import { Pagination } from "@/components/pagination";
 import { listStorePage, listStoreSearch } from "../_api/atom";
 import { AtomValue } from "@suspensive/jotai";
-import { transactionListAdminAtom } from "../_api/queries";
+import { listStoreAtom } from "../_api/queries";
 import { useAtom } from "jotai";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipText } from "@/providers/tooltip-provider";
@@ -21,7 +21,7 @@ import { DetailTransaction } from "./_dialog/detail";
 
 export const StoreAdminClient = () => {
   return (
-    <AtomValue atom={transactionListAdminAtom}>
+    <AtomValue atom={listStoreAtom}>
       {({ data, isSuccess, isError, isRefetching }) => (
         <div className="bg-white border shadow rounded-xl p-4 flex flex-col gap-4">
           <DetailTransaction />

@@ -52,7 +52,7 @@ export const LoginClient = () => {
   return (
     <div className="min-w-sm">
       <AtomValue atom={loginAtom}>
-        {({ mutate }) => {
+        {({ mutate, isPending: isLoggingIn }) => {
           const handleLogin = async (values: z.infer<typeof formSchema>) => {
             mutate(values, {
               onSuccess: async (data) => {
@@ -130,13 +130,21 @@ export const LoginClient = () => {
                   </FieldGroup>
                 </CardContent>
                 <CardFooter>
-                  <Button className={"ml-auto"} type="submit">
-                    {isPending ? (
+                  <Button
+                    className={"ml-auto"}
+                    type="submit"
+                    disabled={isLoggingIn || isPending}
+                  >
+                    {isLoggingIn || isPending ? (
                       <Spinner className="size-3.5" />
                     ) : (
                       <LogInIcon className="size-3.5" />
                     )}
-                    {isPending ? "Mengalihkan" : "Masuk"}
+                    {isPending
+                      ? "Mengalihkan..."
+                      : isLoggingIn
+                        ? "Memproses..."
+                        : "Masuk"}
                   </Button>
                 </CardFooter>
               </Card>

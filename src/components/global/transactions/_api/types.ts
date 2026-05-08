@@ -4,9 +4,12 @@ export type transactionDetailResponse = {
     id: number;
     invoice: string;
     kasir: string;
+    user_cancel: string;
     customer_name: string;
     total_item: number;
     total_quantity: number;
+    total_packaging_qty: number;
+    total_packaging_price: number;
     paid_amount: number;
     change_amount: number;
     payment_method: string;
@@ -15,6 +18,7 @@ export type transactionDetailResponse = {
     total_amount: number;
     status: string;
     created_at: string;
+    note: string;
     store: {
       name: string;
       phone: string;

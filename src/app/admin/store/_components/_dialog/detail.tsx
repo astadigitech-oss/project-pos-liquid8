@@ -29,7 +29,7 @@ import { Delay, Suspense } from "@suspensive/react";
 import { Spinner } from "@/components/ui/spinner";
 import { detailTransactionDialog } from "@/components/global/transactions/_api/atom";
 import { detailtransactionAtom } from "@/components/global/transactions/_api/queries";
-import { columnDetail } from "@/components/global/transactions/columns";
+import { columnProducts } from "@/components/global/transactions/products-columns";
 
 export const DetailTransaction = () => {
   const [isPrinting, setIsPrinting] = React.useState(false);
@@ -274,7 +274,7 @@ export const DetailTransaction = () => {
                               </p>
                               <DataTable
                                 isLoading={isRefetching}
-                                columns={columnDetail}
+                                columns={columnProducts}
                                 data={[]}
                               />
                             </div>
