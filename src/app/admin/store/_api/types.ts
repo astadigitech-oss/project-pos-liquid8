@@ -20,3 +20,8 @@ export type StoreListResponse = {
     };
   };
 };
+
+export type StoreSelectResponse = Array<{
+  id: number;
+  store_name: string;
+}>;

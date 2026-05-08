@@ -17,6 +17,7 @@ import { logoutAtom } from "./sidebar/_api/mutations";
 import { deleteCookie } from "cookies-next/client";
 import { secretStore } from "@/config";
 import { userInfoAtom } from "@/app/(cashier)/settings/_api/queries";
+import { Spinner } from "./ui/spinner";
 
 export const NavAdmin = () => {
   const pathname = usePathname();
@@ -90,10 +91,11 @@ export const NavAdmin = () => {
           )}
         </AtomValue>
         <AtomValue atom={logoutAtom}>
-          {({ mutate }) => (
+          {({ mutate, isPending: isLoggingOut }) => (
             <Button
               variant={"destructive"}
               size={"icon-sm"}
+              disabled={isLoggingOut}
               onClick={() =>
                 mutate(undefined, {
                   onSuccess: () => {
@@ -103,7 +105,11 @@ export const NavAdmin = () => {
                 })
               }
             >
-              <LogOut className="size-3.5" />
+              {isLoggingOut ? (
+                <Spinner className="size-3.5" />
+              ) : (
+                <LogOut className="size-3.5" />
+              )}
             </Button>
           )}
         </AtomValue>

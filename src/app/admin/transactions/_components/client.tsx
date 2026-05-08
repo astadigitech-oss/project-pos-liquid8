@@ -21,7 +21,7 @@ import { useAtom } from "jotai";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipText } from "@/providers/tooltip-provider";
 import { DetailTransaction } from "@/components/global/transactions/detail";
-import { DialogCancelTransaction } from "@/components/global/transactions/cancel";
+import { DialogCancelTransaction } from "@/app/(cashier)/transactions/_dialog/cancel";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 

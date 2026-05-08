@@ -31,6 +31,7 @@ import { userInfoAtom } from "@/app/(cashier)/settings/_api/queries";
 import { logoutAtom } from "./_api/mutations";
 import { deleteCookie } from "cookies-next/client";
 import { secretStore } from "@/config";
+import { Spinner } from "../ui/spinner";
 
 export const AppSidebar = ({
   ...props
@@ -128,7 +129,7 @@ export const AppSidebar = ({
               </div>
               <p>{data?.resource.name}</p>
               <AtomValue atom={logoutAtom}>
-                {({ mutate }) => (
+                {({ mutate, isPending: isLoggingOut }) => (
                   <TooltipText
                     value="Keluar"
                     side="left"
@@ -138,6 +139,7 @@ export const AppSidebar = ({
                         size={"icon"}
                         variant={"destructive"}
                         className={"ml-auto"}
+                        disabled={isLoggingOut}
                         onClick={() =>
                           mutate(undefined, {
                             onSuccess: () => {
@@ -147,7 +149,11 @@ export const AppSidebar = ({
                           })
                         }
                       >
-                        <LogOut className="size-3.5" />
+                        {isLoggingOut ? (
+                          <Spinner className="size-3.5" />
+                        ) : (
+                          <LogOut className="size-3.5" />
+                        )}
                       </Button>
                     }
                   />

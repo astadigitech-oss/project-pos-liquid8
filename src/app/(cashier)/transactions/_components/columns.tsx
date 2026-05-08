@@ -9,9 +9,9 @@ import { id } from "date-fns/locale";
 import { ReceiptText, TicketX } from "lucide-react";
 import {
   detailTransactionDialog,
-  cancelTransactionDialog,
   selectedTransactionId,
 } from "@/components/global/transactions/_api/atom";
+import { cancelTransactionDialog } from "../_api/atom";
 
 export const column = (): ColumnDef<{
   id: number;
@@ -68,14 +68,22 @@ export const column = (): ColumnDef<{
     header: "Status",
     cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-2 border rounded-full w-fit px-2 py-0.5 border-gray-300">
+        <div className="flex items-center gap-2 border rounded-full w-fit px-2 py-px border-gray-300 text-xs">
           <span
             className={cn(
               "size-2 rounded-full",
-              row.original.status === "done" ? "bg-green-500" : "bg-red-500",
+              row.original.status === "done"
+                ? "bg-green-500"
+                : row.original.status === "pending_cancel"
+                  ? "bg-yellow-500"
+                  : "bg-red-500",
             )}
           />
-          {row.original.status === "done" ? "Selesai" : "Dibatalkan"}
+          {row.original.status === "done"
+            ? "Selesai"
+            : row.original.status === "pending_cancel"
+              ? "Membatalkan"
+              : "Dibatalkan"}
         </div>
       );
     },
@@ -116,7 +124,7 @@ export const column = (): ColumnDef<{
                     value={"Batalkan Transaksi"}
                     render={
                       <Button
-                        disabled={row.original.status === "cancelled"}
+                        disabled={row.original.status !== "done"}
                         size={"icon-sm"}
                         variant={"destructive"}
                         onClick={() => {

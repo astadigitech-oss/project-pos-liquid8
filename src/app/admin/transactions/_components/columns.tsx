@@ -1,6 +1,5 @@
 import {
   detailTransactionDialog,
-  cancelTransactionDialog,
   selectedTransactionId,
 } from "@/components/global/transactions/_api/atom";
 import { Button } from "@/components/ui/button";
@@ -118,7 +117,7 @@ export const column = ({
                       />
                     )}
                   </SetAtom>
-                  {user?.resource.role === "superadmin" && (
+                  {/*{user?.resource.role === "superadmin" && (
                     <SetAtom atom={cancelTransactionDialog}>
                       {(setOpen) => (
                         <TooltipText
@@ -139,7 +138,7 @@ export const column = ({
                         />
                       )}
                     </SetAtom>
-                  )}
+                  )}*/}
                 </div>
               )}
             </AtomValue>

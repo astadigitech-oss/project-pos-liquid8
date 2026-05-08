@@ -7,7 +7,7 @@ const LoginPage = async () => {
   const auth = await session();
   if (auth.status) {
     if (auth.role === "kasir") redirect("/");
-    if (auth.role === "admin") redirect("/admin");
+    if (auth.role === "admin" || auth.role === "superadmin") redirect("/admin");
   }
 
   return (

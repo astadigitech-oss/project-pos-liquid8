@@ -4,7 +4,7 @@ import { atomWithQuery } from "jotai-tanstack-query";
 import { selectedStaffId, staffPage, staffSearch } from "./atom";
 
 export const listStaffAtom = atomWithQuery((get) => ({
-  queryKey: ["list-staff"],
+  queryKey: ["list-staff", { q: get(staffSearch), page: get(staffPage) }],
   queryFn: () => listStaffQuery(get(staffSearch), get(staffPage)),
   placeholderData: keepPreviousData,
   retry: 0,

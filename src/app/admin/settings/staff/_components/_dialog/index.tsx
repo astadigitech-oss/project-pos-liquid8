@@ -9,10 +9,12 @@ import {
 } from "@/components/ui/dialog";
 import { Atom, AtomValue } from "@suspensive/jotai";
 import React from "react";
-import { addEditStaffDialog } from "../_api/atom";
+import { staffDialog } from "../../_api/atom";
 import { Button } from "@/components/ui/button";
-import { Send, X } from "lucide-react";
-import { detailStaffAtom } from "../_api/queries";
+import { Trash, X } from "lucide-react";
+import { detailStaffAtom } from "../../_api/queries";
+
+import { AddEdit } from "./add-edit";
 
 const headerDialog = {
   add: {
@@ -42,16 +44,20 @@ const headerDialog = {
 export const StaffDialog = () => {
   return (
     <AtomValue atom={detailStaffAtom}>
-      {({ data }) => (
-        <Atom atom={addEditStaffDialog}>
+      {({ data, isRefetching, isSuccess }) => (
+        <Atom atom={staffDialog}>
           {([open, setOpen]) => {
             const title =
               typeof headerDialog[open]?.title === "function"
-                ? headerDialog[open].title("name")
+                ? headerDialog[open].title(
+                    !isRefetching && isSuccess ? data?.data.resource.Name : "",
+                  )
                 : headerDialog[open]?.title;
             const description =
               typeof headerDialog[open]?.description === "function"
-                ? headerDialog[open].description("name")
+                ? headerDialog[open].description(
+                    !isRefetching && isSuccess ? data?.data.resource.Name : "",
+                  )
                 : headerDialog[open]?.description;
             return (
               <Dialog
@@ -62,42 +68,25 @@ export const StaffDialog = () => {
                   }
                 }}
               >
-                <DialogContent showCloseButton={false}>
+                <DialogContent showCloseButton={false} className={"min-w-2xl"}>
                   <DialogHeader>
-                    <DialogTitle>{title}</DialogTitle>
+                    <DialogTitle className={"capitalize"}>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
                   </DialogHeader>
-                  {open !== "delete" && (
-                    <form>
-                      <DialogFooter>
-                        <DialogClose
-                          render={
-                            <Button variant={"outline"}>
-                              <X className="size-3.5" />
-                              Batal
-                            </Button>
-                          }
-                        />
-                        <Button>
-                          <Send className="size-3.5" />
-                          Kirim
-                        </Button>
-                      </DialogFooter>
-                    </form>
-                  )}
+                  {open !== "delete" && <AddEdit />}
                   {open === "delete" && (
                     <DialogFooter>
                       <DialogClose
                         render={
-                          <Button variant={"outline"}>
+                          <Button type="button" variant={"outline"}>
                             <X className="size-3.5" />
                             Batal
                           </Button>
                         }
                       />
-                      <Button>
-                        <Send className="size-3.5" />
-                        Kirim
+                      <Button type="button">
+                        <Trash className="size-3.5" />
+                        Hapus
                       </Button>
                     </DialogFooter>
                   )}

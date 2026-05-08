@@ -24,3 +24,27 @@ export const transactionListQuery = async (
 
   return res;
 };
+
+export const transactionCancel = async ({
+  id,
+  body,
+}: {
+  id: string;
+  body: { note: string };
+}): Promise<any> => {
+  const token = getCookie(secretStore);
+  const response = await fetch(`${apiUrl}/api/transactions/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  const res = (await response.json()) as any;
+
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
