@@ -15,9 +15,31 @@ import { AtomValue, SetAtom } from "@suspensive/jotai";
 import { cashierDialog, customerSelectedId } from "../../_api/atoms";
 import { detailSelectedMemberAtom } from "../../_api/queries";
 import { ShiftDialog } from "./_dialog/shift";
+import { useAtomValue } from "jotai";
 
 export const TopSection = () => {
   const { formattedDate, formattedTime } = useTime();
+  const customerId = useAtomValue(customerSelectedId);
+
+  React.useEffect(() => {
+    // Fungsi handler
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      // Jika customerId ada (sudah di-set), munculkan peringatan
+      if (customerId) {
+        e.preventDefault();
+        e.returnValue = true;
+      }
+    };
+
+    // Pasang listener
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    // Bersihkan listener saat komponen unmount
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [customerId]);
+
   return (
     <div className="flex items-center justify-between gap-4">
       <ShiftDialog />
@@ -54,15 +76,11 @@ export const TopSection = () => {
             >
               <AtomValue atom={detailSelectedMemberAtom}>
                 {({ data }) => (
-                  <AtomValue atom={customerSelectedId}>
-                    {(customerId) => (
-                      <p className="text-xs pl-1 pr-2">
-                        {customerId && data?.resource.name
-                          ? data?.resource.name
-                          : "Pilih Customer"}
-                      </p>
-                    )}
-                  </AtomValue>
+                  <p className="text-xs pl-1 pr-2">
+                    {customerId && data?.resource.name
+                      ? data?.resource.name
+                      : "Pilih Customer"}
+                  </p>
                 )}
               </AtomValue>
               <div className="size-7 rounded-full bg-red-100 flex items-center justify-center">
