@@ -59,21 +59,39 @@ export type DraftTransactionResponse = {
 export type ResumeDraftResponse = {
   status: boolean;
   message: string;
-  resource: Array<{
-    id: number;
-    store_id: number;
+  resource: {
+    items: Array<{
+      name: string;
+      price: number;
+      quantity: number;
+      total: number;
+    }>;
+    items_packaging: Array<{
+      id: number;
+      name: string;
+      price: number;
+      quantity: number;
+      total: number;
+    }>;
     member_id: number;
-    user_id: number;
-    product_id: number;
-    keep_code: any;
-    product_name: string;
-    quantity: number;
-    price: number;
-    discount_price: number;
+    pembulatan: number;
+    ppn: {
+      amount: number;
+      tax: number;
+    };
+    products: Array<{
+      id: number;
+      product_id: number;
+      barcode: string;
+      product_name: string;
+      quantity: number;
+      price: number;
+      discount_price: number;
+      subtotal: number;
+    }>;
     subtotal: number;
-    created_at: string;
-    updated_at: string;
-  }>;
+    total_amount: number;
+  };
 };
 
 export type MemberListResponse = {

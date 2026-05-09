@@ -81,7 +81,7 @@ export const columnDraft = ({
                                       onSuccess: async (data) => {
                                         setOpen("");
                                         setCustomerId(
-                                          data.resource[0].member_id.toString(),
+                                          data.resource.member_id.toString(),
                                         );
                                         await invalidate(queryClient, [
                                           "list-pending",
