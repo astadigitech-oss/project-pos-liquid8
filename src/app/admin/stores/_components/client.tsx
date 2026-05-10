@@ -7,7 +7,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { Search, XCircle } from "lucide-react";
+import { RefreshCw, Search, XCircle } from "lucide-react";
 import React from "react";
 import { column } from "./columns";
 import { Pagination } from "@/components/pagination";
@@ -17,21 +17,40 @@ import { listStoreAtom } from "../_api/queries";
 import { useAtom } from "jotai";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipText } from "@/providers/tooltip-provider";
-import { DetailTransaction } from "./_dialog/detail";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export const StoreAdminClient = () => {
   return (
     <AtomValue atom={listStoreAtom}>
-      {({ data, isSuccess, isError, isRefetching }) => (
+      {({ data, isSuccess, isError, refetch, isRefetching }) => (
         <div className="bg-white border shadow rounded-xl p-4 flex flex-col gap-4">
-          <DetailTransaction />
           <div className="flex items-center justify-between">
-            <h1 className="font-semibold">Toko</h1>
-            <TransactionAdminSearchInput
-              isSuccess={isSuccess}
-              isError={isError}
-              disabled={isRefetching}
-            />
+            <h1 className="font-semibold relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-red-400 before:rounded-full">
+              Toko
+            </h1>
+            <div className="flex items-center gap-2">
+              <StoreSearchInput
+                isSuccess={isSuccess}
+                isError={isError}
+                disabled={isRefetching}
+              />
+              <TooltipText
+                render={
+                  <Button
+                    onClick={() => refetch()}
+                    size={"icon"}
+                    variant={"outline"}
+                    className={"border-gray-300"}
+                  >
+                    <RefreshCw
+                      className={cn("size-3.5", isRefetching && "animate-spin")}
+                    />
+                  </Button>
+                }
+                value="Muat Ulang"
+              />
+            </div>
           </div>
           <div className="flex flex-col gap-4">
             <DataTable
@@ -50,7 +69,7 @@ export const StoreAdminClient = () => {
   );
 };
 
-const TransactionAdminSearchInput = ({
+const StoreSearchInput = ({
   disabled,
   isSuccess,
   isError,
@@ -81,7 +100,7 @@ const TransactionAdminSearchInput = ({
   return (
     <InputGroup className="has-disabled:opacity-100 has-disabled:bg-transparent w-64">
       <InputGroupInput
-        placeholder="Cari transaksi..."
+        placeholder="Cari toko..."
         ref={inputRef}
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}

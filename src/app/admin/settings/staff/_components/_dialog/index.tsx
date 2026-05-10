@@ -1,20 +1,19 @@
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Atom, AtomValue } from "@suspensive/jotai";
 import React from "react";
 import { staffDialog } from "../../_api/atom";
-import { Button } from "@/components/ui/button";
-import { Trash, X } from "lucide-react";
 import { detailStaffAtom } from "../../_api/queries";
 
 import { AddEdit } from "./add-edit";
+import { Password } from "./password";
+import { cn } from "@/lib/utils";
+import { Delete } from "./delete";
 
 const headerDialog = {
   add: {
@@ -68,28 +67,21 @@ export const StaffDialog = () => {
                   }
                 }}
               >
-                <DialogContent showCloseButton={false} className={"min-w-2xl"}>
+                <DialogContent
+                  showCloseButton={false}
+                  className={cn(
+                    open === "add" || open === "edit"
+                      ? "min-w-2xl"
+                      : "min-w-xs",
+                  )}
+                >
                   <DialogHeader>
                     <DialogTitle className={"capitalize"}>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
                   </DialogHeader>
-                  {open !== "delete" && <AddEdit />}
-                  {open === "delete" && (
-                    <DialogFooter>
-                      <DialogClose
-                        render={
-                          <Button type="button" variant={"outline"}>
-                            <X className="size-3.5" />
-                            Batal
-                          </Button>
-                        }
-                      />
-                      <Button type="button">
-                        <Trash className="size-3.5" />
-                        Hapus
-                      </Button>
-                    </DialogFooter>
-                  )}
+                  {(open === "add" || open === "edit") && <AddEdit />}
+                  {open === "password" && <Password />}
+                  {open === "delete" && <Delete />}
                 </DialogContent>
               </Dialog>
             );

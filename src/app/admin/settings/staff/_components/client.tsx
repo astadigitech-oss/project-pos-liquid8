@@ -20,7 +20,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipText } from "@/providers/tooltip-provider";
 import { cn } from "@/lib/utils";
-import { listStoreSelectAtom } from "@/app/admin/store/_api/queries";
+import { listStoreSelectAtom } from "@/app/admin/stores/_api/queries";
 
 export const StaffSettingClient = () => {
   const { isLoading: isLoadingStore } = useAtomValue(listStoreSelectAtom);

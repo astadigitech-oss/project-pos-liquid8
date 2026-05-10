@@ -43,6 +43,8 @@ export const column = ({
   {
     accessorKey: "store_name",
     header: "Toko",
+    cell: ({ row }) =>
+      row.original.store_name ? row.original.store_name : "-",
   },
   {
     id: "actions",
