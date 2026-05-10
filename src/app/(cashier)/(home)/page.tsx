@@ -2,6 +2,11 @@ import React from "react";
 import { HomeClient } from "./_components/client";
 import { session } from "@/lib/session";
 import { redirect } from "next/navigation";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Kasir",
+};
 
 const HomePage = async () => {
   const auth = await session();

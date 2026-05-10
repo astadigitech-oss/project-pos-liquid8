@@ -1,19 +1,18 @@
 import React from "react";
-import { PpnSettingClient } from "./_components/client";
+import { StoreAdminClient } from "./_components/client";
 import { session } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Pengaturan PPN",
+  title: "Toko",
 };
 
-const PpnSettingPage = async () => {
+const StoreAdminPage = async () => {
   const auth = await session();
   if (!auth.status) redirect("/login");
   if (auth.status && auth.role === "kasir") redirect("/");
-
-  return <PpnSettingClient />;
+  return <StoreAdminClient />;
 };
 
-export default PpnSettingPage;
+export default StoreAdminPage;

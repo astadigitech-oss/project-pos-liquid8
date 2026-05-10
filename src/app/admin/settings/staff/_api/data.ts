@@ -5,6 +5,7 @@ import {
   StaffAddResponse,
   StaffDetailResponse,
   StaffEditBody,
+  StaffEditResponse,
   StaffListResponse,
 } from "./types";
 
@@ -74,7 +75,7 @@ export const addStaffMutation = async (
 export const updateStaffMutation = async (
   id: string,
   body: StaffEditBody,
-): Promise<StaffAddResponse> => {
+): Promise<StaffEditResponse> => {
   const token = getCookie(secretStore);
   const response = await fetch(`${apiUrl}/api/users/${id}`, {
     method: "PUT",
@@ -85,9 +86,28 @@ export const updateStaffMutation = async (
     body: JSON.stringify(body),
   });
 
-  const res = (await response.json()) as StaffAddResponse;
+  const res = (await response.json()) as StaffEditResponse;
 
-  if (!response.ok) throw new Error(res.data.message);
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
+
+export const deleteStaffMutation = async (
+  id: string,
+): Promise<StaffEditResponse> => {
+  const token = getCookie(secretStore);
+  const response = await fetch(`${apiUrl}/api/users/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const res = (await response.json()) as StaffEditResponse;
+
+  if (!response.ok) throw new Error(res.message);
 
   return res;
 };

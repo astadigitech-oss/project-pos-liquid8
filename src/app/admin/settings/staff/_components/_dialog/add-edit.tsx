@@ -29,11 +29,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 // API & State
 import { userInfoAtom } from "../../../(profil)/_api/queries";
-import { listStoreSelectAtom } from "@/app/admin/store/_api/queries";
+import { listStoreSelectAtom } from "@/app/admin/stores/_api/queries";
 import { addStaffAtom, updateStaffAtom } from "../../_api/mutations";
 import { selectedStaffId, staffDialog } from "../../_api/atom";
 import { detailStaffAtom } from "../../_api/queries";
 import { invalidate } from "@/lib/utils";
+import { Delay } from "@suspensive/react";
 
 // Types & Schemas
 const roleListAdmin = ["kasir"] as const;
@@ -159,171 +160,122 @@ export const AddEdit = () => {
   }, [open, form]);
 
   // Loading State
-  if (isEdit && (!isSuccess || isRefetching)) {
-    return (
-      <div className="flex flex-col gap-4">
-        <div className="h-44 flex flex-col items-center justify-center gap-2 text-xs font-semibold">
-          <Spinner className="size-6" />
-          <p>Memuat data...</p>
-        </div>
-        <DialogFooter>
-          <Skeleton className="w-20 h-9" />
-          <Skeleton className="w-20 h-9" />
-        </DialogFooter>
-      </div>
-    );
-  }
+  if (isEdit && (!isSuccess || isRefetching)) return <Loader />;
 
   return (
-    <form
-      onSubmit={form.handleSubmit(onSubmit)}
-      className="flex flex-col gap-6"
-    >
-      <div className="grid grid-cols-2 gap-4">
-        {/* Name Field */}
-        <Controller
-          control={form.control}
-          name="name"
-          render={({ field, fieldState }) => (
-            <Field>
-              <FieldLabel required>Nama</FieldLabel>
-              <InputGroup>
-                <InputGroupInput
-                  {...field}
-                  placeholder="cth. John Doe"
-                  autoComplete="off"
-                />
-                <InputGroupAddon>
-                  <User2 size={16} />
-                </InputGroupAddon>
-              </InputGroup>
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-
-        {/* Username Field */}
-        <Controller
-          control={form.control}
-          name="username"
-          render={({ field, fieldState }) => (
-            <Field>
-              <FieldLabel required>Username</FieldLabel>
-              <InputGroup>
-                <InputGroupInput
-                  {...field}
-                  placeholder="cth. john_doe"
-                  autoComplete="off"
-                />
-                <InputGroupAddon>
-                  <IdCard size={16} />
-                </InputGroupAddon>
-              </InputGroup>
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-
-        {/* Email Field */}
-        <Controller
-          control={form.control}
-          name="email"
-          render={({ field, fieldState }) => (
-            <Field>
-              <FieldLabel required>Email</FieldLabel>
-              <InputGroup>
-                <InputGroupInput
-                  {...field}
-                  type="email"
-                  placeholder="email@domain.com"
-                />
-                <InputGroupAddon>
-                  <AtSign size={16} />
-                </InputGroupAddon>
-              </InputGroup>
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-
-        {/* Password Field (Add Only) */}
-        {!isEdit && (
+    <Delay ms={500} fallback={<Loader />}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col gap-6"
+      >
+        <div className="grid grid-cols-2 gap-2">
+          {/* Name Field */}
           <Controller
             control={form.control}
-            name="password"
+            name="name"
             render={({ field, fieldState }) => (
-              <Field>
-                <FieldLabel required>Password</FieldLabel>
-                <InputPassword {...field} />
+              <Field className="gap-1">
+                <FieldLabel required>Nama</FieldLabel>
+                <InputGroup>
+                  <InputGroupInput
+                    {...field}
+                    placeholder="cth. John Doe"
+                    autoComplete="off"
+                  />
+                  <InputGroupAddon>
+                    <User2 size={16} />
+                  </InputGroupAddon>
+                </InputGroup>
                 <FieldError errors={[fieldState.error]} />
               </Field>
             )}
           />
-        )}
 
-        {/* Role Field */}
-        <Controller
-          control={form.control}
-          name="role"
-          render={({ field, fieldState }) => (
-            <Field>
-              <FieldLabel required>Role</FieldLabel>
-              <Combobox
-                items={roleList}
-                value={field.value}
-                onValueChange={field.onChange}
-                itemToStringLabel={(item) =>
-                  item.charAt(0).toUpperCase() + item.slice(1)
-                }
-              >
-                <ComboboxInput className="text-xs" placeholder="Pilih Role" />
-                <ComboboxContent>
-                  <ComboboxEmpty>Role tidak ditemukan</ComboboxEmpty>
-                  <ComboboxList>
-                    {(item) => (
-                      <ComboboxItem
-                        className="capitalize text-xs h-8"
-                        key={item}
-                        value={item}
-                      >
-                        {item}
-                      </ComboboxItem>
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-              <FieldError errors={[fieldState.error]} />
-            </Field>
-          )}
-        />
-
-        {/* Store Field (Conditional) */}
-        {roleSelected === "kasir" && (
+          {/* Username Field */}
           <Controller
             control={form.control}
-            name="store"
+            name="username"
             render={({ field, fieldState }) => (
-              <Field>
-                <FieldLabel required>Toko</FieldLabel>
+              <Field className="gap-1">
+                <FieldLabel required>Username</FieldLabel>
+                <InputGroup>
+                  <InputGroupInput
+                    {...field}
+                    placeholder="cth. john_doe"
+                    autoComplete="off"
+                  />
+                  <InputGroupAddon>
+                    <IdCard size={16} />
+                  </InputGroupAddon>
+                </InputGroup>
+                <FieldError errors={[fieldState.error]} />
+              </Field>
+            )}
+          />
+
+          {/* Email Field */}
+          <Controller
+            control={form.control}
+            name="email"
+            render={({ field, fieldState }) => (
+              <Field className="gap-1">
+                <FieldLabel required>Email</FieldLabel>
+                <InputGroup>
+                  <InputGroupInput
+                    {...field}
+                    type="email"
+                    placeholder="email@domain.com"
+                  />
+                  <InputGroupAddon>
+                    <AtSign size={16} />
+                  </InputGroupAddon>
+                </InputGroup>
+                <FieldError errors={[fieldState.error]} />
+              </Field>
+            )}
+          />
+
+          {/* Password Field (Add Only) */}
+          {!isEdit && (
+            <Controller
+              control={form.control}
+              name="password"
+              render={({ field, fieldState }) => (
+                <Field className="gap-1">
+                  <FieldLabel required>Password</FieldLabel>
+                  <InputPassword {...field} />
+                  <FieldError errors={[fieldState.error]} />
+                </Field>
+              )}
+            />
+          )}
+
+          {/* Role Field */}
+          <Controller
+            control={form.control}
+            name="role"
+            render={({ field, fieldState }) => (
+              <Field className="gap-1">
+                <FieldLabel required>Role</FieldLabel>
                 <Combobox
-                  items={storeSelect || []}
+                  items={roleList}
                   value={field.value}
                   onValueChange={field.onChange}
-                  itemToStringLabel={(item) => item.store_name}
-                  isItemEqualToValue={(a, b) => a.id === b.id}
+                  itemToStringLabel={(item) =>
+                    item.charAt(0).toUpperCase() + item.slice(1)
+                  }
                 >
-                  <ComboboxInput className="text-xs" placeholder="Pilih Toko" />
+                  <ComboboxInput className="text-xs" placeholder="Pilih Role" />
                   <ComboboxContent>
-                    <ComboboxEmpty>Toko tidak ditemukan</ComboboxEmpty>
+                    <ComboboxEmpty>Role tidak ditemukan</ComboboxEmpty>
                     <ComboboxList>
                       {(item) => (
                         <ComboboxItem
-                          className="text-xs h-8"
-                          key={item.id}
+                          className="capitalize text-xs h-8"
+                          key={item}
                           value={item}
                         >
-                          <Store className="size-3.5 mr-2" />
-                          {item.store_name}
+                          {item}
                         </ComboboxItem>
                       )}
                     </ComboboxList>
@@ -333,23 +285,79 @@ export const AddEdit = () => {
               </Field>
             )}
           />
-        )}
-      </div>
 
-      <DialogFooter className="mt-2">
-        <DialogClose
-          render={
-            <Button type="button" variant="outline">
-              <X className="size-3.5 mr-2" />
-              Batal
-            </Button>
-          }
-        />
-        <Button type="submit">
-          <Send className="size-3.5 mr-2" />
-          {isEdit ? "Update" : "Tambah"}
-        </Button>
+          {/* Store Field (Conditional) */}
+          {roleSelected === "kasir" && (
+            <Controller
+              control={form.control}
+              name="store"
+              render={({ field, fieldState }) => (
+                <Field className="gap-1">
+                  <FieldLabel required>Toko</FieldLabel>
+                  <Combobox
+                    items={storeSelect || []}
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    itemToStringLabel={(item) => item.store_name}
+                    isItemEqualToValue={(a, b) => a.id === b.id}
+                  >
+                    <ComboboxInput
+                      className="text-xs"
+                      placeholder="Pilih Toko"
+                    />
+                    <ComboboxContent>
+                      <ComboboxEmpty>Toko tidak ditemukan</ComboboxEmpty>
+                      <ComboboxList>
+                        {(item) => (
+                          <ComboboxItem
+                            className="text-xs h-8"
+                            key={item.id}
+                            value={item}
+                          >
+                            <Store className="size-3.5 mr-2" />
+                            {item.store_name}
+                          </ComboboxItem>
+                        )}
+                      </ComboboxList>
+                    </ComboboxContent>
+                  </Combobox>
+                  <FieldError errors={[fieldState.error]} />
+                </Field>
+              )}
+            />
+          )}
+        </div>
+
+        <DialogFooter className="mt-2">
+          <DialogClose
+            render={
+              <Button type="button" variant="outline">
+                <X className="size-3.5 mr-2" />
+                Batal
+              </Button>
+            }
+          />
+          <Button type="submit">
+            <Send className="size-3.5 mr-2" />
+            {isEdit ? "Update" : "Tambah"}
+          </Button>
+        </DialogFooter>
+      </form>
+    </Delay>
+  );
+};
+
+const Loader = () => {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="h-44 flex flex-col items-center justify-center gap-2 text-xs font-semibold">
+        <Spinner className="size-6" />
+        <p>Memuat data...</p>
+      </div>
+      <DialogFooter>
+        <Skeleton className="w-20 h-9" />
+        <Skeleton className="w-20 h-9" />
       </DialogFooter>
-    </form>
+    </div>
   );
 };
