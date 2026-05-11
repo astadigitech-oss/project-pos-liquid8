@@ -29,6 +29,8 @@ import {
 } from "@/app/(cashier)/(home)/_api/atoms";
 import { listProductAtom } from "@/app/(cashier)/(home)/_api/queries";
 import { columnProduct } from "../columns/product-columns";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 
 // --- Search Input terpisah ---
 function SearchInput({
@@ -77,6 +79,7 @@ function SearchInput({
 }
 
 export const ProductDialog = () => {
+  const [autoClose, setAutoClose] = useState(true);
   return (
     <Atom atom={cashierDialog}>
       {([open, setOpen]) => (
@@ -148,10 +151,19 @@ export const ProductDialog = () => {
                         )}
                       />
                     </Button>
+                    <Label className="h-8 border rounded-md px-2 border-gray-300 hover:border-gray-400">
+                      <Switch
+                        size="sm"
+                        checked={autoClose}
+                        onCheckedChange={setAutoClose}
+                      />
+                      <p className="whitespace-nowrap">Tutup Otomatis</p>
+                    </Label>
                   </div>
                   <DataTable
                     columns={columnProduct({
                       from: data?.resource.pagination.from ?? 0,
+                      autoClose,
                     })}
                     data={data?.resource.data ?? []}
                   />

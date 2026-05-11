@@ -86,7 +86,7 @@ export const transactionReciept = (
       data?.items.map((i) => [
         i.name,
         (i.price ?? 0).toLocaleString("id-ID"),
-        `${(i.quantity ?? 0).toLocaleString("id-ID")}X`,
+        `x${(i.quantity ?? 0).toLocaleString("id-ID")}`,
         (i.total ?? 0).toLocaleString("id-ID"),
       ]) ?? [],
     )

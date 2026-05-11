@@ -3,12 +3,15 @@ import { TooltipText } from "@/providers/tooltip-provider";
 import { SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { Edit2, ShieldCheck, Trash } from "lucide-react";
-import { addEditStaffDialog, selectedStaffId } from "../_api/atom";
+import { staffDialog, selectedStaffId } from "../_api/atom";
+import { Spinner } from "@/components/ui/spinner";
 
 export const column = ({
   from,
+  disabledEdit,
 }: {
   from: number;
+  disabledEdit: boolean;
 }): ColumnDef<{
   id: number;
   name: string;
@@ -40,6 +43,8 @@ export const column = ({
   {
     accessorKey: "store_name",
     header: "Toko",
+    cell: ({ row }) =>
+      row.original.store_name ? row.original.store_name : "-",
   },
   {
     id: "actions",
@@ -48,7 +53,7 @@ export const column = ({
       return (
         <SetAtom atom={selectedStaffId}>
           {(setSelectedId) => (
-            <SetAtom atom={addEditStaffDialog}>
+            <SetAtom atom={staffDialog}>
               {(setOpen) => (
                 <div className="flex items-center gap-1">
                   <TooltipText
@@ -60,12 +65,17 @@ export const column = ({
                           "text-yellow-600 bg-yellow-100 hover:bg-yellow-200 hover:text-yellow-700"
                         }
                         variant={"ghost"}
+                        disabled={disabledEdit}
                         onClick={() => {
                           setSelectedId(row.original.id.toString());
                           setOpen("edit");
                         }}
                       >
-                        <Edit2 className="size-3.5" />
+                        {disabledEdit ? (
+                          <Spinner className="size-3.5" />
+                        ) : (
+                          <Edit2 className="size-3.5" />
+                        )}
                       </Button>
                     }
                   />

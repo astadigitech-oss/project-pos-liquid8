@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { LoaderIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -26,8 +27,10 @@ export function DataTable<TData, TValue>({
   columns,
   data,
   isLoading,
+  className,
 }: Readonly<DataTableProps<TData, TValue>> & {
   isLoading?: boolean;
+  className?: string;
 }) {
   const table = useReactTable({
     data,
@@ -36,7 +39,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="rounded-md border overflow-hidden">
+    <div className={cn("rounded-md border overflow-hidden", className)}>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

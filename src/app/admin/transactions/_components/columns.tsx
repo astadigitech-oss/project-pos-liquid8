@@ -1,6 +1,5 @@
 import {
   detailTransactionDialog,
-  cancelTransactionDialog,
   selectedTransactionId,
 } from "@/components/global/transactions/_api/atom";
 import { Button } from "@/components/ui/button";
@@ -11,8 +10,12 @@ import { AtomValue, SetAtom } from "@suspensive/jotai";
 import { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
-import { ReceiptText, TicketX } from "lucide-react";
+import { ReceiptText, Scale, TicketX } from "lucide-react";
 import { userInfoAtom } from "../../settings/(profil)/_api/queries";
+import {
+  approvedTransactionAdminDialog,
+  approvedTransactionAdminSelectedId,
+} from "../_api/atom";
 
 export const column = ({
   from,
@@ -74,14 +77,22 @@ export const column = ({
     header: "Status",
     cell: ({ row }) => {
       return (
-        <div className="flex items-center gap-2 border rounded-full w-fit px-2 py-0.5 border-gray-300">
+        <div className="flex items-center gap-2 border rounded-full w-fit px-2 py-px border-gray-300 text-xs">
           <span
             className={cn(
               "size-2 rounded-full",
-              row.original.status === "done" ? "bg-green-500" : "bg-red-500",
+              row.original.status === "done"
+                ? "bg-green-500"
+                : row.original.status === "pending_cancel"
+                  ? "bg-yellow-500"
+                  : "bg-red-500",
             )}
           />
-          {row.original.status === "done" ? "Selesai" : "Dibatalkan"}
+          {row.original.status === "done"
+            ? "Selesai"
+            : row.original.status === "pending_cancel"
+              ? "Membatalkan"
+              : "Dibatalkan"}
         </div>
       );
     },
@@ -91,11 +102,11 @@ export const column = ({
     enableHiding: false,
     cell: ({ row }) => {
       return (
-        <SetAtom atom={selectedTransactionId}>
-          {(setTransactionId) => (
-            <AtomValue atom={userInfoAtom}>
-              {({ data: user }) => (
-                <div className="flex items-center gap-1">
+        <AtomValue atom={userInfoAtom}>
+          {({ data: user }) => (
+            <div className="flex items-center gap-1">
+              <SetAtom atom={selectedTransactionId}>
+                {(setTransactionId) => (
                   <SetAtom atom={detailTransactionDialog}>
                     {(setOpen) => (
                       <TooltipText
@@ -118,33 +129,71 @@ export const column = ({
                       />
                     )}
                   </SetAtom>
-                  {user?.resource.role === "superadmin" && (
-                    <SetAtom atom={cancelTransactionDialog}>
-                      {(setOpen) => (
-                        <TooltipText
-                          value={"Batalkan Transaksi"}
-                          render={
-                            <Button
-                              disabled={row.original.status === "cancelled"}
-                              size={"icon-sm"}
-                              variant={"destructive"}
-                              onClick={() => {
-                                setOpen(true);
-                                setTransactionId(row.original.id.toString());
-                              }}
-                            >
-                              <TicketX className="size-3.5" />
-                            </Button>
-                          }
-                        />
+                )}
+              </SetAtom>
+              {user?.resource.role === "superadmin" && (
+                <div>
+                  {row.original.status !== "pending_cancel" ? (
+                    <SetAtom atom={approvedTransactionAdminSelectedId}>
+                      {(setApprovedId) => (
+                        <SetAtom atom={approvedTransactionAdminDialog}>
+                          {(setOpen) => (
+                            <TooltipText
+                              value={"Batalkan Transaksi"}
+                              render={
+                                <Button
+                                  disabled={row.original.status !== "done"}
+                                  size={"icon-sm"}
+                                  variant={"destructive"}
+                                  onClick={() => {
+                                    setOpen("cancel");
+                                    setApprovedId(row.original.id.toString());
+                                  }}
+                                >
+                                  <TicketX className="size-3.5" />
+                                </Button>
+                              }
+                            />
+                          )}
+                        </SetAtom>
+                      )}
+                    </SetAtom>
+                  ) : (
+                    <SetAtom atom={approvedTransactionAdminSelectedId}>
+                      {(setApprovedId) => (
+                        <SetAtom atom={approvedTransactionAdminDialog}>
+                          {(setOpen) => (
+                            <TooltipText
+                              value={"Konfirmasi Pembatalan"}
+                              render={
+                                <Button
+                                  disabled={
+                                    row.original.status !== "pending_cancel"
+                                  }
+                                  size={"icon-sm"}
+                                  variant={"destructive"}
+                                  className={
+                                    "bg-orange-100 text-orange-600 hover:bg-orange-200"
+                                  }
+                                  onClick={() => {
+                                    setOpen("confirm");
+                                    setApprovedId(row.original.id.toString());
+                                  }}
+                                >
+                                  <Scale className="size-3.5" />
+                                </Button>
+                              }
+                            />
+                          )}
+                        </SetAtom>
                       )}
                     </SetAtom>
                   )}
                 </div>
               )}
-            </AtomValue>
+            </div>
           )}
-        </SetAtom>
+        </AtomValue>
       );
     },
   },

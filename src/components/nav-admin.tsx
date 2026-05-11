@@ -3,10 +3,12 @@
 import {
   Banknote,
   ChartColumn,
+  ClipboardClock,
   LayoutGrid,
   LogOut,
   Settings,
   Store,
+  Truck,
 } from "lucide-react";
 import React from "react";
 import { Button } from "./ui/button";
@@ -17,6 +19,7 @@ import { logoutAtom } from "./sidebar/_api/mutations";
 import { deleteCookie } from "cookies-next/client";
 import { secretStore } from "@/config";
 import { userInfoAtom } from "@/app/(cashier)/settings/_api/queries";
+import { Spinner } from "./ui/spinner";
 
 export const NavAdmin = () => {
   const pathname = usePathname();
@@ -28,7 +31,7 @@ export const NavAdmin = () => {
           <LayoutGrid className="size-3.5" />
           ADMIN POS
         </div>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center">
           <Link href={"/admin"}>
             <Button
               variant={"ghost"}
@@ -51,14 +54,37 @@ export const NavAdmin = () => {
               Transaksi
             </Button>
           </Link>
-          <Link href={"/admin/store"}>
+          <Link href={"/admin/stores"}>
             <Button
               variant={"ghost"}
+              data-active={pathname.includes("/admin/stores")}
               className={"hover:bg-red-100 data-[active=true]:bg-red-200"}
               size={"sm"}
             >
               <Store className="size-3.5" />
               Toko
+            </Button>
+          </Link>
+          <Link href={"/admin/shifts"}>
+            <Button
+              variant={"ghost"}
+              data-active={pathname.includes("/admin/shifts")}
+              className={"hover:bg-red-100 data-[active=true]:bg-red-200"}
+              size={"sm"}
+            >
+              <ClipboardClock className="size-3.5" />
+              Shift
+            </Button>
+          </Link>
+          <Link href={"/admin/migrations"}>
+            <Button
+              variant={"ghost"}
+              data-active={pathname.includes("/admin/migrations")}
+              className={"hover:bg-red-100 data-[active=true]:bg-red-200"}
+              size={"sm"}
+            >
+              <Truck className="size-3.5" />
+              Migrasi
             </Button>
           </Link>
           <Link href={"/admin/settings"}>
@@ -83,17 +109,18 @@ export const NavAdmin = () => {
                   {data?.resource.role}
                 </p>
               </div>
-              <p className="font-semibold text-sm pl-1 capitalize">
+              <p className="font-semibold text-sm pl-1 capitalize max-w-40 truncate">
                 {data?.resource.name}
               </p>
             </div>
           )}
         </AtomValue>
         <AtomValue atom={logoutAtom}>
-          {({ mutate }) => (
+          {({ mutate, isPending: isLoggingOut }) => (
             <Button
               variant={"destructive"}
               size={"icon-sm"}
+              disabled={isLoggingOut}
               onClick={() =>
                 mutate(undefined, {
                   onSuccess: () => {
@@ -103,7 +130,11 @@ export const NavAdmin = () => {
                 })
               }
             >
-              <LogOut className="size-3.5" />
+              {isLoggingOut ? (
+                <Spinner className="size-3.5" />
+              ) : (
+                <LogOut className="size-3.5" />
+              )}
             </Button>
           )}
         </AtomValue>

@@ -24,7 +24,7 @@ import { Spinner } from "@/components/ui/spinner";
 export const PpnSettingClient = () => {
   return (
     <AtomValue atom={listPPNAtom}>
-      {({ data, isError, isRefetching, isSuccess }) => (
+      {({ data, isError, isRefetching, isSuccess, refetch }) => (
         <div className="bg-white border shadow rounded-xl p-4 flex flex-col gap-6">
           <AddEditDialog />
           <AlertPPNDialog />
@@ -43,9 +43,15 @@ export const PpnSettingClient = () => {
                   <Button
                     size={"icon"}
                     variant={"outline"}
-                    className={"border-gray-300"}
+                    className={"border-gray-300 group"}
+                    onClick={() => refetch()}
                   >
-                    <RefreshCw className={cn("size-3.5")} />
+                    <RefreshCw
+                      className={cn(
+                        "size-3.5 group-hover:rotate-45 transition-all",
+                        isRefetching && "animate-spin",
+                      )}
+                    />
                   </Button>
                 }
                 value="Muat Ulang"

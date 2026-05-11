@@ -14,8 +14,10 @@ import { detailtransactionAtom } from "./_api/queries";
 import { Button } from "@/components/ui/button";
 import {
   Banknote,
+  CircleQuestionMark,
   CloudAlert,
   CreditCard,
+  MessageCircleQuestion,
   Printer,
   QrCode,
   RefreshCw,
@@ -27,12 +29,20 @@ import { DataTable } from "@/components/data-table";
 import { id } from "date-fns/locale";
 import { tz } from "@date-fns/tz";
 import { format } from "date-fns";
-import { columnDetail } from "./columns";
+import { columnProducts } from "./products-columns";
 import { Delay, Suspense } from "@suspensive/react";
 import { Spinner } from "@/components/ui/spinner";
 import { printAction, printCheck } from "@/lib/print-action";
 import { toast } from "sonner";
 import { transactionReciept } from "@/lib/receipt-template";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { columnItems } from "./items-columns";
+import { TooltipText } from "@/providers/tooltip-provider";
 
 export const DetailTransaction = () => {
   const [isPrinting, setIsPrinting] = React.useState(false);
@@ -281,33 +291,84 @@ export const DetailTransaction = () => {
                                     <p className="text-xs font-semibold">
                                       Status:
                                     </p>
-                                    <div className="flex items-center gap-2 border rounded-full w-fit px-2 py-px border-gray-300 text-xs">
-                                      <span
-                                        className={cn(
-                                          "size-2 rounded-full",
-                                          data?.resource.status === "done"
-                                            ? "bg-green-500"
-                                            : "bg-red-500",
-                                        )}
-                                      />
-                                      {data?.resource.status === "done"
-                                        ? "Selesai"
-                                        : "Dibatalkan"}
+                                    <div className="flex items-center gap-2">
+                                      <div className="flex items-center gap-2 border rounded-full w-fit px-2 py-px border-gray-300 text-xs">
+                                        <span
+                                          className={cn(
+                                            "size-2 rounded-full",
+                                            data?.resource.status === "done"
+                                              ? "bg-green-500"
+                                              : data.resource.status ===
+                                                  "pending_cancel"
+                                                ? "bg-yellow-500"
+                                                : "bg-red-500",
+                                          )}
+                                        />
+                                        {data?.resource.status === "done"
+                                          ? "Selesai"
+                                          : data.resource.status ===
+                                              "pending_cancel"
+                                            ? "Membatalkan"
+                                            : "Dibatalkan"}
+                                      </div>
+                                      {data?.resource.status !== "done" && (
+                                        <TooltipText
+                                          sideOffset={10}
+                                          value={
+                                            <div className="flex items-center gap-2 text-xs">
+                                              <MessageCircleQuestion className="size-3.5" />
+                                              <p>{data.resource.note}</p>
+                                            </div>
+                                          }
+                                          render={
+                                            <div className="size-5 rounded-full transition-all hover:bg-red-100 flex items-center justify-center">
+                                              <CircleQuestionMark
+                                                className="size-3 text-black/70"
+                                                absoluteStrokeWidth
+                                              />
+                                            </div>
+                                          }
+                                        />
+                                      )}
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                            <div className="flex flex-col gap-2">
-                              <p className="font-semibold">
-                                - List Product Terjual
-                              </p>
-                              <DataTable
-                                isLoading={isRefetching}
-                                columns={columnDetail}
-                                data={data?.resource.products ?? []}
-                              />
-                            </div>
+                            <Accordion
+                              defaultValue={["items"]}
+                              className={
+                                "border rounded-lg border-gray-300 divide-gray-300"
+                              }
+                            >
+                              <AccordionItem className={"px-4"} value={"items"}>
+                                <AccordionTrigger className={"font-semibold"}>
+                                  List Item Terjual
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                  <DataTable
+                                    isLoading={isRefetching}
+                                    columns={columnItems}
+                                    data={data?.resource.items ?? []}
+                                  />
+                                </AccordionContent>
+                              </AccordionItem>
+                              <AccordionItem
+                                className={"px-4"}
+                                value={"products"}
+                              >
+                                <AccordionTrigger className={"font-semibold"}>
+                                  List Produk Terjual
+                                </AccordionTrigger>
+                                <AccordionContent>
+                                  <DataTable
+                                    isLoading={isRefetching}
+                                    columns={columnProducts}
+                                    data={data?.resource.products ?? []}
+                                  />
+                                </AccordionContent>
+                              </AccordionItem>
+                            </Accordion>
                           </div>
                           <DialogFooter>
                             <DialogClose

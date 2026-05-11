@@ -8,7 +8,7 @@ interface ColumnItem {
   barcode: string;
 }
 
-export const columnDetail: ColumnDef<ColumnItem>[] = [
+export const columnProducts: ColumnDef<ColumnItem>[] = [
   {
     header: () => <div className="text-center">No</div>,
     id: "id",
