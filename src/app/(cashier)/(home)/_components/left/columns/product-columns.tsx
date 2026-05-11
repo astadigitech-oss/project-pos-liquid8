@@ -22,8 +22,10 @@ interface ColumnProduct {
 
 export const columnProduct = ({
   from,
+  autoClose,
 }: {
   from: number;
+  autoClose: boolean;
 }): ColumnDef<ColumnProduct>[] => [
   {
     header: () => <div className="text-center">No</div>,
@@ -85,7 +87,9 @@ export const columnProduct = ({
                               },
                               {
                                 onSuccess: async () => {
-                                  setOpen("");
+                                  if (autoClose) {
+                                    setOpen("");
+                                  }
                                   setPayment(0);
                                   setPaymentMethod(null);
                                   await Promise.all([
