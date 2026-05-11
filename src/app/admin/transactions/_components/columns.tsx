@@ -131,62 +131,65 @@ export const column = ({
                   </SetAtom>
                 )}
               </SetAtom>
-              {user?.resource.role === "superadmin" &&
-              row.original.status !== "pending_cancel" ? (
-                <SetAtom atom={approvedTransactionAdminSelectedId}>
-                  {(setApprovedId) => (
-                    <SetAtom atom={approvedTransactionAdminDialog}>
-                      {(setOpen) => (
-                        <TooltipText
-                          value={"Batalkan Transaksi"}
-                          render={
-                            <Button
-                              disabled={row.original.status !== "done"}
-                              size={"icon-sm"}
-                              variant={"destructive"}
-                              onClick={() => {
-                                setOpen("cancel");
-                                setApprovedId(row.original.id.toString());
-                              }}
-                            >
-                              <TicketX className="size-3.5" />
-                            </Button>
-                          }
-                        />
+              {user?.resource.role === "superadmin" && (
+                <div>
+                  {row.original.status !== "pending_cancel" ? (
+                    <SetAtom atom={approvedTransactionAdminSelectedId}>
+                      {(setApprovedId) => (
+                        <SetAtom atom={approvedTransactionAdminDialog}>
+                          {(setOpen) => (
+                            <TooltipText
+                              value={"Batalkan Transaksi"}
+                              render={
+                                <Button
+                                  disabled={row.original.status !== "done"}
+                                  size={"icon-sm"}
+                                  variant={"destructive"}
+                                  onClick={() => {
+                                    setOpen("cancel");
+                                    setApprovedId(row.original.id.toString());
+                                  }}
+                                >
+                                  <TicketX className="size-3.5" />
+                                </Button>
+                              }
+                            />
+                          )}
+                        </SetAtom>
+                      )}
+                    </SetAtom>
+                  ) : (
+                    <SetAtom atom={approvedTransactionAdminSelectedId}>
+                      {(setApprovedId) => (
+                        <SetAtom atom={approvedTransactionAdminDialog}>
+                          {(setOpen) => (
+                            <TooltipText
+                              value={"Konfirmasi Pembatalan"}
+                              render={
+                                <Button
+                                  disabled={
+                                    row.original.status !== "pending_cancel"
+                                  }
+                                  size={"icon-sm"}
+                                  variant={"destructive"}
+                                  className={
+                                    "bg-orange-100 text-orange-600 hover:bg-orange-200"
+                                  }
+                                  onClick={() => {
+                                    setOpen("confirm");
+                                    setApprovedId(row.original.id.toString());
+                                  }}
+                                >
+                                  <Scale className="size-3.5" />
+                                </Button>
+                              }
+                            />
+                          )}
+                        </SetAtom>
                       )}
                     </SetAtom>
                   )}
-                </SetAtom>
-              ) : (
-                <SetAtom atom={approvedTransactionAdminSelectedId}>
-                  {(setApprovedId) => (
-                    <SetAtom atom={approvedTransactionAdminDialog}>
-                      {(setOpen) => (
-                        <TooltipText
-                          value={"Konfirmasi Pembatalan"}
-                          render={
-                            <Button
-                              disabled={
-                                row.original.status !== "pending_cancel"
-                              }
-                              size={"icon-sm"}
-                              variant={"destructive"}
-                              className={
-                                "bg-orange-100 text-orange-600 hover:bg-orange-200"
-                              }
-                              onClick={() => {
-                                setOpen("confirm");
-                                setApprovedId(row.original.id.toString());
-                              }}
-                            >
-                              <Scale className="size-3.5" />
-                            </Button>
-                          }
-                        />
-                      )}
-                    </SetAtom>
-                  )}
-                </SetAtom>
+                </div>
               )}
             </div>
           )}

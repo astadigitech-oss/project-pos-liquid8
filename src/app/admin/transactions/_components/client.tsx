@@ -7,7 +7,14 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { CircleDashed, RefreshCw, Search, X, XCircle } from "lucide-react";
+import {
+  CircleDashed,
+  RefreshCw,
+  Search,
+  Store,
+  X,
+  XCircle,
+} from "lucide-react";
 import React from "react";
 import { column } from "./columns";
 import { Pagination } from "@/components/pagination";
@@ -112,6 +119,7 @@ export const TransactionAdminClient = () => {
                             }
                             className="text-xs h-8"
                           >
+                            <Store className="size-3.5" />
                             {item.store_name}
                           </CommandItem>
                         ))}
@@ -159,7 +167,7 @@ export const TransactionAdminClient = () => {
                   <Command className="p-0">
                     <CommandInput
                       className="placeholder:text-xs text-xs [&_svg]:size-3.5! h-7"
-                      placeholder="Cari toko..."
+                      placeholder="Cari status..."
                     />
                     <CommandList>
                       <CommandEmpty className="text-xs">
