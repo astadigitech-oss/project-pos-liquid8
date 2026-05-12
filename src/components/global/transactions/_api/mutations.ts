@@ -1,6 +1,6 @@
 import { atomWithMutation } from "jotai-tanstack-query";
-import { transactionCancel } from "./data";
 import { toast } from "sonner";
+import { transactionCancel } from "./data";
 
 export const deleteTransactionAtom = atomWithMutation(() => ({
   mutationFn: ({ id, note }: { id: string; note: string }) =>

@@ -1,17 +1,19 @@
+import React from "react";
+import { MigrationsClient } from "./_components/client";
 import { session } from "@/lib/session";
 import { redirect } from "next/navigation";
-import React from "react";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Migrasi",
 };
 
-const MigrationPage = async () => {
+const MigrationAdminPage = async () => {
   const auth = await session();
   if (!auth.status) redirect("/login");
   if (auth.status && auth.role === "kasir") redirect("/");
-  return <div>Migration Page</div>;
+
+  return <MigrationsClient />;
 };
 
-export default MigrationPage;
+export default MigrationAdminPage;

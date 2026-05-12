@@ -14,17 +14,28 @@ import { ReceiptText } from "lucide-react";
 
 export const column = (): ColumnDef<{
   id: number;
-  cashier_open: string;
-  cashier_closed: string;
+  store_id: number;
+  open_by: number;
+  closed_by: number;
   start_time: string;
   end_time: string;
   status: string;
   initial_cash: number;
-  expected_cash: number;
+  total_cash: number;
+  total_transfer: number;
+  total_qris: number;
+  total_tax: number;
+  subtotal: number;
+  expected_amount: number;
   actual_cash: number;
   difference: number;
-  store_name: string;
+  note: string;
   created_at: string;
+  updated_at: string;
+  user_open: string;
+  user_close: string;
+  store_name: string;
+  expected_cash: number;
 }>[] => [
   {
     header: () => <div className="text-center">No</div>,
@@ -44,7 +55,7 @@ export const column = (): ColumnDef<{
           locale: id,
           in: tz("Asia/Jakarta"),
         })}{" "}
-        - {row.original.cashier_open}
+        - {row.original.user_open}
       </p>
     ),
   },
@@ -61,7 +72,7 @@ export const column = (): ColumnDef<{
             locale: id,
             in: tz("Asia/Jakarta"),
           })}{" "}
-          - {row.original.cashier_open}
+          - {row.original.user_close}
         </p>
       );
     },
@@ -120,7 +131,7 @@ export const column = (): ColumnDef<{
           <span
             className={cn(
               "size-2 rounded-full",
-              row.original.status === "open" ? "bg-green-500" : "bg-red-500",
+              row.original.status === "open" ? "bg-yellow-500" : "bg-green-500",
             )}
           />
           {row.original.status === "open" ? "Berjalan" : "Selesai"}

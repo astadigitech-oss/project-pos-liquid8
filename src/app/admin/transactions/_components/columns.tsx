@@ -1,4 +1,5 @@
 import {
+  cancelTransactionDialog,
   detailTransactionDialog,
   selectedTransactionId,
 } from "@/components/global/transactions/_api/atom";
@@ -104,9 +105,9 @@ export const column = ({
       return (
         <AtomValue atom={userInfoAtom}>
           {({ data: user }) => (
-            <div className="flex items-center gap-1">
-              <SetAtom atom={selectedTransactionId}>
-                {(setTransactionId) => (
+            <SetAtom atom={selectedTransactionId}>
+              {(setTransactionId) => (
+                <div className="flex items-center gap-1">
                   <SetAtom atom={detailTransactionDialog}>
                     {(setOpen) => (
                       <TooltipText
@@ -129,14 +130,10 @@ export const column = ({
                       />
                     )}
                   </SetAtom>
-                )}
-              </SetAtom>
-              {user?.resource.role === "superadmin" && (
-                <div>
-                  {row.original.status !== "pending_cancel" ? (
-                    <SetAtom atom={approvedTransactionAdminSelectedId}>
-                      {(setApprovedId) => (
-                        <SetAtom atom={approvedTransactionAdminDialog}>
+                  {user?.resource.role === "superadmin" && (
+                    <div>
+                      {row.original.status !== "pending_cancel" ? (
+                        <SetAtom atom={cancelTransactionDialog}>
                           {(setOpen) => (
                             <TooltipText
                               value={"Batalkan Transaksi"}
@@ -146,8 +143,10 @@ export const column = ({
                                   size={"icon-sm"}
                                   variant={"destructive"}
                                   onClick={() => {
-                                    setOpen("cancel");
-                                    setApprovedId(row.original.id.toString());
+                                    setOpen(true);
+                                    setTransactionId(
+                                      row.original.id.toString(),
+                                    );
                                   }}
                                 >
                                   <TicketX className="size-3.5" />
@@ -156,42 +155,44 @@ export const column = ({
                             />
                           )}
                         </SetAtom>
-                      )}
-                    </SetAtom>
-                  ) : (
-                    <SetAtom atom={approvedTransactionAdminSelectedId}>
-                      {(setApprovedId) => (
-                        <SetAtom atom={approvedTransactionAdminDialog}>
-                          {(setOpen) => (
-                            <TooltipText
-                              value={"Konfirmasi Pembatalan"}
-                              render={
-                                <Button
-                                  disabled={
-                                    row.original.status !== "pending_cancel"
+                      ) : (
+                        <SetAtom atom={approvedTransactionAdminSelectedId}>
+                          {(setApprovedId) => (
+                            <SetAtom atom={approvedTransactionAdminDialog}>
+                              {(setOpen) => (
+                                <TooltipText
+                                  value={"Konfirmasi Pembatalan"}
+                                  render={
+                                    <Button
+                                      disabled={
+                                        row.original.status !== "pending_cancel"
+                                      }
+                                      size={"icon-sm"}
+                                      variant={"destructive"}
+                                      className={
+                                        "bg-orange-100 text-orange-600 hover:bg-orange-200"
+                                      }
+                                      onClick={() => {
+                                        setOpen("cancel");
+                                        setApprovedId(
+                                          row.original.id.toString(),
+                                        );
+                                      }}
+                                    >
+                                      <Scale className="size-3.5" />
+                                    </Button>
                                   }
-                                  size={"icon-sm"}
-                                  variant={"destructive"}
-                                  className={
-                                    "bg-orange-100 text-orange-600 hover:bg-orange-200"
-                                  }
-                                  onClick={() => {
-                                    setOpen("confirm");
-                                    setApprovedId(row.original.id.toString());
-                                  }}
-                                >
-                                  <Scale className="size-3.5" />
-                                </Button>
-                              }
-                            />
+                                />
+                              )}
+                            </SetAtom>
                           )}
                         </SetAtom>
                       )}
-                    </SetAtom>
+                    </div>
                   )}
                 </div>
               )}
-            </div>
+            </SetAtom>
           )}
         </AtomValue>
       );

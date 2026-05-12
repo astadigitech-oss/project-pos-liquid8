@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Pagination } from "@/components/pagination";
 import { DetailTransaction } from "@/components/global/transactions/detail";
-import { DialogCancelTransaction } from "@/app/(cashier)/transactions/_dialog/cancel";
+import { DialogCancelTransaction } from "@/components/global/transactions/cancel";
 
 export const TransactionClient = () => {
   const { formattedDate, formattedTime } = useTime();

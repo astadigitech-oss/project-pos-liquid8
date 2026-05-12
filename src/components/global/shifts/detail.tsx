@@ -17,19 +17,19 @@ import {
   XIcon,
 } from "lucide-react";
 import { Atom, AtomValue } from "@suspensive/jotai";
-import { detailShiftDialog } from "../../_api/atom";
-import { detailShiftAtom } from "../../_api/queries";
 import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import { tz } from "@date-fns/tz";
 import { cn, formatRupiah } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
 import { DataTable } from "@/components/data-table";
-import { columnDetail } from "../columns-detail";
 import { toast } from "sonner";
 import { printAction, printCheck } from "@/lib/print-action";
 import { userInfoAtom } from "@/app/(cashier)/settings/_api/queries";
 import { shiftReceipt } from "@/lib/receipt-template";
+import { detailShiftDialog } from "./_api/atom";
+import { detailShiftAtom } from "./_api/queries";
+import { column } from "./columns";
 
 export const ShiftDetailDialog = () => {
   return (
@@ -357,7 +357,7 @@ export const ShiftDetailDialog = () => {
                             </p>
                             <DataTable
                               isLoading={isRefetching}
-                              columns={columnDetail}
+                              columns={column}
                               data={data?.resource.items ?? []}
                             />
                           </div>
