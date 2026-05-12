@@ -10,7 +10,7 @@ interface ColumnItem {
   created_at: string;
 }
 
-export const columnDetail: ColumnDef<ColumnItem>[] = [
+export const column: ColumnDef<ColumnItem>[] = [
   {
     header: () => <div className="text-center">No</div>,
     id: "id",

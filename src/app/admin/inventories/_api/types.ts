@@ -1,17 +1,15 @@
-export type ShiftListResponse = {
+export type InventoryListResponse = {
   message: string;
   resource: {
     data: Array<{
       id: number;
-      cashier_open: string;
-      cashier_closed: string;
-      start_time: string;
-      end_time: string;
+      store_id: number;
+      barcode: string;
+      name: string;
+      price: number;
+      tag_color: string;
+      quantity: number;
       status: string;
-      initial_cash: number;
-      expected_cash: number;
-      actual_cash: number;
-      difference: number;
       store_name: string;
       created_at: string;
     }>;

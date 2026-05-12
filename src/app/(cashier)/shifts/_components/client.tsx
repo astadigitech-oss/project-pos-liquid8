@@ -18,7 +18,6 @@ import { column } from "./columns";
 import { useTime } from "@/hooks/use-time";
 import { Atom, AtomValue } from "@suspensive/jotai";
 import { listShiftAtom } from "../_api/queries";
-import { ShiftDetailDialog } from "./_dialog/detail";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipText } from "@/providers/tooltip-provider";
 import { useAtom } from "jotai";
@@ -40,6 +39,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { Pagination } from "@/components/pagination";
+import { ShiftDetailDialog } from "@/components/global/shifts/detail";
 
 export const ShiftsClient = () => {
   const { formattedDate, formattedTime } = useTime();

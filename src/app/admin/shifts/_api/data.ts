@@ -1,17 +1,15 @@
 import { apiUrl, secretStore } from "@/config";
 import { getCookie } from "cookies-next/client";
 import { ShiftListResponse } from "./types";
-import { format } from "date-fns";
 
 export const shiftListQuery = async (
   q: string,
   page: number,
-  start_date?: string,
-  end_date?: string,
+  storeId: string,
 ): Promise<ShiftListResponse> => {
   const token = getCookie(secretStore);
   const response = await fetch(
-    `${apiUrl}/api/shifts?page=${page}&q=${q}&start_date=${start_date ? format(start_date, "yyyy-MM-dd") : ""}&end_date=${end_date ? format(end_date, "yyyy-MM-dd") : ""}`,
+    `${apiUrl}/api/shifts/all?page=${page}&q=${q}&store_id=${storeId}`,
     {
       method: "GET",
       headers: {
