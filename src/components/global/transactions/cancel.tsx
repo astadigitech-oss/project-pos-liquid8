@@ -13,11 +13,10 @@ import { Send, XIcon } from "lucide-react";
 import React from "react";
 import { invalidate } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
-import { selectedTransactionId } from "../../../../components/global/transactions/_api/atom";
-import { deleteTransactionAtom } from "../_api/mutations";
+import { cancelTransactionDialog, selectedTransactionId } from "./_api/atom";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Textarea } from "@/components/ui/textarea";
-import { cancelTransactionDialog } from "../_api/atom";
+import { deleteTransactionAtom } from "./_api/mutations";
 
 export const DialogCancelTransaction = () => {
   const queryClient = useQueryClient();

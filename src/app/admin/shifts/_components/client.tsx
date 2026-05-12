@@ -1,8 +1,7 @@
 "use client";
 
 import { DataTable } from "@/components/data-table";
-import { DialogCancelTransaction } from "@/components/global/transactions/cancel";
-import { DetailTransaction } from "@/components/global/transactions/detail";
+import { ShiftDetailDialog } from "@/components/global/shifts/detail";
 import { Pagination } from "@/components/pagination";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,31 +39,26 @@ import {
 import React from "react";
 import { listStoreSelectAtom } from "../../stores/_api/queries";
 import {
-  transactionListAdminPage,
-  transactionListAdminSearch,
-  transactionListAdminStatus,
-  transactionListAdminStoreId,
+  shiftAdminPage,
+  shiftAdminSearch,
+  shiftAdminStoreId,
 } from "../_api/atom";
-import { transactionListAdminAtom } from "../_api/queries";
-import { AlertDialog } from "./_dialog/alert";
+import { listShiftAtom } from "../_api/queries";
 import { column } from "./columns";
 
-export const TransactionAdminClient = () => {
+export const ShiftsClient = () => {
   const { data: storeSelect, isLoading: isStoreSelectLoading } =
     useAtomValue(listStoreSelectAtom);
-  const [storeId, setStoreId] = useAtom(transactionListAdminStoreId);
-  const [status, setStatus] = useAtom(transactionListAdminStatus);
+  const [storeId, setStoreId] = useAtom(shiftAdminStoreId);
   return (
-    <AtomValue atom={transactionListAdminAtom}>
-      {({ data, isSuccess, isError, isRefetching, refetch }) => (
-        <div className="bg-white border shadow rounded-xl p-4 flex flex-col gap-4">
-          <AlertDialog />
-          <DialogCancelTransaction />
-          <DetailTransaction />
+    <AtomValue atom={listShiftAtom}>
+      {({ data, isSuccess, isPending, isRefetching, isError, refetch }) => (
+        <div className="bg-white p-5 flex flex-col gap-4 rounded-xl shadow">
+          <ShiftDetailDialog />
           <h1 className="font-semibold relative pl-3 before:content-[''] before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-red-400 before:rounded-full">
-            Transactions
+            Shift
           </h1>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between w-full gap-4">
             <div className="flex items-center gap-2">
               <Popover>
                 <PopoverTrigger
@@ -137,92 +131,7 @@ export const TransactionAdminClient = () => {
                   </Command>
                 </PopoverContent>
               </Popover>
-              <Popover>
-                <PopoverTrigger
-                  render={
-                    <Button
-                      variant={"outlineDestructive"}
-                      className={cn(
-                        "aria-expanded:bg-red-50 aria-expanded:text-red-600 border-dashed overflow-hidden hover:bg-red-50",
-                        status ? "pr-0" : "pr-2.5",
-                      )}
-                      size={"sm"}
-                    >
-                      <CircleDashed className="size-3.5" />
-                      <span className="text-xs">Status</span>
-                      {status && (
-                        <div className="h-7 flex items-center px-2 text-xs bg-red-50 border-dashed border-l border-red-400 ml-1">
-                          {status === "done" && "Selesai"}
-                          {status === "pending_cancel" && "Membatalkan"}
-                          {status === "cancelled" && "Dibatalkan"}
-                        </div>
-                      )}
-                    </Button>
-                  }
-                />
-                <PopoverContent
-                  className={"p-0 w-auto overflow-hidden relative"}
-                  align="start"
-                >
-                  <Command className="p-0">
-                    <CommandInput
-                      className="placeholder:text-xs text-xs [&_svg]:size-3.5! h-7"
-                      placeholder="Cari status..."
-                    />
-                    <CommandList>
-                      <CommandEmpty className="text-xs">
-                        No results found.
-                      </CommandEmpty>
-                      <CommandGroup className="pb-10">
-                        <CommandItem
-                          data-checked={status === "done"}
-                          onSelect={() =>
-                            setStatus(status === "done" ? "" : "done")
-                          }
-                          className="text-xs h-8"
-                        >
-                          <div className="size-2 rounded-full bg-green-500" />
-                          Selesai
-                        </CommandItem>
-                        <CommandItem
-                          data-checked={status === "pending_cancel"}
-                          onSelect={() =>
-                            setStatus(
-                              status === "pending_cancel"
-                                ? ""
-                                : "pending_cancel",
-                            )
-                          }
-                          className="text-xs h-8"
-                        >
-                          <div className="size-2 rounded-full bg-yellow-500" />
-                          Membatalkan
-                        </CommandItem>
-                        <CommandItem
-                          data-checked={status === "cancelled"}
-                          onSelect={() =>
-                            setStatus(status === "cancelled" ? "" : "cancelled")
-                          }
-                          className="text-xs h-8"
-                        >
-                          <div className="size-2 rounded-full bg-red-500" />
-                          Dibatalkan
-                        </CommandItem>
-                      </CommandGroup>
-                      <CommandGroup className="absolute bottom-0 bg-white w-full border-t">
-                        <CommandItem
-                          className="text-xs h-8"
-                          onSelect={() => setStatus("")}
-                        >
-                          <X className="size-3.5" />
-                          Reset
-                        </CommandItem>
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-              {(!!storeId || !!status) && (
+              {!!storeId && (
                 <Button
                   variant={"outlineDestructive"}
                   className={
@@ -231,7 +140,6 @@ export const TransactionAdminClient = () => {
                   size={"sm"}
                   onClick={() => {
                     setStoreId("");
-                    setStatus("");
                   }}
                 >
                   <X className="size-3.5" />
@@ -240,37 +148,28 @@ export const TransactionAdminClient = () => {
               )}
             </div>
             <div className="flex items-center gap-2">
-              <TransactionAdminSearchInput
+              <ShiftSearchInput
+                disabled={isPending || isRefetching}
                 isSuccess={isSuccess}
                 isError={isError}
-                disabled={isRefetching}
               />
-              <TooltipText
-                render={
-                  <Button
-                    onClick={() => refetch()}
-                    size={"icon"}
-                    variant={"outline"}
-                    className={"border-gray-300"}
-                  >
-                    <RefreshCw
-                      className={cn("size-3.5", isRefetching && "animate-spin")}
-                    />
-                  </Button>
-                }
-                value="Muat Ulang"
-              />
+              <Button
+                variant={"diskonter"}
+                size={"icon"}
+                onClick={() => refetch()}
+              >
+                <RefreshCw
+                  className={cn("size-3.5", isRefetching && "animate-spin")}
+                />
+              </Button>
             </div>
           </div>
           <div className="flex flex-col gap-4">
-            <DataTable
-              data={data?.resource.data ?? []}
-              columns={column({ from: data?.resource.pagination.from ?? 0 })}
-            />
+            <DataTable columns={column()} data={data?.resource.data ?? []} />
             <Pagination
-              atomPage={transactionListAdminPage}
-              isPending={false}
+              atomPage={shiftAdminPage}
               pagination={data?.resource.pagination}
+              isPending={isPending || isRefetching}
             />
           </div>
         </div>
@@ -279,7 +178,7 @@ export const TransactionAdminClient = () => {
   );
 };
 
-const TransactionAdminSearchInput = ({
+const ShiftSearchInput = ({
   disabled,
   isSuccess,
   isError,
@@ -288,7 +187,7 @@ const TransactionAdminSearchInput = ({
   isSuccess: boolean;
   isError: boolean;
 }) => {
-  const [search, setSearch] = useAtom(transactionListAdminSearch);
+  const [search, setSearch] = useAtom(shiftAdminSearch);
   const [localValue, setLocalValue] = React.useState(search);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
@@ -310,7 +209,7 @@ const TransactionAdminSearchInput = ({
   return (
     <InputGroup className="has-disabled:opacity-100 has-disabled:bg-transparent w-64">
       <InputGroupInput
-        placeholder="Cari transaksi..."
+        placeholder="Cari shift..."
         ref={inputRef}
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}

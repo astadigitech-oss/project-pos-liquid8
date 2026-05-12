@@ -1,19 +1,19 @@
 import React from "react";
-import { ShiftsClient } from "./_components/client";
+import { InventoriesClient } from "./_components/client";
 import { session } from "@/lib/session";
 import { redirect } from "next/navigation";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Shift",
+  title: "Inventori",
 };
 
-const ShiftAdminPage = async () => {
+const InventorieAdminPage = async () => {
   const auth = await session();
   if (!auth.status) redirect("/login");
   if (auth.status && auth.role === "kasir") redirect("/");
 
-  return <ShiftsClient />;
+  return <InventoriesClient />;
 };
 
-export default ShiftAdminPage;
+export default InventorieAdminPage;

@@ -1,14 +1,15 @@
 import { apiUrl, secretStore } from "@/config";
 import { getCookie } from "cookies-next/client";
-import { transactionListResponse } from "./types";
+import { MigrationListResponse } from "./types";
 
-export const transactionListQuery = async (
+export const migrationListQuery = async (
   q: string,
   page: number,
-): Promise<transactionListResponse> => {
+  storeId: string,
+): Promise<MigrationListResponse> => {
   const token = getCookie(secretStore);
   const response = await fetch(
-    `${apiUrl}/api/transactions?page=${page}&q=${q}`,
+    `${apiUrl}/api/migrate-history?page=${page}&q=${q}&store_id=${storeId}`,
     {
       method: "GET",
       headers: {
@@ -18,7 +19,7 @@ export const transactionListQuery = async (
     },
   );
 
-  const res = (await response.json()) as transactionListResponse;
+  const res = (await response.json()) as MigrationListResponse;
 
   if (!response.ok) throw new Error(res.message);
 

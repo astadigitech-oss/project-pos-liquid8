@@ -1,18 +1,15 @@
-export type ShiftListResponse = {
+export type MigrationListResponse = {
+  status: boolean;
   message: string;
   resource: {
     data: Array<{
       id: number;
-      cashier_open: string;
-      cashier_closed: string;
-      start_time: string;
-      end_time: string;
-      status: string;
-      initial_cash: number;
-      expected_cash: number;
-      actual_cash: number;
-      difference: number;
+      store_id: number;
       store_name: string;
+      code: string;
+      user: string;
+      total_product: number;
+      total_price: number;
       created_at: string;
     }>;
     pagination: {
@@ -24,5 +21,4 @@ export type ShiftListResponse = {
       total: number;
     };
   };
-  status: boolean;
 };
