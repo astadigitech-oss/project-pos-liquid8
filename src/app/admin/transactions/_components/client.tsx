@@ -22,6 +22,8 @@ import {
 import {
   Popover,
   PopoverContent,
+  PopoverHeader,
+  PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Spinner } from "@/components/ui/spinner";
@@ -30,7 +32,10 @@ import { TooltipText } from "@/providers/tooltip-provider";
 import { AtomValue } from "@suspensive/jotai";
 import { useAtom, useAtomValue } from "jotai";
 import {
+  ChevronDown,
   CircleDashed,
+  CloudDownload,
+  Download,
   RefreshCw,
   Search,
   Store,
@@ -48,8 +53,13 @@ import {
 import { transactionListAdminAtom } from "../_api/queries";
 import { AlertDialog } from "./_dialog/alert";
 import { column } from "./columns";
+import { Field, FieldLabel } from "@/components/ui/field";
+import { exportTransactionAdminAtom } from "../_api/mutation";
 
 export const TransactionAdminClient = () => {
+  const [exportId, setExportId] = React.useState("");
+  const [exportStore, setExportStore] = React.useState(false);
+  const [exportDialog, setExportDialog] = React.useState(false);
   const { data: storeSelect, isLoading: isStoreSelectLoading } =
     useAtomValue(listStoreSelectAtom);
   const [storeId, setStoreId] = useAtom(transactionListAdminStoreId);
@@ -260,6 +270,162 @@ export const TransactionAdminClient = () => {
                 }
                 value="Muat Ulang"
               />
+              <Popover
+                open={exportDialog}
+                onOpenChange={(e) => {
+                  setExportDialog(e);
+                  if (!e) setExportId("");
+                }}
+              >
+                <TooltipText
+                  value="Export Transaksi"
+                  render={
+                    <PopoverTrigger
+                      render={
+                        <Button
+                          size={"icon"}
+                          variant={"outlineDestructive"}
+                          className={
+                            "aria-expanded:bg-red-100 aria-expanded:text-red-600"
+                          }
+                        >
+                          <CloudDownload
+                            className={cn(
+                              "size-3.5",
+                              isRefetching && "animate-spin",
+                            )}
+                          />
+                        </Button>
+                      }
+                    />
+                  }
+                />
+                <PopoverContent align="end" className={"min-w-60 w-fit"}>
+                  <PopoverHeader>
+                    <PopoverTitle>Export Data Transaksi</PopoverTitle>
+                  </PopoverHeader>
+                  <div className="flex flex-col gap-4">
+                    <Field className="gap-1">
+                      <FieldLabel>Target Toko</FieldLabel>
+                      <Popover
+                        modal={false}
+                        open={exportStore}
+                        onOpenChange={setExportStore}
+                      >
+                        <PopoverTrigger
+                          render={
+                            <Button
+                              variant={"outline"}
+                              className={"text-xs justify-between"}
+                            >
+                              <div className="flex items-center gap-2">
+                                <Store className="size-3.5" />
+                                {storeSelect?.find(
+                                  (i) => i.id.toString() === exportId,
+                                )
+                                  ? storeSelect?.find(
+                                      (i) => i.id.toString() === exportId,
+                                    )?.store_name
+                                  : "Semua Toko"}
+                              </div>
+                              <ChevronDown className="size-3.5" />
+                            </Button>
+                          }
+                        />
+                        <PopoverContent
+                          className={"p-0 w-fit relative overflow-hidden"}
+                        >
+                          <Command className="p-0">
+                            <CommandInput
+                              className="text-xs placeholder:text-xs"
+                              placeholder="Cari toko..."
+                            />
+                            <CommandList>
+                              <CommandEmpty>No found</CommandEmpty>
+                              <CommandGroup className="pb-10">
+                                {storeSelect?.map((item) => (
+                                  <CommandItem
+                                    className="text-xs h-8"
+                                    data-checked={
+                                      exportId === item.id.toString()
+                                    }
+                                    key={item.id}
+                                    onSelect={() => {
+                                      setExportId((prev) =>
+                                        prev === item.id.toString()
+                                          ? ""
+                                          : item.id.toString(),
+                                      );
+                                      setExportStore(false);
+                                    }}
+                                  >
+                                    <Store className="size-3.5" />
+                                    {item.store_name}
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                              <CommandGroup className="absolute bottom-0 bg-white w-full border-t">
+                                <CommandItem
+                                  data-checked={!exportId}
+                                  className="text-xs h-8"
+                                  onSelect={() => {
+                                    setExportId("");
+                                    setExportStore(false);
+                                  }}
+                                >
+                                  <Store className="size-3.5" />
+                                  Semua Toko
+                                </CommandItem>
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                    </Field>
+                    <AtomValue atom={exportTransactionAdminAtom}>
+                      {({ mutate, isPending }) => (
+                        <Button
+                          onClick={() =>
+                            mutate(
+                              { id: exportId },
+                              {
+                                onSuccess: (data) => {
+                                  if (data?.success && data?.url) {
+                                    // 1. Buat elemen link samaran
+                                    const link = document.createElement("a");
+                                    link.href = data.url;
+
+                                    // 2. Opsional: Berikan nama file saat diunduh
+                                    link.setAttribute(
+                                      "download",
+                                      "transactions.xlsx",
+                                    );
+
+                                    // 3. Masukkan ke dokumen, klik, lalu hapus kembali
+                                    document.body.appendChild(link);
+                                    link.click();
+                                    document.body.removeChild(link);
+                                  }
+                                  setExportDialog(false);
+                                  setExportId("");
+                                },
+                              },
+                            )
+                          }
+                          className={"text-xs"}
+                        >
+                          {isPending ? (
+                            <Spinner className="size-3.5" />
+                          ) : (
+                            <Download className="size-3.5" />
+                          )}
+                          {isPending ? "Exporting..." : "Export"}
+                        </Button>
+                      )}
+                    </AtomValue>
+                  </div>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
           <div className="flex flex-col gap-4">

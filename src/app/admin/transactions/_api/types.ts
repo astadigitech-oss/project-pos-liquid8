@@ -27,3 +27,9 @@ export type TransactionListAdminResponse = {
   };
   success: boolean;
 };
+
+export type ExportTransactionAdminResponse = {
+  message: string;
+  success: boolean;
+  url: string;
+};
