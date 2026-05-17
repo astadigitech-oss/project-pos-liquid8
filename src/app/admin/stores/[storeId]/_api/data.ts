@@ -1,6 +1,10 @@
 import { apiUrl, secretStore } from "@/config";
 import { getCookie } from "cookies-next/client";
-import { StoreChartResponse, StoreDetailResponse } from "./types";
+import {
+  ExportDetailStoreResponse,
+  StoreChartResponse,
+  StoreDetailResponse,
+} from "./types";
 
 export const storeDetailQuery = async (
   id: string,
@@ -44,6 +48,25 @@ export const storeChartQuery = async (
   const res = (await response.json()) as StoreChartResponse;
 
   if (!response.ok) throw new Error("Select Store Error");
+
+  return res;
+};
+
+export const exportDetailStoreMutation = async (
+  id: string,
+): Promise<ExportDetailStoreResponse> => {
+  const token = getCookie(secretStore);
+  const response = await fetch(`${apiUrl}/api/stores/${id}/export`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const res = (await response.json()) as ExportDetailStoreResponse;
+
+  if (!response.ok) throw new Error(res.message);
 
   return res;
 };

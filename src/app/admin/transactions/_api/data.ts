@@ -1,6 +1,9 @@
 import { apiUrl, secretStore } from "@/config";
 import { getCookie } from "cookies-next/client";
-import { TransactionListAdminResponse } from "./types";
+import {
+  ExportTransactionAdminResponse,
+  TransactionListAdminResponse,
+} from "./types";
 
 export const transactionListAdminQuery = async (
   page: number,
@@ -45,6 +48,28 @@ export const approvedTransactionAdminMutation = async (
   );
 
   const res = (await response.json()) as TransactionListAdminResponse;
+
+  if (!response.ok) throw new Error(res.message);
+
+  return res;
+};
+
+export const exportTransactionAdminMutation = async (
+  id: string,
+): Promise<ExportTransactionAdminResponse> => {
+  const token = getCookie(secretStore);
+  const response = await fetch(
+    `${apiUrl}/api/transactions/export?store_id=${id}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+
+  const res = (await response.json()) as ExportTransactionAdminResponse;
 
   if (!response.ok) throw new Error(res.message);
 
