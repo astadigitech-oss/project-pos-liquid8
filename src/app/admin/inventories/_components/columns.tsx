@@ -1,4 +1,5 @@
 import { formatRupiah } from "@/lib/utils";
+import { TooltipText } from "@/providers/tooltip-provider";
 import { ColumnDef } from "@tanstack/react-table";
 import Link from "next/link";
 
@@ -34,6 +35,17 @@ export const column = ({
   {
     accessorKey: "name",
     header: "Nama Produk",
+    cell: ({ row }) => (
+      <TooltipText
+        value={row.original.name}
+        delay={500}
+        render={
+          <p className="max-w-60 lg:max-w-100 xl:max-w-160 truncate">
+            {row.original.name}
+          </p>
+        }
+      />
+    ),
   },
   {
     accessorKey: "price",

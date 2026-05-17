@@ -49,3 +49,9 @@ export type StoreChartResponse = {
     }>;
   };
 };
+
+export type ExportDetailStoreResponse = {
+  message: string;
+  success: boolean;
+  url: string;
+};

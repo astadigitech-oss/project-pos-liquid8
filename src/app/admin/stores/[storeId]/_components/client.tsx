@@ -13,6 +13,7 @@ import { storeChartAtom, storeDetailAtom } from "../_api/queries";
 import {
   ArrowLeft,
   ChevronDown,
+  CloudDownload,
   DollarSign,
   MapPinned,
   Phone,
@@ -36,7 +37,7 @@ import {
 } from "@/components/ui/chart";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import { format, isSameMonth, isSameYear } from "date-fns";
-import { Atom } from "@suspensive/jotai";
+import { Atom, AtomValue } from "@suspensive/jotai";
 import {
   Popover,
   PopoverContent,
@@ -60,6 +61,7 @@ import {
 import { RefreshCw, Search, XCircle } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import { TooltipText } from "@/providers/tooltip-provider";
+import { exportDetailTransactionAtom } from "../_api/mutations";
 
 const chartConfig = {
   total_sales: {
@@ -136,21 +138,66 @@ export const StoreIdClient = () => {
                 {data?.resource.store.store_name}
               </h1>
             </div>
-            <TooltipText
-              render={
-                <Button
-                  onClick={() => refetch()}
-                  size={"icon"}
-                  variant={"outline"}
-                  className={"border-gray-300"}
-                >
-                  <RefreshCw
-                    className={cn("size-3.5", isRefetching && "animate-spin")}
+            <div className="flex items-center gap-2">
+              <TooltipText
+                render={
+                  <Button
+                    onClick={() => refetch()}
+                    size={"icon"}
+                    variant={"outline"}
+                    className={"border-gray-300"}
+                  >
+                    <RefreshCw
+                      className={cn("size-3.5", isRefetching && "animate-spin")}
+                    />
+                  </Button>
+                }
+                value="Muat Ulang"
+              />
+              <AtomValue atom={exportDetailTransactionAtom}>
+                {({ mutate, isPending }) => (
+                  <TooltipText
+                    value={isPending ? "Exporting..." : "Export Data"}
+                    render={
+                      <Button
+                        onClick={() =>
+                          mutate(
+                            { id: params.storeId as string },
+                            {
+                              onSuccess: (data) => {
+                                if (data?.success && data?.url) {
+                                  // 1. Buat elemen link samaran
+                                  const link = document.createElement("a");
+                                  link.href = data.url;
+
+                                  // 2. Opsional: Berikan nama file saat diunduh
+                                  link.setAttribute("download", "store.xlsx");
+
+                                  // 3. Masukkan ke dokumen, klik, lalu hapus kembali
+                                  document.body.appendChild(link);
+                                  link.click();
+                                  document.body.removeChild(link);
+                                }
+                              },
+                            },
+                          )
+                        }
+                        disabled={isPending}
+                        className={"text-xs"}
+                        size={"icon"}
+                        variant={"outlineDestructive"}
+                      >
+                        {isPending ? (
+                          <Spinner className="size-3.5" />
+                        ) : (
+                          <CloudDownload className="size-3.5" />
+                        )}
+                      </Button>
+                    }
                   />
-                </Button>
-              }
-              value="Muat Ulang"
-            />
+                )}
+              </AtomValue>
+            </div>
           </div>
           <Separator className={"bg-gray-400"} />
           <div className="flex items-center justify-between gap-4 px-3">
