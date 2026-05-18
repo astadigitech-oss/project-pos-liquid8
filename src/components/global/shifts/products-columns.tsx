@@ -1,16 +1,13 @@
 import { formatRupiah } from "@/lib/utils";
 import { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
 
 interface ColumnItem {
   id: number;
-  invoice: string;
   product_name: string;
-  subtotal: number;
-  created_at: string;
+  price: number;
 }
 
-export const column: ColumnDef<ColumnItem>[] = [
+export const columnProducts: ColumnDef<ColumnItem>[] = [
   {
     header: () => <div className="text-center">No</div>,
     id: "id",
@@ -21,26 +18,17 @@ export const column: ColumnDef<ColumnItem>[] = [
     ),
   },
   {
-    accessorKey: "invoice",
-    header: "Invoice",
-  },
-  {
-    accessorKey: "created_at",
-    header: "Tanggal",
-    cell: ({ row }) => format(row.original.created_at, "dd/MM/yyyy HH:mm"),
-  },
-  {
     accessorKey: "product_name",
     header: "Nama Product",
     cell: ({ row }) => (
-      <p className="lg:max-w-100 xl:max-w-120 max-w-50  truncate">
+      <p className="lg:max-w-150 xl:max-w-175 max-w-90 truncate">
         {row.original.product_name ? row.original.product_name : "-"}
       </p>
     ),
   },
   {
-    accessorKey: "subtotal",
+    accessorKey: "price",
     header: "Harga",
-    cell: ({ row }) => formatRupiah(row.original.subtotal),
+    cell: ({ row }) => formatRupiah(row.original.price),
   },
 ];
