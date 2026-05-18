@@ -29,7 +29,14 @@ import { userInfoAtom } from "@/app/(cashier)/settings/_api/queries";
 import { shiftReceipt } from "@/lib/receipt-template";
 import { detailShiftDialog } from "./_api/atom";
 import { detailShiftAtom } from "./_api/queries";
-import { column } from "./columns";
+import { columnItems } from "./items-columns";
+import { columnProducts } from "./products-columns";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export const ShiftDetailDialog = () => {
   return (
@@ -351,16 +358,40 @@ export const ShiftDetailDialog = () => {
                               </div>
                             </div>
                           </div>
-                          <div className="flex flex-col gap-2">
-                            <p className="font-semibold">
-                              - List Product Terjual
-                            </p>
-                            <DataTable
-                              isLoading={isRefetching}
-                              columns={column}
-                              data={data?.resource.items ?? []}
-                            />
-                          </div>
+                          <Accordion
+                            defaultValue={["items"]}
+                            className={
+                              "border rounded-lg border-gray-300 divide-gray-300"
+                            }
+                          >
+                            <AccordionItem className={"px-4"} value={"items"}>
+                              <AccordionTrigger className={"font-semibold"}>
+                                List Item Terjual
+                              </AccordionTrigger>
+                              <AccordionContent>
+                                <DataTable
+                                  isLoading={isRefetching}
+                                  columns={columnItems}
+                                  data={data?.resource.items ?? []}
+                                />
+                              </AccordionContent>
+                            </AccordionItem>
+                            <AccordionItem
+                              className={"px-4"}
+                              value={"products"}
+                            >
+                              <AccordionTrigger className={"font-semibold"}>
+                                List Produk Terjual
+                              </AccordionTrigger>
+                              <AccordionContent>
+                                <DataTable
+                                  isLoading={isRefetching}
+                                  columns={columnProducts}
+                                  data={data?.resource.products ?? []}
+                                />
+                              </AccordionContent>
+                            </AccordionItem>
+                          </Accordion>
                         </div>
                         <DialogFooter>
                           <DialogClose
