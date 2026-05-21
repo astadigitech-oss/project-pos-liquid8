@@ -22,7 +22,15 @@ export const approvedcancelledTransactionAtom = atomWithMutation(() => ({
 }));
 
 export const exportTransactionAdminAtom = atomWithMutation(() => ({
-  mutationFn: ({ id }: { id: string }) => exportTransactionAdminMutation(id),
+  mutationFn: ({
+    id,
+    startDate,
+    endDate,
+  }: {
+    id: string;
+    startDate?: string;
+    endDate?: string;
+  }) => exportTransactionAdminMutation(id, startDate, endDate),
   onSuccess: (data) => {
     toast.success(data.message);
   },
