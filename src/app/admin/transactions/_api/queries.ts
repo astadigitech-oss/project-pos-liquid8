@@ -1,5 +1,7 @@
 import { atomWithQuery } from "jotai-tanstack-query";
 import {
+  transactionAdminEndDate,
+  transactionAdminStartDate,
   transactionListAdminPage,
   transactionListAdminSearch,
   transactionListAdminStatus,
@@ -16,6 +18,8 @@ export const transactionListAdminAtom = atomWithQuery((get) => ({
       q: get(transactionListAdminSearch),
       storeId: get(transactionListAdminStoreId),
       status: get(transactionListAdminStatus),
+      startDate: get(transactionAdminStartDate),
+      endDate: get(transactionAdminEndDate),
     },
   ],
   queryFn: () =>
@@ -24,6 +28,8 @@ export const transactionListAdminAtom = atomWithQuery((get) => ({
       get(transactionListAdminSearch),
       get(transactionListAdminStoreId),
       get(transactionListAdminStatus),
+      get(transactionAdminStartDate),
+      get(transactionAdminEndDate),
     ),
   placeholderData: keepPreviousData,
   retry: 0,

@@ -21,7 +21,9 @@ import {
 } from "@/components/ui/input-group";
 import {
   Popover,
+  PopoverClose,
   PopoverContent,
+  PopoverDescription,
   PopoverHeader,
   PopoverTitle,
   PopoverTrigger,
@@ -32,6 +34,8 @@ import { TooltipText } from "@/providers/tooltip-provider";
 import { AtomValue } from "@suspensive/jotai";
 import { useAtom, useAtomValue } from "jotai";
 import {
+  CalendarDays,
+  Check,
   ChevronDown,
   CircleDashed,
   CloudDownload,
@@ -45,6 +49,10 @@ import {
 import React from "react";
 import { listStoreSelectAtom } from "../../stores/_api/queries";
 import {
+  transactionAdminEndDate,
+  transactionAdminStartDate,
+  transactionExportAdminEndDate,
+  transactionExportAdminStartDate,
   transactionListAdminPage,
   transactionListAdminSearch,
   transactionListAdminStatus,
@@ -55,6 +63,10 @@ import { AlertDialog } from "./_dialog/alert";
 import { column } from "./columns";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { exportTransactionAdminAtom } from "../_api/mutation";
+import { format, isSameDay } from "date-fns";
+import { tz } from "@date-fns/tz";
+import { id } from "date-fns/locale";
+import { Calendar } from "@/components/ui/calendar";
 
 export const TransactionAdminClient = () => {
   const [exportId, setExportId] = React.useState("");
@@ -64,6 +76,14 @@ export const TransactionAdminClient = () => {
     useAtomValue(listStoreSelectAtom);
   const [storeId, setStoreId] = useAtom(transactionListAdminStoreId);
   const [status, setStatus] = useAtom(transactionListAdminStatus);
+  const [startDate, setStartDate] = useAtom(transactionAdminStartDate);
+  const [endDate, setEndDate] = useAtom(transactionAdminEndDate);
+  const [startExportDate, setStartExportDate] = useAtom(
+    transactionExportAdminStartDate,
+  );
+  const [endExportDate, setEndExportDate] = useAtom(
+    transactionExportAdminEndDate,
+  );
   return (
     <AtomValue atom={transactionListAdminAtom}>
       {({ data, isSuccess, isError, isRefetching, refetch }) => (
@@ -232,7 +252,83 @@ export const TransactionAdminClient = () => {
                   </Command>
                 </PopoverContent>
               </Popover>
-              {(!!storeId || !!status) && (
+              <Popover>
+                <PopoverTrigger
+                  render={
+                    <Button
+                      className={cn(
+                        "text-xs aria-expanded:bg-red-50 aria-expanded:text-red-600 border-dashed overflow-hidden hover:bg-red-50",
+                        startDate ? "pr-0" : "pr-2.5",
+                      )}
+                      size={"sm"}
+                      variant={"outlineDestructive"}
+                    >
+                      <CircleDashed className="size-3.5" />
+                      <p>Tanggal</p>
+                      {startDate && (
+                        <div className="h-7 flex items-center px-2 text-xs bg-red-50 border-dashed border-l border-red-400 ml-1">
+                          {!endDate || isSameDay(startDate, endDate)
+                            ? format(startDate, "PP", {
+                                locale: id,
+                                in: tz("Asia/Jakarta"),
+                              })
+                            : `${format(startDate, "PP", { locale: id, in: tz("Asia/Jakarta") })} - ${format(endDate, "PP", { locale: id, in: tz("Asia/Jakarta") })}`}
+                        </div>
+                      )}
+                    </Button>
+                  }
+                />
+                <PopoverContent
+                  className={"w-auto"}
+                  align="start"
+                  sideOffset={10}
+                >
+                  <PopoverHeader>
+                    <PopoverTitle>Pilih Rentang Tanggal</PopoverTitle>
+                    <PopoverDescription>
+                      Pilih rentang tanggal yang ingin Anda lihat.
+                    </PopoverDescription>
+                  </PopoverHeader>
+                  <div className="flex-none border rounded-md">
+                    <Calendar
+                      mode="range"
+                      numberOfMonths={2}
+                      defaultMonth={startDate ? new Date(startDate) : undefined}
+                      selected={{
+                        from: startDate ? new Date(startDate) : undefined,
+                        to: endDate ? new Date(endDate) : undefined,
+                      }}
+                      onSelect={(e) => {
+                        setStartDate(e?.from?.toString());
+                        setEndDate(e?.to?.toString());
+                      }}
+                    />
+                  </div>
+                  <div className="border-t pt-2 w-full flex items-center justify-end gap-2">
+                    <Button
+                      size={"sm"}
+                      variant={"outline"}
+                      className={""}
+                      onClick={() => {
+                        setStartDate(undefined);
+                        setEndDate(undefined);
+                      }}
+                    >
+                      <RefreshCw className="size-3.5" />
+                      Reset
+                    </Button>
+                    <PopoverClose
+                      render={
+                        <Button size={"sm"} className={""}>
+                          <Check className="size-3.5" />
+                          Konfirmasi
+                        </Button>
+                      }
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
+              {(!!storeId || !!status || !!startDate || !!endDate) && (
                 <Button
                   variant={"outlineDestructive"}
                   className={
@@ -242,6 +338,8 @@ export const TransactionAdminClient = () => {
                   onClick={() => {
                     setStoreId("");
                     setStatus("");
+                    setStartDate(undefined);
+                    setEndDate(undefined);
                   }}
                 >
                   <X className="size-3.5" />
@@ -382,12 +480,98 @@ export const TransactionAdminClient = () => {
                         </PopoverContent>
                       </Popover>
                     </Field>
+                    <Field className="gap-1">
+                      <FieldLabel>Tanggal</FieldLabel>
+                      <Popover>
+                        <PopoverTrigger
+                          render={
+                            <Button
+                              className={
+                                "text-xs bg-transparent hover:bg-white justify-start"
+                              }
+                              variant={"outline"}
+                            >
+                              <CalendarDays className="size-3.5" />
+                              <p className="pr-2">
+                                {!startExportDate
+                                  ? "Sepanjang Masa"
+                                  : !endExportDate ||
+                                      isSameDay(startExportDate, endExportDate)
+                                    ? format(startExportDate, "dd/MM/yyyy", {
+                                        locale: id,
+                                        in: tz("Asia/Jakarta"),
+                                      })
+                                    : `${format(startExportDate, "dd/MM/yyyy", { locale: id, in: tz("Asia/Jakarta") })} - ${format(endExportDate, "dd/MM/yyyy", { locale: id, in: tz("Asia/Jakarta") })}`}
+                              </p>
+                              <ChevronDown className="size-3.5 ml-auto" />
+                            </Button>
+                          }
+                        />
+                        <PopoverContent
+                          className={"w-auto"}
+                          align="start"
+                          sideOffset={10}
+                        >
+                          <PopoverHeader>
+                            <PopoverTitle>Pilih Rentang Tanggal</PopoverTitle>
+                            <PopoverDescription>
+                              Pilih rentang tanggal yang ingin Anda lihat.
+                            </PopoverDescription>
+                          </PopoverHeader>
+                          <div className="flex-none border rounded-md">
+                            <Calendar
+                              mode="range"
+                              numberOfMonths={2}
+                              defaultMonth={
+                                startExportDate
+                                  ? new Date(startExportDate)
+                                  : undefined
+                              }
+                              selected={{
+                                from: startExportDate
+                                  ? new Date(startExportDate)
+                                  : undefined,
+                                to: endExportDate
+                                  ? new Date(endExportDate)
+                                  : undefined,
+                              }}
+                              onSelect={(e) => {
+                                setStartExportDate(e?.from?.toString());
+                                setEndExportDate(e?.to?.toString());
+                              }}
+                            />
+                          </div>
+                          <div className="border-t pt-2 w-full flex items-center justify-end gap-2">
+                            <Button
+                              size={"sm"}
+                              variant={"outline"}
+                              className={""}
+                            >
+                              <RefreshCw className="size-3.5" />
+                              Reset
+                            </Button>
+                            <PopoverClose
+                              render={
+                                <Button size={"sm"} className={""}>
+                                  <Check className="size-3.5" />
+                                  Konfirmasi
+                                </Button>
+                              }
+                            />
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </Field>
                     <AtomValue atom={exportTransactionAdminAtom}>
                       {({ mutate, isPending }) => (
                         <Button
                           onClick={() =>
                             mutate(
-                              { id: exportId },
+                              {
+                                id: exportId,
+                                startDate: startExportDate,
+                                endDate: endExportDate,
+                              },
                               {
                                 onSuccess: (data) => {
                                   if (data?.success && data?.url) {
