@@ -4,16 +4,19 @@ import {
   ExportTransactionAdminResponse,
   TransactionListAdminResponse,
 } from "./types";
+import { format } from "date-fns";
 
 export const transactionListAdminQuery = async (
   page: number,
   q: string,
   storeId: string,
   status: string,
+  startDate?: string,
+  endDate?: string,
 ): Promise<TransactionListAdminResponse> => {
   const token = getCookie(secretStore);
   const response = await fetch(
-    `${apiUrl}/api/transactions/all?page=${page}&q=${q}&store_id=${storeId}&status=${status}`,
+    `${apiUrl}/api/transactions/all?page=${page}&q=${q}&store_id=${storeId}&status=${status}&start_date=${startDate ? format(startDate, "yyyy-MM-dd") : ""}&end_date=${endDate ? format(endDate, "yyyy-MM-dd") : ""}`,
     {
       method: "GET",
       headers: {
@@ -56,10 +59,12 @@ export const approvedTransactionAdminMutation = async (
 
 export const exportTransactionAdminMutation = async (
   id: string,
+  startDate?: string,
+  endDate?: string,
 ): Promise<ExportTransactionAdminResponse> => {
   const token = getCookie(secretStore);
   const response = await fetch(
-    `${apiUrl}/api/transactions/export?store_id=${id}`,
+    `${apiUrl}/api/transactions/export?store_id=${id}&start_date=${startDate ? format(startDate, "yyyy-MM-dd") : ""}&end_date=${endDate ? format(endDate, "yyyy-MM-dd") : ""}`,
     {
       method: "GET",
       headers: {

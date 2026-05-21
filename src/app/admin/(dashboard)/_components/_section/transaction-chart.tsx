@@ -13,17 +13,42 @@ import {
 } from "@/components/ui/command";
 import {
   Popover,
+  PopoverClose,
   PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Atom, AtomValue } from "@suspensive/jotai";
-import { ChevronDown, DollarSign } from "lucide-react";
+import { AtomValue } from "@suspensive/jotai";
+import {
+  CalendarDays,
+  Check,
+  ChevronDown,
+  DollarSign,
+  RefreshCw,
+} from "lucide-react";
 import React from "react";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
-import { periodSalesAtom } from "../../_api/atom";
+import {
+  dashboardEndDate,
+  dashboardStartDate,
+  periodSalesAtom,
+} from "../../_api/atom";
 import { formatRupiah } from "@/lib/utils";
 import { dashboardSalesAtom } from "../../_api/queries";
-import { format, isSameMonth, isSameYear } from "date-fns";
+import {
+  endOfMonth,
+  format,
+  isSameDay,
+  isSameMonth,
+  isSameYear,
+  startOfMonth,
+} from "date-fns";
+import { tz } from "@date-fns/tz";
+import { id } from "date-fns/locale";
+import { Calendar } from "@/components/ui/calendar";
+import { useAtom } from "jotai";
 
 function formatPeriodeIndonesia(resource?: {
   period?: string;
@@ -65,6 +90,9 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export const TransactionChart = () => {
+  const [period, setPeriod] = useAtom(periodSalesAtom);
+  const [startDate, setStartDate] = useAtom(dashboardStartDate);
+  const [endDate, setEndDate] = useAtom(dashboardEndDate);
   return (
     <AtomValue atom={dashboardSalesAtom}>
       {({ data }) => (
@@ -72,45 +100,125 @@ export const TransactionChart = () => {
           <div className="flex items-center justify-between">
             <p className="text-sm font-semibold">Total Penjualan</p>
             <div className="flex items-center gap-2">
-              <p className="text-xs font-medium px-3 py-1 border rounded-lg border-gray-300 bg-gray-100">
-                {formatPeriodeIndonesia(data?.resource)}
-              </p>
-              <Atom atom={periodSalesAtom}>
-                {([period, setPeriod]) => (
-                  <Popover>
-                    <PopoverTrigger
-                      render={
-                        <Button className={"capitalize w-24 justify-between"}>
-                          {period === "week" ? "Minggu" : "Bulan"}
-                          <ChevronDown />
-                        </Button>
-                      }
-                    />
-                    <PopoverContent className={"p-0 w-auto"}>
-                      <Command className="p-0">
-                        <CommandGroup>
-                          <CommandList>
-                            <CommandItem
-                              data-checked={period === "week"}
-                              value="week"
-                              onSelect={() => setPeriod("week")}
-                            >
-                              Minggu
-                            </CommandItem>
-                            <CommandItem
-                              data-checked={period === "month"}
-                              value="month"
-                              onSelect={() => setPeriod("month")}
-                            >
-                              Bulan
-                            </CommandItem>
-                          </CommandList>
-                        </CommandGroup>
-                      </Command>
-                    </PopoverContent>
-                  </Popover>
-                )}
-              </Atom>
+              {period === "custom" ? (
+                <Popover>
+                  <PopoverTrigger
+                    render={
+                      <Button
+                        className={"text-xs bg-transparent hover:bg-white"}
+                        variant={"outline"}
+                      >
+                        <CalendarDays className="size-3.5" />
+                        <p className="pr-2">
+                          {!startDate
+                            ? "Pilih Tanggal"
+                            : !endDate || isSameDay(startDate, endDate)
+                              ? format(startDate, "PP", {
+                                  locale: id,
+                                  in: tz("Asia/Jakarta"),
+                                })
+                              : `${format(startDate, "PP", { locale: id, in: tz("Asia/Jakarta") })} - ${format(endDate, "PP", { locale: id, in: tz("Asia/Jakarta") })}`}
+                        </p>
+                        <ChevronDown className="size-3.5" />
+                      </Button>
+                    }
+                  />
+                  <PopoverContent
+                    className={"w-auto"}
+                    align="start"
+                    sideOffset={10}
+                  >
+                    <PopoverHeader>
+                      <PopoverTitle>Pilih Rentang Tanggal</PopoverTitle>
+                      <PopoverDescription>
+                        Pilih rentang tanggal yang ingin Anda lihat.
+                      </PopoverDescription>
+                    </PopoverHeader>
+                    <div className="flex-none border rounded-md">
+                      <Calendar
+                        mode="range"
+                        numberOfMonths={2}
+                        defaultMonth={
+                          startDate ? new Date(startDate) : undefined
+                        }
+                        selected={{
+                          from: startDate ? new Date(startDate) : undefined,
+                          to: endDate ? new Date(endDate) : undefined,
+                        }}
+                        onSelect={(e) => {
+                          setStartDate(e?.from?.toString());
+                          setEndDate(e?.to?.toString());
+                        }}
+                      />
+                    </div>
+                    <div className="border-t pt-2 w-full flex items-center justify-end gap-2">
+                      <Button size={"sm"} variant={"outline"} className={""}>
+                        <RefreshCw className="size-3.5" />
+                        Reset
+                      </Button>
+                      <PopoverClose
+                        render={
+                          <Button size={"sm"} className={""}>
+                            <Check className="size-3.5" />
+                            Konfirmasi
+                          </Button>
+                        }
+                      />
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              ) : (
+                <p className="text-xs font-medium px-3 py-1 border rounded-lg border-gray-300 bg-gray-100">
+                  {formatPeriodeIndonesia(data?.resource)}
+                </p>
+              )}
+              <Popover>
+                <PopoverTrigger
+                  render={
+                    <Button className={"capitalize w-24 justify-between"}>
+                      {period === "week"
+                        ? "Minggu"
+                        : period === "month"
+                          ? "Bulan"
+                          : "Custom"}
+                      <ChevronDown />
+                    </Button>
+                  }
+                />
+                <PopoverContent className={"p-0 w-auto"}>
+                  <Command className="p-0">
+                    <CommandGroup>
+                      <CommandList>
+                        <CommandItem
+                          data-checked={period === "week"}
+                          value="week"
+                          onSelect={() => setPeriod("week")}
+                        >
+                          Mingguan
+                        </CommandItem>
+                        <CommandItem
+                          data-checked={period === "month"}
+                          value="month"
+                          onSelect={() => setPeriod("month")}
+                        >
+                          Bulanan
+                        </CommandItem>
+                        <CommandItem
+                          data-checked={period === "custom"}
+                          value="custom"
+                          onSelect={() => {
+                            setPeriod("custom");
+                            setStartDate(startOfMonth(new Date()).toString());
+                            setEndDate(endOfMonth(new Date()).toString());
+                          }}
+                        >
+                          Custom
+                        </CommandItem>
+                      </CommandList>
+                    </CommandGroup>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
           <ChartContainer config={chartConfig} className="h-64">
@@ -128,7 +236,11 @@ export const TransactionChart = () => {
                 tickLine={false}
                 axisLine={false}
                 tickMargin={8}
-                tickFormatter={(value) => value.slice(0, 3)}
+                tickFormatter={(value) =>
+                  period === "custom"
+                    ? format(new Date(value), "dd/MM/yyyy")
+                    : value.slice(0, 3)
+                }
               />
               <ChartTooltip
                 cursor={false}

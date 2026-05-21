@@ -45,7 +45,7 @@ export const StockChart = () => {
               layout="vertical"
               margin={{
                 left: 12,
-                right: 12,
+                right: 40,
               }}
             >
               <CartesianGrid horizontal={false} />
