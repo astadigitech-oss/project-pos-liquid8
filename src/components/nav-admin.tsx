@@ -16,6 +16,7 @@ import {
   Settings,
   Store,
   Truck,
+  Users2,
 } from "lucide-react";
 
 import { Button } from "./ui/button";
@@ -39,6 +40,7 @@ const MENU_ITEMS = [
   { href: "/admin/transactions", label: "Transaksi", icon: Landmark },
   { href: "/admin/stores", label: "Toko", icon: Store },
   { href: "/admin/shifts", label: "Shift", icon: ClipboardClock },
+  { href: "/admin/members", label: "Member", icon: Users2 },
   { href: "/admin/migrations", label: "Migrasi", icon: Truck },
   { href: "/admin/inventories", label: "Inventory", icon: Package },
 ];
